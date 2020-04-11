@@ -1,0 +1,24 @@
+@import 'utilities';
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+	background: #000;
+}
+
+canvas {
+	width: 320 * 3px;
+	height: 240 * 3px;
+	display: block;
+	font-size: 0;
+	outline: none;
+}
+
+#app,
+#root {
+	height: 100%;
+}
