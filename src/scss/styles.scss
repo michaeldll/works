@@ -2,23 +2,89 @@
 
 html,
 body {
-	width: 100%;
-	height: 100%;
-	padding: 0;
-	margin: 0;
-	overflow: hidden;
-	background: #000;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    background: #000;
+    cursor: none;
 }
 
 canvas {
-	width: 320 * 3px;
-	height: 240 * 3px;
-	display: block;
-	font-size: 0;
-	outline: none;
+    width: 100%;
+    height: 100%;
+    display: block;
+    font-size: 0;
+    outline: none;
+    // cursor: none;
+}
+
+#canvas-container {
+    width: 75%;
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
 }
 
 #app,
 #root {
-	height: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+div#scene-explorer-host {
+    position: absolute !important;
+    left: -17%;
+}
+
+div#inspector-host {
+    position: absolute !important;
+    right: -17%;
+}
+
+.press {
+    margin: 60px 0;
+}
+
+.logo {
+    height: 50%;
+}
+
+.menu-overlay {
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.menu-item {
+    position: relative;
+    width: 100%;
+    height: 25px;
+}
+
+.menu-item .start,
+.menu-item .about {
+    z-index: 1;
+    height: 20px;
+}
+
+.menu-item:first-of-type {
+    margin: 90px 0 20px 0;
+}
+
+.menu-item:not(.active) {
+    opacity: 0.3;
 }
