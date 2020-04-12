@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import BabylonScene from './classes/BabylonScene'
 import layout from '../../assets/overlay.png'
-import birds from '../../assets/birds_v2.mp3'
+// import birds from '../../assets/birds_v2.mp3'
 import life from '../../assets/video/life.mp4'
 
 function HomePage() {
     useEffect(() => {
         new BabylonScene()
-        const audio = new Audio(birds)
+        // const audio = new Audio(birds)
         // window.addEventListener('click', (e) => {
         //     audio.play()
         // })

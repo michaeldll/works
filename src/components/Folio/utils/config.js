@@ -1,12 +1,12 @@
 export default {
     camera: {
-        fov: 54.4,
+        fov: 43.6,
         near: 0.01,
         far: 1000,
         position: {
             x: -0.55,
             y: 0.4,
-            z: -1.4,
+            z: -1.3,
         },
         target: {
             x: -0.556,
@@ -18,7 +18,7 @@ export default {
         position: {
             x: -0.56,
             y: 0.435,
-            z: -0.522,
+            z: -0.496,
         },
     },
     debug: true,

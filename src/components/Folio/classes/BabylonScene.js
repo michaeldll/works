@@ -1,18 +1,17 @@
 import * as CANNON from 'cannon'
-
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { Scene } from '@babylonjs/core/scene'
 import { Mesh, MeshBuilder } from '@babylonjs/core/Meshes'
-import { Color3, Color4, Vector3 } from '@babylonjs/core/Maths/math'
+import { Color3, Vector3 } from '@babylonjs/core/Maths/math'
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
-import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
+// import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin'
 import { StandardMaterial } from '@babylonjs/core/Materials'
-import { VideoTexture } from '@babylonjs/core/Materials/Textures'
-import { PointerEventTypes } from '@babylonjs/core/Events'
+import { VideoTexture, CubeTexture } from '@babylonjs/core/Materials/Textures'
+// import { PointerEventTypes } from '@babylonjs/core/Events'
 
-// Required side effects to populate the Create methods on the mesh class. Without this, the bundle would be smaller but the createXXX methods from mesh would not be accessible.
+// Required side effects to populate the Create methods on the mesh class
 import '@babylonjs/core/Meshes/meshBuilder'
 
 // Required side effects to populate the SceneLoader class.
@@ -22,7 +21,7 @@ import '@babylonjs/core/Loading/loadingScreen'
 // Inspector
 import '@babylonjs/inspector'
 
-//utils
+// Utilities
 import d2r from '../utils/d2r.js'
 import config from '../utils/config'
 
@@ -45,7 +44,7 @@ class BabylonScene {
 
         // Associate a Babylon Engine to it.
         const engine = new Engine(canvas)
-        engine.setHardwareScalingLevel(2)
+        engine.setHardwareScalingLevel(3)
 
         // Create a scene.
         let scene = new Scene(engine)
@@ -86,15 +85,15 @@ class BabylonScene {
                 this.camera.attachControl(canvas, true)
             }
 
-            const setLights = () => {
-                // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-                const light = new HemisphericLight(
-                    'light1',
-                    new Vector3(0, 1, 0),
-                    scene
-                )
-                light.intensity = 0.7
-            }
+            // const setLights = () => {
+            //     // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+            //     const light = new HemisphericLight(
+            //         'light1',
+            //         new Vector3(0, 1, 0),
+            //         scene
+            //     )
+            //     light.intensity = 0.7
+            // }
 
             const limitCamera = (camera, radians, angle) => {
                 switch (angle) {
@@ -134,17 +133,6 @@ class BabylonScene {
             }
 
             const addVideo = () => {
-                // var screen = MeshBuilder.CreateBox(
-                //     'screen',
-                //     { width: 1, height: 1, depth: 0.1 },
-                //     scene
-                // )
-                // screen.position = Vector3.Zero()
-                // var mat = new StandardMaterial('screenMat', scene)
-                // mat.diffuseColor = new Color4(0, 0, 0, 1)
-                // screen.material = mat
-                // var vidPos = new Vector3(0, 0, 0.1).addInPlace(screen.position)
-                // screenVideo.position = vidPos
                 var planeOpts = {
                     height: 0.2625,
                     width: 0.336,
@@ -166,7 +154,7 @@ class BabylonScene {
                 )
                 screenVideoMat.diffuseTexture = screenVideoVidTex
                 screenVideoMat.roughness = 1
-                screenVideoMat.emissiveColor = new Color3(0.3, 0.3, 0.3)
+                screenVideoMat.emissiveColor = new Color3(0.9, 0.9, 0.9)
                 screenVideo.material = screenVideoMat
                 screenVideo.rotation = new Vector3(Math.PI, d2r(359.5), 0)
                 screenVideo.position = new Vector3(
@@ -175,21 +163,20 @@ class BabylonScene {
                     config.screen.position.z
                 )
                 screenVideoVidTex.video.play()
-                // scene.onPointerObservable.add(function (evt) {
-                //     console.log('picked')
-                //     if (screenVideoVidTex.video.paused)
-                //         screenVideoVidTex.video.play()
-                //     else screenVideoVidTex.video.pause()
-                //     console.log(
-                //         screenVideoVidTex.video.paused ? 'paused' : 'playing'
-                //     )
-                // }, PointerEventTypes.POINTERPICK)
+            }
+
+            const setHDRI = () => {
+                scene.clearColor = new Color3(1, 1, 1)
+                var hdrTexture = new CubeTexture('SpecularHDR.dds', scene)
+                scene.createDefaultSkybox(hdrTexture, true, 10000)
+                scene.createDefaultEnvironment()
+                scene._environmentIntensity = 1.8
             }
 
             enablePhysics()
             setCamera()
-            setLights()
             addVideo()
+            setHDRI()
 
             //TODO
             // const mesh = scene.meshes[0];
@@ -215,10 +202,10 @@ class BabylonScene {
             })
 
             //When click event is raised
-            window.addEventListener('click', function () {
-                // var pickResult = scene.pick(scene.pointerX, scene.pointerY);
-                // mesh.physicsImpostor.setLinearVelocity(new Vector3(0, 10, 0));
-            })
+            // window.addEventListener('click', function () {
+            // var pickResult = scene.pick(scene.pointerX, scene.pointerY);
+            // mesh.physicsImpostor.setLinearVelocity(new Vector3(0, 10, 0));
+            // })
 
             if (config.debug) scene.debugLayer.show()
         })
