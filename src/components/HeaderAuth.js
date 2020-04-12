@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { AppContext } from '../reducer'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import LoginButton from './LoginButton'
 
 const HeaderAuth = () => {

@@ -64,7 +64,7 @@ class BabylonScene {
                 const physicsPlugin = new CannonJSPlugin(false, 10, CANNON)
                 scene.enablePhysics(gravityVector, physicsPlugin)
                 scene.getPhysicsEngine().setTimeStep(1 / 30)
-                scene.forceShowBoundingBoxes = true
+                // scene.forceShowBoundingBoxes = true
             }
 
             const setCamera = () => {
@@ -134,63 +134,69 @@ class BabylonScene {
             }
 
             const addVideo = () => {
-                var screen = MeshBuilder.CreateBox(
-                    'screen',
-                    { width: 7.6467, height: 5.7262, depth: 0.1 },
-                    scene
-                )
-                screen.position = Vector3.Zero()
-                var mat = new StandardMaterial('screenMat', scene)
-                mat.diffuseColor = new Color4(0, 0, 0, 1)
-                screen.material = mat
+                // var screen = MeshBuilder.CreateBox(
+                //     'screen',
+                //     { width: 1, height: 1, depth: 0.1 },
+                //     scene
+                // )
+                // screen.position = Vector3.Zero()
+                // var mat = new StandardMaterial('screenMat', scene)
+                // mat.diffuseColor = new Color4(0, 0, 0, 1)
+                // screen.material = mat
+                // var vidPos = new Vector3(0, 0, 0.1).addInPlace(screen.position)
+                // screenVideo.position = vidPos
                 var planeOpts = {
-                    height: 5.4762,
-                    width: 7.3967,
+                    height: 0.2625,
+                    width: 0.336,
                     sideOrientation: Mesh.BACKSIDE,
                 }
                 var screenVideo = MeshBuilder.CreatePlane(
-                    'plane',
+                    'screen',
                     planeOpts,
                     scene
                 )
-                var vidPos = new Vector3(0, 0, 0.1).addInPlace(screen.position)
-                screenVideo.position = vidPos
+
                 var screenVideoMat = new StandardMaterial('m', scene)
                 var screenVideoVidTex = new VideoTexture(
-                    'video/',
-                    'life.mp4',
-                    scene
+                    'river',
+                    document.getElementById('life-river'),
+                    scene,
+                    false,
+                    true
                 )
                 screenVideoMat.diffuseTexture = screenVideoVidTex
                 screenVideoMat.roughness = 1
-                screenVideoMat.emissiveColor = new Color3.White()
+                screenVideoMat.emissiveColor = new Color3(0.3, 0.3, 0.3)
                 screenVideo.material = screenVideoMat
-                scene.onPointerObservable.add(function (evt) {
-                    if (evt.pickInfo.pickedMesh === screenVideo) {
-                        console.log('picked')
-                        if (screenVideoVidTex.video.paused)
-                            screenVideoVidTex.video.play()
-                        else screenVideoVidTex.video.pause()
-                        console.log(
-                            screenVideoVidTex.video.paused
-                                ? 'paused'
-                                : 'playing'
-                        )
-                    }
-                }, PointerEventTypes.POINTERPICK)
+                screenVideo.rotation = new Vector3(Math.PI, d2r(359.5), 0)
+                screenVideo.position = new Vector3(
+                    config.screen.position.x,
+                    config.screen.position.y,
+                    config.screen.position.z
+                )
+                screenVideoVidTex.video.play()
+                // scene.onPointerObservable.add(function (evt) {
+                //     console.log('picked')
+                //     if (screenVideoVidTex.video.paused)
+                //         screenVideoVidTex.video.play()
+                //     else screenVideoVidTex.video.pause()
+                //     console.log(
+                //         screenVideoVidTex.video.paused ? 'paused' : 'playing'
+                //     )
+                // }, PointerEventTypes.POINTERPICK)
             }
 
             enablePhysics()
             setCamera()
             setLights()
-            // addVideo()
+            addVideo()
 
             //TODO
             // const mesh = scene.meshes[0];
             // mesh.scaling = new Vector3(20, 20, 20);
             // mesh.position.y = 30;
             // //mesh.rotation.x = Math.PI * 10/180;
-            // //mesh.rotation.z = Math.PI * 10/180;
+            // //mesh.rotation.z = Math.PI * 10/180;s
             // mesh.physicsImpostor = new PhysicsImpostor(
             // 	mesh,
             // 	PhysicsImpostor.BoxImpostor,

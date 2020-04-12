@@ -8,7 +8,7 @@ body {
     margin: 0;
     overflow: hidden;
     background: #000;
-    cursor: none;
+    // cursor: none;
 }
 
 canvas {
@@ -17,12 +17,14 @@ canvas {
     display: block;
     font-size: 0;
     outline: none;
-    // cursor: none;
+    z-index: 1;
 }
 
-#canvas-container {
+#canvas-container,
+.home-container {
     width: 75%;
     position: relative;
+    outline: none;
 }
 
 .overlay {
@@ -30,6 +32,7 @@ canvas {
     height: 100%;
     width: 100%;
     pointer-events: none;
+    z-index: 2;
 }
 
 #app,
@@ -51,10 +54,18 @@ div#inspector-host {
 
 .press {
     margin: 60px 0;
+    height: 18px;
 }
 
 .logo {
     height: 50%;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .menu-overlay {
@@ -87,4 +98,9 @@ div#inspector-host {
 
 .menu-item:not(.active) {
     opacity: 0.3;
+}
+
+#life-river {
+    position: absolute;
+    z-index: 0;
 }
