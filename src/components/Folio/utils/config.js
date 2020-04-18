@@ -40,5 +40,5 @@ export default {
             z: 0.133,
         },
     },
-    debug: true,
+    debug: false,
 }
