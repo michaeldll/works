@@ -59,6 +59,7 @@ div#inspector-host {
 
 .logo {
     height: 50%;
+    z-index: 1;
 }
 
 .menu {
@@ -103,4 +104,15 @@ div#inspector-host {
 #life-river {
     position: absolute;
     z-index: 0;
+}
+
+.text-logo {
+    position: absolute;
+    margin-bottom: 185px;
+    width: 50%;
+    z-index: 2;
+}
+
+.logo.entered {
+    opacity: 0.5;
 }

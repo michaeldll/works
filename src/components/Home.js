@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
-import logo from '../assets/logo_30_1.png'
 import press from '../assets/PRESS.png'
 import copyright from '../assets/COPY.png'
-import start from '../assets/START.png'
-import about from '../assets/ABOUT.png'
-import overlay from '../assets/BG.png'
+import start1 from '../assets/text/START1.png'
+import start2 from '../assets/text/START2.png'
+import about1 from '../assets/text/ABOUT1.png'
+import about2 from '../assets/text/ABOUT2.png'
+import video from '../assets/video/logo-2.mp4'
+import logo from '../assets/text/logo.png'
+// import overlay from '../assets/BG.png'
 
 const Home = () => {
     const [entered, setEntered] = useState(false)
@@ -51,7 +54,15 @@ const Home = () => {
             onKeyDown={onKeyDown}
             tabIndex="0"
         >
-            <img className="logo" src={logo} alt="logo" />
+            {entered ? <img className="text-logo" src={logo} alt="logo" /> : ''}
+            <video
+                autoPlay
+                loop
+                muted
+                className={!entered ? 'logo' : 'logo entered'}
+                src={video}
+                type="video/mp4"
+            />
             <div className="menu w-100">
                 {!entered ? (
                     <>
@@ -69,11 +80,10 @@ const Home = () => {
                                     : 'menu-item d-flex justify-content-center align-items-center '
                             }
                         >
-                            <img className="start" src={start} alt="start" />
                             <img
-                                className="menu-overlay"
-                                src={overlay}
-                                alt="overlay"
+                                className="start"
+                                src={optionNumber === 0 ? start2 : start1}
+                                alt="start"
                             />
                         </div>
                         <div
@@ -83,11 +93,10 @@ const Home = () => {
                                     : 'menu-item d-flex justify-content-center align-items-center '
                             }
                         >
-                            <img className="about" src={about} alt="about" />
                             <img
-                                className="menu-overlay"
-                                src={overlay}
-                                alt="overlay"
+                                className="about"
+                                src={optionNumber === 1 ? about2 : about1}
+                                alt="about"
                             />
                         </div>
                     </>

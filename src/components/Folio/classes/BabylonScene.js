@@ -1,6 +1,7 @@
 import * as CANNON from 'cannon'
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { Scene } from '@babylonjs/core/scene'
+import { GizmoManager } from '@babylonjs/core/Gizmos/gizmoManager'
 import { Mesh, MeshBuilder } from '@babylonjs/core/Meshes'
 import { Color3, Vector3 } from '@babylonjs/core/Maths/math'
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
@@ -8,7 +9,11 @@ import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin'
 import { StandardMaterial } from '@babylonjs/core/Materials'
-import { VideoTexture, CubeTexture } from '@babylonjs/core/Materials/Textures'
+import {
+    VideoTexture,
+    CubeTexture,
+    Texture,
+} from '@babylonjs/core/Materials/Textures'
 // import { PointerEventTypes } from '@babylonjs/core/Events'
 
 // Required side effects to populate the Create methods on the mesh class
@@ -44,19 +49,13 @@ class BabylonScene {
 
         // Associate a Babylon Engine to it.
         const engine = new Engine(canvas)
-        engine.setHardwareScalingLevel(3)
+        engine.setHardwareScalingLevel(2.5)
 
         // Create a scene.
         let scene = new Scene(engine)
 
         SceneLoader.Load('models/', 'scene.glb', engine, (gltf) => {
             scene = gltf
-
-            // console.log(
-            // 	scene.meshes.forEach((mesh) => {
-            // 		if (mesh && mesh.name) console.log(mesh.name);
-            // 	})
-            // );
 
             const enablePhysics = () => {
                 const gravityVector = new Vector3(0, -9.81, 0)
@@ -84,16 +83,6 @@ class BabylonScene {
                 this.camera.setTarget(cameraTarget)
                 this.camera.attachControl(canvas, true)
             }
-
-            // const setLights = () => {
-            //     // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-            //     const light = new HemisphericLight(
-            //         'light1',
-            //         new Vector3(0, 1, 0),
-            //         scene
-            //     )
-            //     light.intensity = 0.7
-            // }
 
             const limitCamera = (camera, radians, angle) => {
                 switch (angle) {
@@ -166,17 +155,73 @@ class BabylonScene {
             }
 
             const setHDRI = () => {
-                scene.clearColor = new Color3(1, 1, 1)
-                var hdrTexture = new CubeTexture('SpecularHDR.dds', scene)
-                scene.createDefaultSkybox(hdrTexture, true, 10000)
-                scene.createDefaultEnvironment()
-                scene._environmentIntensity = 1.8
+                var skybox = MeshBuilder.CreateBox(
+                    'skyBox',
+                    { size: 1000.0 },
+                    scene
+                )
+                var skyboxMaterial = new StandardMaterial('skyBox', scene)
+                skyboxMaterial.backFaceCulling = false
+                skyboxMaterial.reflectionTexture = new CubeTexture(
+                    'skybox/skybox',
+                    scene
+                )
+                skyboxMaterial.reflectionTexture.coordinatesMode =
+                    Texture.SKYBOX_MODE
+                skyboxMaterial.diffuseColor = new Color3(0, 0, 0)
+                skyboxMaterial.specularColor = new Color3(0, 0, 0)
+                skybox.material = skyboxMaterial
+                // scene.createDefaultEnvironment()
+                scene.environmentTexture = new CubeTexture(
+                    'skybox/skybox',
+                    scene
+                )
+                scene._environmentIntensity = 2
+            }
+
+            const setPhone = () => {
+                const phone = scene.rootNodes[0]._children.find((child) => {
+                    if (child.name === 'phone') return child
+                })
+
+                phone.position = new Vector3(
+                    config.phone.position.x,
+                    config.phone.position.y,
+                    config.phone.position.z
+                )
+
+                phone.rotation = new Vector3(
+                    config.phone.rotation.x,
+                    config.phone.rotation.y,
+                    config.phone.rotation.z
+                )
+
+                phone.scaling = new Vector3(
+                    config.phone.scale.x,
+                    config.phone.scale.y,
+                    config.phone.scale.z
+                )
+            }
+
+            const setGizmos = () => {
+                const gizmoManager = new GizmoManager(scene)
+                gizmoManager.positionGizmoEnabled = true
+                gizmoManager.rotationGizmoEnabled = true
+                gizmoManager.scaleGizmoEnabled = false
+                gizmoManager.boundingBoxGizmoEnabled = false
+                gizmoManager.usePointerToAttachGizmos = false
+                gizmoManager.attachToMesh(
+                    scene.rootNodes[0]._children.find((child) => {
+                        if (child.name === 'phone') return child
+                    })
+                )
             }
 
             enablePhysics()
             setCamera()
             addVideo()
             setHDRI()
+            setPhone()
 
             //TODO
             // const mesh = scene.meshes[0];
@@ -207,7 +252,10 @@ class BabylonScene {
             // mesh.physicsImpostor.setLinearVelocity(new Vector3(0, 10, 0));
             // })
 
-            if (config.debug) scene.debugLayer.show()
+            if (config.debug) {
+                scene.debugLayer.show()
+                // setGizmos()
+            }
         })
     }
 }
