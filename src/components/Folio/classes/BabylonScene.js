@@ -1,19 +1,14 @@
-import * as CANNON from 'cannon'
+//Cannon for physics
+// import * as CANNON from 'cannon'
+
+//Babylon for 3D
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { Scene } from '@babylonjs/core/scene'
-import { GizmoManager } from '@babylonjs/core/Gizmos/gizmoManager'
-import { Mesh, MeshBuilder } from '@babylonjs/core/Meshes'
-import { Color3, Vector3 } from '@babylonjs/core/Maths/math'
+
+import { Vector3, Color4 } from '@babylonjs/core/Maths/math'
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
-// import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin'
-import { StandardMaterial } from '@babylonjs/core/Materials'
-import {
-    VideoTexture,
-    CubeTexture,
-    Texture,
-} from '@babylonjs/core/Materials/Textures'
 // import { PointerEventTypes } from '@babylonjs/core/Events'
 
 // Required side effects to populate the Create methods on the mesh class
@@ -21,18 +16,32 @@ import '@babylonjs/core/Meshes/meshBuilder'
 
 // Required side effects to populate the SceneLoader class.
 import '@babylonjs/loaders/glTF'
-import '@babylonjs/core/Loading/loadingScreen'
 
 // Inspector
 import '@babylonjs/inspector'
 
+//Custom classes
+import Screen from './Screen'
+import LoadingScreen from './LoadingScreen'
+import Skybox from './Skybox'
+import GizmoController from './GizmoController'
+import EventsController from './EventsController'
+
 // Utilities
 import d2r from '../utils/d2r.js'
 import config from '../utils/config'
+import limitCamera from '../utils/limitCamera'
+import showScreen from '../utils/showScreen'
+
+//Assets
+import birds from '../../../assets/audio/birds_v2.mp3'
 
 class BabylonScene {
     constructor() {
         this.camera = null
+        this.audio = null
+        this.hasClickedMouse = false
+        new LoadingScreen()
         this.init()
     }
 
@@ -49,24 +58,24 @@ class BabylonScene {
 
         // Associate a Babylon Engine to it.
         const engine = new Engine(canvas)
-        engine.setHardwareScalingLevel(2.5)
+        engine.setHardwareScalingLevel(3)
+        engine.displayLoadingUI()
 
         // Create a scene.
         let scene = new Scene(engine)
 
-        SceneLoader.Load('models/', 'scene.glb', engine, (gltf) => {
+        SceneLoader.Load('models/', 'scene_new.glb', engine, (gltf) => {
             scene = gltf
 
-            const enablePhysics = () => {
-                const gravityVector = new Vector3(0, -9.81, 0)
-                const physicsPlugin = new CannonJSPlugin(false, 10, CANNON)
-                scene.enablePhysics(gravityVector, physicsPlugin)
-                scene.getPhysicsEngine().setTimeStep(1 / 30)
-                // scene.forceShowBoundingBoxes = true
-            }
+            // const enablePhysics = () => {
+            //     const gravityVector = new Vector3(0, -9.81, 0)
+            //     const physicsPlugin = new CannonJSPlugin(false, 10, CANNON)
+            //     scene.enablePhysics(gravityVector, physicsPlugin)
+            //     scene.getPhysicsEngine().setTimeStep(1 / 30)
+            //     // scene.forceShowBoundingBoxes = true
+            // }
 
             const setCamera = () => {
-                // This creates and positions a camera (non-mesh)
                 const cameraPos = new Vector3(
                     config.camera.position.x,
                     config.camera.position.y,
@@ -82,101 +91,8 @@ class BabylonScene {
                 this.camera.fov = d2r(config.camera.fov)
                 this.camera.setTarget(cameraTarget)
                 this.camera.attachControl(canvas, true)
-            }
-
-            const limitCamera = (camera, radians, angle) => {
-                switch (angle) {
-                    case 'x':
-                        if (camera.rotation.x <= radians.lower) {
-                            camera.rotation = new Vector3(
-                                radians.lower,
-                                camera.rotation.y,
-                                camera.rotation.z
-                            )
-                        } else if (camera.rotation.x >= radians.upper) {
-                            camera.rotation = new Vector3(
-                                radians.upper,
-                                camera.rotation.y,
-                                camera.rotation.z
-                            )
-                        }
-                        break
-                    case 'y':
-                        if (camera.rotation.y <= radians.lower) {
-                            camera.rotation = new Vector3(
-                                camera.rotation.x,
-                                radians.lower,
-                                camera.rotation.z
-                            )
-                        } else if (camera.rotation.y >= radians.upper) {
-                            camera.rotation = new Vector3(
-                                camera.rotation.x,
-                                radians.upper,
-                                camera.rotation.z
-                            )
-                        }
-                        break
-                    default:
-                        break
-                }
-            }
-
-            const addVideo = () => {
-                var planeOpts = {
-                    height: 0.2625,
-                    width: 0.336,
-                    sideOrientation: Mesh.BACKSIDE,
-                }
-                var screenVideo = MeshBuilder.CreatePlane(
-                    'screen',
-                    planeOpts,
-                    scene
-                )
-
-                var screenVideoMat = new StandardMaterial('m', scene)
-                var screenVideoVidTex = new VideoTexture(
-                    'river',
-                    document.getElementById('life-river'),
-                    scene,
-                    false,
-                    true
-                )
-                screenVideoMat.diffuseTexture = screenVideoVidTex
-                screenVideoMat.roughness = 1
-                screenVideoMat.emissiveColor = new Color3(0.9, 0.9, 0.9)
-                screenVideo.material = screenVideoMat
-                screenVideo.rotation = new Vector3(Math.PI, d2r(359.5), 0)
-                screenVideo.position = new Vector3(
-                    config.screen.position.x,
-                    config.screen.position.y,
-                    config.screen.position.z
-                )
-                screenVideoVidTex.video.play()
-            }
-
-            const setHDRI = () => {
-                var skybox = MeshBuilder.CreateBox(
-                    'skyBox',
-                    { size: 1000.0 },
-                    scene
-                )
-                var skyboxMaterial = new StandardMaterial('skyBox', scene)
-                skyboxMaterial.backFaceCulling = false
-                skyboxMaterial.reflectionTexture = new CubeTexture(
-                    'skybox/skybox',
-                    scene
-                )
-                skyboxMaterial.reflectionTexture.coordinatesMode =
-                    Texture.SKYBOX_MODE
-                skyboxMaterial.diffuseColor = new Color3(0, 0, 0)
-                skyboxMaterial.specularColor = new Color3(0, 0, 0)
-                skybox.material = skyboxMaterial
-                // scene.createDefaultEnvironment()
-                scene.environmentTexture = new CubeTexture(
-                    'skybox/skybox',
-                    scene
-                )
-                scene._environmentIntensity = 2
+                this.camera.speed = config.camera.speed
+                this.camera.inertia = config.camera.inertia
             }
 
             const setPhone = () => {
@@ -203,25 +119,211 @@ class BabylonScene {
                 )
             }
 
-            const setGizmos = () => {
-                const gizmoManager = new GizmoManager(scene)
-                gizmoManager.positionGizmoEnabled = true
-                gizmoManager.rotationGizmoEnabled = true
-                gizmoManager.scaleGizmoEnabled = false
-                gizmoManager.boundingBoxGizmoEnabled = false
-                gizmoManager.usePointerToAttachGizmos = false
-                gizmoManager.attachToMesh(
-                    scene.rootNodes[0]._children.find((child) => {
-                        if (child.name === 'phone') return child
-                    })
-                )
+            const hideMeshes = () => {
+                const phone = scene.rootNodes[0]._children.find((child) => {
+                    if (child.name === 'phone') return child
+                })
+                const arm = scene.rootNodes[0]._children.find((child) => {
+                    if (child.name === 'main_enfant.001') return child
+                })
+                phone.setEnabled(false)
+                arm.setEnabled(false)
             }
 
-            enablePhysics()
-            setCamera()
-            addVideo()
-            setHDRI()
-            setPhone()
+            const setEvents = () => {
+                const setPointerLock = (scene) => {
+                    canvas.addEventListener(
+                        'click',
+                        (e) => {
+                            canvas.requestPointerLock =
+                                canvas.requestPointerLock ||
+                                canvas.mozRequestPointerLock
+                            if (canvas.requestPointerLock) {
+                                canvas.requestPointerLock()
+                            }
+                        },
+                        false
+                    )
+                }
+
+                const setSound = () => {
+                    this.audio = new Audio(birds)
+                    this.audio.loop = true
+                    this.audio.volume = 0.1
+                }
+
+                const onCanvasClick = () => {
+                    window.addEventListener('click', (e) => {
+                        this.audio.play()
+
+                        const pickedMesh = scene.pick(
+                            canvas.clientWidth / 2,
+                            canvas.clientHeight / 2
+                        ).pickedMesh
+
+                        if (pickedMesh) {
+                            if (pickedMesh.name === 'Keyboard.001') {
+                                showScreen(scene, 'next')
+                            } else if (
+                                pickedMesh.name === 'MOUSE' &&
+                                !this.hasClickedMouse
+                            ) {
+                                switch (getActiveScreen()[1]) {
+                                    case 0:
+                                        window.open(
+                                            'https://river.michaels.works/'
+                                        )
+                                        break
+                                    case 1:
+                                        // window.open(
+                                        //     'https://river.michaels.works/'
+                                        // )
+                                        console.log('hey')
+                                        break
+                                    case 2:
+                                        window.open(
+                                            'https://toca.michaels.works/'
+                                        )
+
+                                        break
+                                    case 3:
+                                        window.open(
+                                            'https://pensa.michaels.works/'
+                                        )
+                                        break
+                                    default:
+                                        break
+                                }
+                                this.hasClickedMouse = true
+                            }
+                        }
+
+                        engine.hideLoadingUI()
+                    })
+                }
+
+                const onCanvasMouseMove = () => {
+                    window.addEventListener('mousemove', (e) => {
+                        const pickedMesh = scene.pick(
+                            canvas.clientWidth / 2,
+                            canvas.clientHeight / 2
+                        ).pickedMesh
+
+                        if (pickedMesh) {
+                            scene.meshes.forEach((mesh) => {
+                                if (
+                                    mesh.id !== pickedMesh.id &&
+                                    mesh._edgesRenderer
+                                ) {
+                                    mesh.disableEdgesRendering()
+                                }
+                            })
+
+                            if (
+                                !pickedMesh._edgesRenderer &&
+                                config.activeEdgeMeshes.includes(
+                                    pickedMesh.name
+                                )
+                            ) {
+                                pickedMesh.enableEdgesRendering()
+                            }
+
+                            if (
+                                pickedMesh.name !== 'MOUSE' &&
+                                this.hasClickedMouse
+                            ) {
+                                this.hasClickedMouse = false
+                            }
+                        }
+                    })
+                }
+
+                setPointerLock()
+                setSound()
+                onCanvasMouseMove()
+                onCanvasClick()
+
+                // window.addEventListener('mousemove', function () {
+                //     var pickResult = scene.pick(scene.pointerX, scene.pointerY)
+                //     console.log(pickResult.pickedMesh.name)
+                //     // mesh.physicsImpostor.setLinearVelocity(new Vector3(0, 10, 0));
+                // })
+            }
+
+            const getActiveScreen = () => {
+                const screens = scene.rootNodes.filter((nodes) => {
+                    if (nodes.name.indexOf('Screen') > -1) return nodes
+                })
+                return screens
+                    .map((screen, i) => [screen.isEnabled(), i, screen])
+                    .find((screen) => screen[0] === true)
+            }
+
+            // const showScreen = (mode) => {
+            //     const screens = scene.rootNodes.filter((nodes) => {
+            //         if (nodes.name.indexOf('Screen') > -1) return nodes
+            //     })
+
+            //     if (mode === 'random') {
+            //         const randScreen =
+            //             screens[Math.floor(Math.random() * screens.length)]
+            //         randScreen.setEnabled(true)
+            //     }
+
+            //     if (mode === 'next') {
+            //         const activeScreen = getActiveScreen() //[true, n, Mesh{}]
+            //         const activeIndex = activeScreen[1]
+            //         activeScreen[2].setEnabled(false)
+            //         const nextScreen = screens[activeIndex + 1]
+            //         activeIndex + 1 < screens.length
+            //             ? nextScreen.setEnabled(true)
+            //             : screens[0].setEnabled(true)
+            //     }
+            // }
+
+            const init = () => {
+                // enablePhysics()
+                setCamera()
+                new Skybox(scene, 2)
+                new Screen(
+                    scene,
+                    document.getElementById('life-river'),
+                    'riverScreen'
+                )
+                new Screen(
+                    scene,
+                    document.getElementById('horslesmurs'),
+                    'horsLesMursScreen'
+                )
+                new Screen(scene, document.getElementById('toca'), 'tocaScreen')
+                new Screen(
+                    scene,
+                    document.getElementById('pensa'),
+                    'pensaScreen'
+                )
+                showScreen(scene, 'random')
+                setPhone()
+                hideMeshes()
+                new EventsController(canvas, scene, engine)
+
+                //for edgeRenderer
+                scene.meshes.forEach((mesh) => {
+                    mesh.edgesWidth = 0.9
+                    mesh.edgesColor = new Color4(
+                        249 / 255,
+                        213 / 255,
+                        134 / 255,
+                        1
+                    )
+                })
+            }
+
+            init()
+
+            if (config.debug) {
+                scene.debugLayer.show()
+                // new GizmoController(scene);
+            }
 
             //TODO
             // const mesh = scene.meshes[0];
@@ -245,20 +347,11 @@ class BabylonScene {
             engine.runRenderLoop(() => {
                 scene.render()
             })
-
-            //When click event is raised
-            // window.addEventListener('click', function () {
-            // var pickResult = scene.pick(scene.pointerX, scene.pointerY);
-            // mesh.physicsImpostor.setLinearVelocity(new Vector3(0, 10, 0));
-            // })
-
-            if (config.debug) {
-                scene.debugLayer.show()
-                // setGizmos()
-            }
         })
     }
 }
+
+export default BabylonScene
 
 // var createScene = function (engine) {
 // 	var scene = new Scene(engine);
@@ -333,5 +426,3 @@ class BabylonScene {
 // var canvas = document.querySelector('#c');
 // var engine = new Engine(canvas, true);
 // var scene = createScene(engine);
-
-export default BabylonScene

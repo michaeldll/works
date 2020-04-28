@@ -7,7 +7,7 @@ export default {
         far: 1000,
         position: {
             x: -0.55,
-            y: 0.413,
+            y: 0.42,
             z: -1.25,
         },
         target: {
@@ -15,6 +15,8 @@ export default {
             y: 0.36,
             z: -0.431,
         },
+        speed: 1.3,
+        inertia: 0.6,
     },
     screen: {
         position: {
@@ -40,5 +42,14 @@ export default {
             z: 0.133,
         },
     },
+    activeEdgeMeshes: [
+        'MOUSE',
+        'Keyboard.001',
+        'postit',
+        'horsLesMursScreen',
+        'pensaScreen',
+        'riverScreen',
+        'tocaScreen',
+    ],
     debug: false,
 }

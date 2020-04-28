@@ -8,31 +8,6 @@ body {
     margin: 0;
     overflow: hidden;
     background: #000;
-    // cursor: none;
-}
-
-canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-    font-size: 0;
-    outline: none;
-    z-index: 1;
-}
-
-#canvas-container,
-.home-container {
-    width: 75%;
-    position: relative;
-    outline: none;
-}
-
-.overlay {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    pointer-events: none;
-    z-index: 2;
 }
 
 #app,
@@ -42,77 +17,6 @@ canvas {
     justify-content: center;
 }
 
-div#scene-explorer-host {
-    position: absolute !important;
-    left: -17%;
-}
-
-div#inspector-host {
-    position: absolute !important;
-    right: -17%;
-}
-
-.press {
-    margin: 60px 0;
-    height: 18px;
-}
-
-.logo {
-    height: 50%;
-    z-index: 1;
-}
-
-.menu {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.menu-overlay {
-    position: absolute;
-    z-index: 0;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-}
-
-.menu-item {
-    position: relative;
-    width: 100%;
-    height: 25px;
-}
-
-.menu-item .start,
-.menu-item .about {
-    z-index: 1;
-    height: 20px;
-}
-
-.menu-item:first-of-type {
-    margin: 90px 0 20px 0;
-}
-
-.menu-item:not(.active) {
-    opacity: 0.3;
-}
-
-#life-river {
-    position: absolute;
-    z-index: 0;
-}
-
-.text-logo {
-    position: absolute;
-    margin-bottom: 185px;
-    width: 50%;
-    z-index: 2;
-}
-
-.logo.entered {
-    opacity: 0.5;
+.hide {
+    display: none;
 }

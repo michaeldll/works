@@ -1,14 +1,3 @@
-// import React from 'react'
-// import HomePage from './components/HomePage'
-
-// class App extends React.Component {
-//     render() {
-//         return <HomePage />
-//     }
-// }
-
-// export default App
-
 import React, { useContext } from 'react'
 import {
     BrowserRouter as Router,
@@ -22,9 +11,8 @@ import { AppContext } from './reducer/'
 
 import Home from './components/Home'
 import Folio from './components/Folio'
-import ProtectedPage from './components/ProtectedPage'
-// import HeaderAuth from './components/HeaderAuth'
-import LoginPage from './components/LoginPage'
+import ProtectedPage from './components/Auth/ProtectedPage'
+import LoginPage from './components/Auth/LoginPage'
 
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
