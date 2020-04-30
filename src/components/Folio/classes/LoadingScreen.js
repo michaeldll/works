@@ -17,7 +17,7 @@ class LoadingScreen {
             this._loadingDiv = document.createElement('div')
             this._loadingDiv.id = 'customLoadingScreenDiv'
             this._loadingDiv.innerHTML = `
-					<div>Use your mouse to find out about all 4 works !</div>
+					<div>Use your mouse to find out all 4 works !</div>
 				`
             var customLoadingScreenCss = document.createElement('style')
             customLoadingScreenCss.type = 'text/css'

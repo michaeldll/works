@@ -2,6 +2,8 @@ import { MeshBuilder } from '@babylonjs/core/Meshes'
 import { StandardMaterial } from '@babylonjs/core/Materials'
 import { CubeTexture, Texture } from '@babylonjs/core/Materials/Textures'
 import { Color3 } from '@babylonjs/core/Maths/math'
+// Required side effects to populate the Create methods on the mesh class
+import '@babylonjs/core/Meshes/meshBuilder'
 
 class Skybox {
     constructor(scene, environmentIntensity) {

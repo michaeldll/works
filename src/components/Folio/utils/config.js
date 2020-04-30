@@ -50,6 +50,7 @@ export default {
         'pensaScreen',
         'riverScreen',
         'tocaScreen',
+        'speaker left',
     ],
-    debug: false,
+    debug: true,
 }

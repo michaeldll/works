@@ -1,0 +1,24 @@
+.subtitle {
+    display: none;
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 3;
+    background: rgba($color: #000000, $alpha: 0.7);
+    padding: 0 60px;
+    min-width: 60%;
+    &.show {
+        display: block;
+    }
+    p {
+        text-align: center;
+        display: none;
+        font-size: 22px;
+        color: #f9d586;
+        margin: 10px 0;
+        &.show {
+            display: block;
+        }
+    }
+}

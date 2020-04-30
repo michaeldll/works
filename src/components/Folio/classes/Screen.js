@@ -4,6 +4,8 @@ import { VideoTexture } from '@babylonjs/core/Materials/Textures'
 import { Color3, Vector3 } from '@babylonjs/core/Maths/math'
 import d2r from '../utils/d2r'
 import config from '../utils/config'
+// Required side effects to populate the Create methods on the mesh class
+import '@babylonjs/core/Meshes/meshBuilder'
 
 class Screen {
     constructor(scene, videoElement, name) {

@@ -1,6 +1,9 @@
 //Cannon for physics
 // import * as CANNON from 'cannon'
 
+//Howler for sound
+import { Howl, Howler } from 'howler'
+
 //Babylon for 3D
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { Scene } from '@babylonjs/core/scene'
@@ -10,9 +13,6 @@ import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin'
 // import { PointerEventTypes } from '@babylonjs/core/Events'
-
-// Required side effects to populate the Create methods on the mesh class
-import '@babylonjs/core/Meshes/meshBuilder'
 
 // Required side effects to populate the SceneLoader class.
 import '@babylonjs/loaders/glTF'
@@ -26,6 +26,7 @@ import LoadingScreen from './LoadingScreen'
 import Skybox from './Skybox'
 import GizmoController from './GizmoController'
 import EventsController from './EventsController'
+import SubtitleController from './SubtitleController'
 
 // Utilities
 import d2r from '../utils/d2r.js'
@@ -34,26 +35,82 @@ import limitCamera from '../utils/limitCamera'
 import showScreen from '../utils/showScreen'
 
 //Assets
-import birds from '../../../assets/audio/birds_v2.mp3'
+import birds from '../../../assets/audio/birds.mp3'
+import pensa from '../../../assets/audio/pensa2.mp3'
+import toca from '../../../assets/audio/toca.mp3'
+import horslesmurs from '../../../assets/audio/horslesmurs2.mp3'
+import portfolio from '../../../assets/audio/portfolio.mp3'
+import fleuve from '../../../assets/audio/river.mp3'
 
 class BabylonScene {
     constructor() {
         this.camera = null
-        this.audio = null
+        this.audio = {
+            birds: new Howl({
+                src: birds,
+                loop: true,
+                volume: 0.01,
+            }),
+            pensa: new Howl({
+                src: pensa,
+                loop: false,
+                volume: 1.0,
+            }),
+            portfolio: new Howl({
+                src: portfolio,
+                loop: false,
+                volume: 1.0,
+            }),
+            toca: new Howl({
+                src: toca,
+                loop: false,
+                volume: 1.0,
+            }),
+            horslesmurs: new Howl({
+                src: horslesmurs,
+                loop: false,
+                volume: 1.0,
+            }),
+            river: new Howl({
+                src: fleuve,
+                loop: false,
+                volume: 1.0,
+            }),
+        }
+        this.subtitles = {
+            pensa: new SubtitleController('pensa-sub', 30600, [
+                0,
+                10500,
+                17500,
+                26300,
+            ]),
+            toca: new SubtitleController('toca-sub', 24000, [0, 13300, 17500]),
+            horslesmurs: new SubtitleController('horslesmurs-sub', 39000, [
+                0,
+                11500,
+                20000,
+                27000,
+            ]),
+            river: new SubtitleController('river-sub', 34000, [
+                0,
+                13000,
+                27500,
+            ]),
+            postit: new SubtitleController('postit-sub', 5000, [0]),
+        }
         this.hasClickedMouse = false
         new LoadingScreen()
         this.init()
     }
 
     init() {
+        // Set the canvas element.
         document
             .querySelector('#canvas-container')
             .insertAdjacentHTML(
                 'afterbegin',
                 '<canvas id="babylon-canvas"></canvas>'
             )
-
-        // Get the canvas element from the DOM.
         const canvas = document.getElementById('babylon-canvas')
 
         // Associate a Babylon Engine to it.
@@ -130,157 +187,6 @@ class BabylonScene {
                 arm.setEnabled(false)
             }
 
-            const setEvents = () => {
-                const setPointerLock = (scene) => {
-                    canvas.addEventListener(
-                        'click',
-                        (e) => {
-                            canvas.requestPointerLock =
-                                canvas.requestPointerLock ||
-                                canvas.mozRequestPointerLock
-                            if (canvas.requestPointerLock) {
-                                canvas.requestPointerLock()
-                            }
-                        },
-                        false
-                    )
-                }
-
-                const setSound = () => {
-                    this.audio = new Audio(birds)
-                    this.audio.loop = true
-                    this.audio.volume = 0.1
-                }
-
-                const onCanvasClick = () => {
-                    window.addEventListener('click', (e) => {
-                        this.audio.play()
-
-                        const pickedMesh = scene.pick(
-                            canvas.clientWidth / 2,
-                            canvas.clientHeight / 2
-                        ).pickedMesh
-
-                        if (pickedMesh) {
-                            if (pickedMesh.name === 'Keyboard.001') {
-                                showScreen(scene, 'next')
-                            } else if (
-                                pickedMesh.name === 'MOUSE' &&
-                                !this.hasClickedMouse
-                            ) {
-                                switch (getActiveScreen()[1]) {
-                                    case 0:
-                                        window.open(
-                                            'https://river.michaels.works/'
-                                        )
-                                        break
-                                    case 1:
-                                        // window.open(
-                                        //     'https://river.michaels.works/'
-                                        // )
-                                        console.log('hey')
-                                        break
-                                    case 2:
-                                        window.open(
-                                            'https://toca.michaels.works/'
-                                        )
-
-                                        break
-                                    case 3:
-                                        window.open(
-                                            'https://pensa.michaels.works/'
-                                        )
-                                        break
-                                    default:
-                                        break
-                                }
-                                this.hasClickedMouse = true
-                            }
-                        }
-
-                        engine.hideLoadingUI()
-                    })
-                }
-
-                const onCanvasMouseMove = () => {
-                    window.addEventListener('mousemove', (e) => {
-                        const pickedMesh = scene.pick(
-                            canvas.clientWidth / 2,
-                            canvas.clientHeight / 2
-                        ).pickedMesh
-
-                        if (pickedMesh) {
-                            scene.meshes.forEach((mesh) => {
-                                if (
-                                    mesh.id !== pickedMesh.id &&
-                                    mesh._edgesRenderer
-                                ) {
-                                    mesh.disableEdgesRendering()
-                                }
-                            })
-
-                            if (
-                                !pickedMesh._edgesRenderer &&
-                                config.activeEdgeMeshes.includes(
-                                    pickedMesh.name
-                                )
-                            ) {
-                                pickedMesh.enableEdgesRendering()
-                            }
-
-                            if (
-                                pickedMesh.name !== 'MOUSE' &&
-                                this.hasClickedMouse
-                            ) {
-                                this.hasClickedMouse = false
-                            }
-                        }
-                    })
-                }
-
-                setPointerLock()
-                setSound()
-                onCanvasMouseMove()
-                onCanvasClick()
-
-                // window.addEventListener('mousemove', function () {
-                //     var pickResult = scene.pick(scene.pointerX, scene.pointerY)
-                //     console.log(pickResult.pickedMesh.name)
-                //     // mesh.physicsImpostor.setLinearVelocity(new Vector3(0, 10, 0));
-                // })
-            }
-
-            const getActiveScreen = () => {
-                const screens = scene.rootNodes.filter((nodes) => {
-                    if (nodes.name.indexOf('Screen') > -1) return nodes
-                })
-                return screens
-                    .map((screen, i) => [screen.isEnabled(), i, screen])
-                    .find((screen) => screen[0] === true)
-            }
-
-            // const showScreen = (mode) => {
-            //     const screens = scene.rootNodes.filter((nodes) => {
-            //         if (nodes.name.indexOf('Screen') > -1) return nodes
-            //     })
-
-            //     if (mode === 'random') {
-            //         const randScreen =
-            //             screens[Math.floor(Math.random() * screens.length)]
-            //         randScreen.setEnabled(true)
-            //     }
-
-            //     if (mode === 'next') {
-            //         const activeScreen = getActiveScreen() //[true, n, Mesh{}]
-            //         const activeIndex = activeScreen[1]
-            //         activeScreen[2].setEnabled(false)
-            //         const nextScreen = screens[activeIndex + 1]
-            //         activeIndex + 1 < screens.length
-            //             ? nextScreen.setEnabled(true)
-            //             : screens[0].setEnabled(true)
-            //     }
-            // }
-
             const init = () => {
                 // enablePhysics()
                 setCamera()
@@ -304,7 +210,14 @@ class BabylonScene {
                 showScreen(scene, 'random')
                 setPhone()
                 hideMeshes()
-                new EventsController(canvas, scene, engine)
+                new EventsController(
+                    canvas,
+                    scene,
+                    engine,
+                    this.audio,
+                    this.subtitles,
+                    Howler
+                )
 
                 //for edgeRenderer
                 scene.meshes.forEach((mesh) => {
@@ -316,6 +229,9 @@ class BabylonScene {
                         1
                     )
                 })
+
+                //ambient sound
+                this.audio.birds.play()
             }
 
             init()

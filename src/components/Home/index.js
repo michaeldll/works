@@ -70,10 +70,6 @@ const Home = () => {
         }, 1000)
     }, [])
 
-    const onVideoLoad = (e) => {
-        console.log('loaded')
-    }
-
     return (
         <div
             className={
@@ -94,7 +90,6 @@ const Home = () => {
                         autoPlay
                         loop
                         muted
-                        onLoad={onVideoLoad}
                         className={
                             !entered ? 'logo-video' : 'logo-video entered'
                         }
