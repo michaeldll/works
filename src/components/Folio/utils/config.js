@@ -52,5 +52,5 @@ export default {
         'tocaScreen',
         'speaker left',
     ],
-    debug: true,
+    debug: false,
 }
