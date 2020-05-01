@@ -19,7 +19,7 @@ class SubtitleController {
             setTimeout(() => {
                 this.paragraphs[i - 1] &&
                     this.paragraphs[i - 1].classList.remove('show')
-                this.paragraphs[i].classList.add('show')
+                this.paragraphs[i] && this.paragraphs[i].classList.add('show')
             }, timeout)
         })
     }

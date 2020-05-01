@@ -1,5 +1,6 @@
+/* eslint-disable array-callback-return */
 //Cannon for physics
-// import * as CANNON from 'cannon'
+import * as CANNON from 'cannon'
 
 //Howler for sound
 import { Howl, Howler } from 'howler'
@@ -8,11 +9,14 @@ import { Howl, Howler } from 'howler'
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { Scene } from '@babylonjs/core/scene'
 
-import { Vector3, Color4 } from '@babylonjs/core/Maths/math'
+import { Vector3, Color4, Color3 } from '@babylonjs/core/Maths/math'
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin'
 // import { PointerEventTypes } from '@babylonjs/core/Events'
+import { PhysicsImpostor } from '@babylonjs/core/Physics/physicsImpostor'
+import { Mesh, MeshBuilder } from '@babylonjs/core/Meshes'
+import { StandardMaterial } from '@babylonjs/core/Materials'
 
 // Required side effects to populate the SceneLoader class.
 import '@babylonjs/loaders/glTF'
@@ -36,8 +40,8 @@ import showScreen from '../utils/showScreen'
 
 //Assets
 import birds from '../../../assets/audio/birds.mp3'
-import pensa from '../../../assets/audio/pensa2.mp3'
-import toca from '../../../assets/audio/toca.mp3'
+import pensa from '../../../assets/audio/pensa3.mp3'
+import toca from '../../../assets/audio/toca2.mp3'
 import horslesmurs from '../../../assets/audio/horslesmurs2.mp3'
 import portfolio from '../../../assets/audio/portfolio.mp3'
 import fleuve from '../../../assets/audio/river.mp3'
@@ -54,7 +58,7 @@ class BabylonScene {
             pensa: new Howl({
                 src: pensa,
                 loop: false,
-                volume: 1.0,
+                volume: 0.5,
             }),
             portfolio: new Howl({
                 src: portfolio,
@@ -74,17 +78,12 @@ class BabylonScene {
             river: new Howl({
                 src: fleuve,
                 loop: false,
-                volume: 1.0,
+                volume: 2.0,
             }),
         }
         this.subtitles = {
-            pensa: new SubtitleController('pensa-sub', 30600, [
-                0,
-                10500,
-                17500,
-                26300,
-            ]),
-            toca: new SubtitleController('toca-sub', 24000, [0, 13300, 17500]),
+            pensa: new SubtitleController('pensa-sub', 10500, [0]),
+            toca: new SubtitleController('toca-sub', 13300, [0]),
             horslesmurs: new SubtitleController('horslesmurs-sub', 39000, [
                 0,
                 11500,
@@ -96,7 +95,7 @@ class BabylonScene {
                 13000,
                 27500,
             ]),
-            postit: new SubtitleController('postit-sub', 5000, [0]),
+            postit: new SubtitleController('postit-sub', 3500, [0]),
         }
         this.hasClickedMouse = false
         new LoadingScreen()
@@ -114,23 +113,15 @@ class BabylonScene {
         const canvas = document.getElementById('babylon-canvas')
 
         // Associate a Babylon Engine to it.
-        const engine = new Engine(canvas)
-        engine.setHardwareScalingLevel(3)
+        const engine = new Engine(canvas, false, null, true)
+        engine.setHardwareScalingLevel(window.innerWidth / 480)
         engine.displayLoadingUI()
 
         // Create a scene.
         let scene = new Scene(engine)
 
-        SceneLoader.Load('models/', 'scene_new.glb', engine, (gltf) => {
+        SceneLoader.Load('models/', 'scene.glb', engine, (gltf) => {
             scene = gltf
-
-            // const enablePhysics = () => {
-            //     const gravityVector = new Vector3(0, -9.81, 0)
-            //     const physicsPlugin = new CannonJSPlugin(false, 10, CANNON)
-            //     scene.enablePhysics(gravityVector, physicsPlugin)
-            //     scene.getPhysicsEngine().setTimeStep(1 / 30)
-            //     // scene.forceShowBoundingBoxes = true
-            // }
 
             const setCamera = () => {
                 const cameraPos = new Vector3(
@@ -153,43 +144,128 @@ class BabylonScene {
             }
 
             const setPhone = () => {
-                const phone = scene.rootNodes[0]._children.find((child) => {
-                    if (child.name === 'phone') return child
+                const phone = scene.meshes.find((mesh) => mesh.name === 'phone')
+                const phoneChild = scene.meshes.find(
+                    (mesh) => mesh.name === 'phone.child'
+                )
+                phoneChild.setEnabled(false)
+                phone.scaling = new Vector3(0.5, 0.5, 0.5)
+                phone.outlineWidth = 0.003
+                phone.setParent(null)
+            }
+
+            const setArm = () => {
+                const arm = scene.rootNodes[0]._children.find((child) => {
+                    if (child.name === 'main_enfant.004') return child
                 })
+                arm.position.x = 0.413
+                arm.position.y = 0.2 //when raised: 0,309
+                arm.position.z = -1.23
+                arm.scaling = new Vector3(0.5, 0.5, 0.5)
+            }
 
-                phone.position = new Vector3(
-                    config.phone.position.x,
-                    config.phone.position.y,
-                    config.phone.position.z
-                )
-
-                phone.rotation = new Vector3(
-                    config.phone.rotation.x,
-                    config.phone.rotation.y,
-                    config.phone.rotation.z
-                )
-
-                phone.scaling = new Vector3(
-                    config.phone.scale.x,
-                    config.phone.scale.y,
-                    config.phone.scale.z
+            const positionArm = () => {
+                const arm = scene.rootNodes[0]._children.find((child) => {
+                    if (child.name === 'main_enfant.004') return child
+                })
+                arm.rotation = new Vector3(
+                    this.camera.rotation.x,
+                    -this.camera.rotation.y,
+                    this.camera.rotation.z
                 )
             }
 
-            const hideMeshes = () => {
-                const phone = scene.rootNodes[0]._children.find((child) => {
-                    if (child.name === 'phone') return child
-                })
-                const arm = scene.rootNodes[0]._children.find((child) => {
-                    if (child.name === 'main_enfant.001') return child
-                })
-                phone.setEnabled(false)
-                arm.setEnabled(false)
+            const enablePhysics = () => {
+                const gravityVector = new Vector3(0, -4.81, 0)
+                const physicsPlugin = new CannonJSPlugin(false, 10, CANNON)
+                scene.enablePhysics(gravityVector, physicsPlugin)
+                scene.getPhysicsEngine().setTimeStep(1 / 60)
+
+                const crt = Mesh.CreateBox('transparentCRT', 1, scene)
+                crt.isPickable = false
+                crt.position = new Vector3(-0.557, 0.433, -0.304)
+                crt.scaling = new Vector3(0.5, 0.428, 0.407)
+                crt.physicsImpostor = new PhysicsImpostor(
+                    crt,
+                    PhysicsImpostor.BoxImpostor,
+                    { mass: 0, restitution: 0.1 },
+                    scene
+                )
+
+                const ps1Controller = scene.meshes.find(
+                    (mesh) => mesh.name === 'playstation-analog-controller'
+                )
+                ps1Controller.setParent(null)
+                ps1Controller.physicsImpostor = new PhysicsImpostor(
+                    ps1Controller,
+                    PhysicsImpostor.BoxImpostor,
+                    { mass: 5, restitution: 0.1 },
+                    scene
+                )
+
+                const drawer = scene.meshes.find(
+                    (mesh) => mesh.name === 'drawer_primitive1'
+                )
+                drawer.setParent(null)
+                drawer.physicsImpostor = new PhysicsImpostor(
+                    drawer,
+                    PhysicsImpostor.BoxImpostor,
+                    { mass: 0, restitution: 0.2 },
+                    scene
+                )
+
+                const leftSpeaker = scene.meshes.find(
+                    (mesh) => mesh.name === 'speaker left'
+                )
+                leftSpeaker.setParent(null)
+                leftSpeaker.physicsImpostor = new PhysicsImpostor(
+                    leftSpeaker,
+                    PhysicsImpostor.BoxImpostor,
+                    { mass: 10, restitution: 0.2 },
+                    scene
+                )
+
+                const deskTop = scene.meshes.find(
+                    (mesh) => mesh.name === 'Desk Top'
+                )
+                deskTop.setParent(null)
+                deskTop.physicsImpostor = new PhysicsImpostor(
+                    deskTop,
+                    PhysicsImpostor.BoxImpostor,
+                    { mass: 0, restitution: 0 },
+                    scene
+                )
+
+                const ground = Mesh.CreateGround(
+                    'transparentGround',
+                    100,
+                    100,
+                    100,
+                    scene
+                )
+                ground.position.y = -0.392 //-0.392
+                ground.physicsImpostor = new PhysicsImpostor(
+                    ground,
+                    PhysicsImpostor.BoxImpostor,
+                    { mass: 0, restitution: 0.2 },
+                    scene
+                )
+
+                const transMat = new StandardMaterial('transparent', scene)
+                transMat.alpha = 0
+                ground.material = transMat
+                crt.material = transMat
+
+                const phone = scene.meshes.find((mesh) => mesh.name === 'phone')
+                phone.position = new Vector3(-0.554, 0.211, -0.569)
+                phone.rotation = new Vector3(d2r(90), d2r(11), d2r(124))
             }
 
             const init = () => {
-                // enablePhysics()
+                setPhone()
                 setCamera()
+                setArm()
+
                 new Skybox(scene, 2)
                 new Screen(
                     scene,
@@ -208,8 +284,7 @@ class BabylonScene {
                     'pensaScreen'
                 )
                 showScreen(scene, 'random')
-                setPhone()
-                hideMeshes()
+
                 new EventsController(
                     canvas,
                     scene,
@@ -219,7 +294,7 @@ class BabylonScene {
                     Howler
                 )
 
-                //for edgeRenderer
+                //for edges and outlines
                 scene.meshes.forEach((mesh) => {
                     mesh.edgesWidth = 0.9
                     mesh.edgesColor = new Color4(
@@ -228,36 +303,38 @@ class BabylonScene {
                         134 / 255,
                         1
                     )
+                    mesh.outlineColor = new Color3(
+                        249 / 255,
+                        213 / 255,
+                        134 / 255
+                    )
                 })
 
                 //ambient sound
                 this.audio.birds.play()
+                // scene.forceShowBoundingBoxes = true
+                enablePhysics()
             }
 
             init()
 
             if (config.debug) {
                 scene.debugLayer.show()
-                // new GizmoController(scene);
+                // new GizmoController(
+                //     scene,
+                //     scene.meshes.find((mesh) => mesh.name === 'phone')
+                // )
             }
 
-            //TODO
-            // const mesh = scene.meshes[0];
-            // mesh.scaling = new Vector3(20, 20, 20);
-            // mesh.position.y = 30;
-            // //mesh.rotation.x = Math.PI * 10/180;
-            // //mesh.rotation.z = Math.PI * 10/180;s
-            // mesh.physicsImpostor = new PhysicsImpostor(
-            // 	mesh,
-            // 	PhysicsImpostor.BoxImpostor,
-            // 	{ mass: 1, friction: 0.0, restitution: 0.5 },
-            // 	scene
-            // );
-
             scene.beforeRender = () => {
+                positionArm()
                 limitCamera(this.camera, { lower: -0.21, upper: 0.62 }, 'x')
                 limitCamera(this.camera, { lower: -0.55, upper: 0.62 }, 'y')
             }
+
+            window.addEventListener('resize', (e) => {
+                engine.resize()
+            })
 
             // Render every frame
             engine.runRenderLoop(() => {
@@ -268,77 +345,3 @@ class BabylonScene {
 }
 
 export default BabylonScene
-
-// var createScene = function (engine) {
-// 	var scene = new Scene(engine);
-// 	var mesh;
-
-// 	var loader = SceneLoader.Load(
-// 		'https://rawcdn.githack.com/cx20/gltf-test/1f6515ce/sampleModels/Duck/glTF/',
-// 		'Duck.gltf',
-// 		engine,
-// 		function (newScene) {
-// 			var gl = engine._gl;
-
-// 			scene = newScene;
-// 			scene.enablePhysics(new Vector3(0, -9.8, 0), new CannonJSPlugin());
-// 			scene.getPhysicsEngine().setTimeStep(1 / 30);
-
-// 			scene.forceShowBoundingBoxes = true;
-
-// 			var material = new StandardMaterial('material', scene);
-// 			material.emissiveColor = new Color3(0.5, 0.5, 0.5);
-// 			var ground = new Mesh.CreateBox('ground', 200.0, scene);
-// 			ground.position.y = -20;
-// 			ground.scaling.y = 0.01;
-// 			ground.material = material;
-// 			ground.physicsImpostor = new PhysicsImpostor(
-// 				ground,
-// 				PhysicsImpostor.BoxImpostor,
-// 				{ mass: 0, friction: 0.1, restitution: 0.1 },
-// 				scene
-// 			);
-
-// 			mesh = scene.meshes[0];
-// 			mesh.scaling = new Vector3(20, 20, 20);
-// 			mesh.position.y = 30;
-// 			//mesh.rotation.x = Math.PI * 10/180;
-// 			//mesh.rotation.z = Math.PI * 10/180;
-// 			mesh.physicsImpostor = new PhysicsImpostor(
-// 				mesh,
-// 				PhysicsImpostor.BoxImpostor,
-// 				{ mass: 1, friction: 0.0, restitution: 0.5 },
-// 				scene
-// 			);
-
-// 			var camera = new ArcRotateCamera('Camera', 0, 0, 10, new Vector3(0, 0, 0), scene);
-// 			camera.setPosition(new Vector3(0, 20, -100));
-// 			camera.attachControl(canvas, true);
-
-// 			var light1 = new DirectionalLight('dir01', new Vector3(0, 0, 1), scene);
-// 			light1.groundColor = new Color3(1, 0, 0);
-// 			light1.position = new Vector3(20, 40, 20);
-
-// 			engine.runRenderLoop(function () {
-// 				scene.render();
-
-// 				// TODO: I do not know how to set correctly in js
-// 				gl.disable(gl.CULL_FACE);
-
-// 				scene.activeCamera.alpha += 0.005;
-// 			});
-
-// 			//When click event is raised
-// 			window.addEventListener('click', function () {
-// 				var pickResult = scene.pick(scene.pointerX, scene.pointerY);
-// 				mesh.physicsImpostor.setLinearVelocity(new Vector3(0, 10, 0));
-// 			});
-// 		}
-// 	);
-
-// 	return scene;
-// };
-
-// var canvas = document.querySelector('#c');
-// var engine = new Engine(canvas, true);
-// var scene = createScene(engine);

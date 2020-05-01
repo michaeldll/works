@@ -1,8 +1,9 @@
 import { GizmoManager } from '@babylonjs/core/Gizmos/gizmoManager'
 
 class GizmoController {
-    constructor(scene) {
+    constructor(scene, mesh) {
         this.scene = scene
+        this.mesh = mesh
         this.gizmoManager = new GizmoManager(this.scene)
         this.init()
     }
@@ -13,11 +14,7 @@ class GizmoController {
         this.gizmoManager.scaleGizmoEnabled = false
         this.gizmoManager.boundingBoxGizmoEnabled = false
         this.gizmoManager.usePointerToAttachGizmos = false
-        this.gizmoManager.attachToMesh(
-            this.scene.rootNodes[0]._children.find((child) => {
-                if (child.name === 'phone') return child
-            })
-        )
+        this.gizmoManager.attachToMesh(this.mesh)
     }
 }
 

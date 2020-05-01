@@ -17,22 +17,29 @@ class LoadingScreen {
             this._loadingDiv = document.createElement('div')
             this._loadingDiv.id = 'customLoadingScreenDiv'
             this._loadingDiv.innerHTML = `
-					<div>Use your mouse to find out all 4 works !</div>
+                    <div class="window loading-text">LOADING</div>
+                    <br>
+                    <div class="window loading-text">Use your mouse to explore !</div>
 				`
             var customLoadingScreenCss = document.createElement('style')
             customLoadingScreenCss.type = 'text/css'
             customLoadingScreenCss.innerHTML = `
 			#customLoadingScreenDiv{
 				display: flex;
-				justify-content: center;
+                justify-content: center;
 				align-items: center;
 				background-color: black;
-				color: white;
-				font-size: 40px;
 				text-align: center;
 				z-index: 2;
-                flex-direction: column;
-			}
+                flex-direction: column;                
+            }
+            .loading-text {
+                color: #f9d586;
+                box-shadow: none;
+                background: none;
+                padding: 0;
+                font-size: 40px;
+            }            
 			`
             document
                 .getElementsByTagName('head')[0]

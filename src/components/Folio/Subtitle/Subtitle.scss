@@ -14,11 +14,19 @@
     p {
         text-align: center;
         display: none;
-        font-size: 22px;
+        font-size: 18px;
         color: #f9d586;
         margin: 10px 0;
         &.show {
             display: block;
         }
+    }
+    a {
+        color: #f9d586;
+    }
+    .window {
+        box-shadow: none;
+        background: none;
+        padding: 0;
     }
 }

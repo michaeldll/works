@@ -1,4 +1,4 @@
-import d2r from '../utils/d2r.js'
+// import d2r from '../utils/d2r.js'
 
 export default {
     camera: {
@@ -25,23 +25,6 @@ export default {
             z: -0.496,
         },
     },
-    phone: {
-        position: {
-            x: 0.548,
-            y: 0.386,
-            z: -0.646,
-        },
-        rotation: {
-            x: d2r(27.39),
-            y: d2r(-146.38),
-            z: d2r(95.51),
-        },
-        scale: {
-            x: 0.133,
-            y: 0.133,
-            z: 0.133,
-        },
-    },
     activeEdgeMeshes: [
         'MOUSE',
         'Keyboard.001',
@@ -52,5 +35,6 @@ export default {
         'tocaScreen',
         'speaker left',
     ],
+    activeOutlineMeshes: ['phone'],
     debug: false,
 }

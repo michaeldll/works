@@ -13,28 +13,23 @@ const Folio = () => {
     const subtitles = [
         {
             pensa: `<p><b>"pensa"</b> is another small experiment which uses
-                React and Markov Chains to generate new lyrics from previous ones. </p>
-                <p>It has a tendency to output some interesting results, so hopefully you'll get em too.</p>
-                <p>You'll also find a small sprinkle of microphone and WebGL shader fun in there, just because.</p>
-                <p>Hopefully you'll like it :)</p>`,
+                <b>React</b> and <b>Markov Chains</b> to generate new lyrics from previous ones. </p>`,
         },
         {
-            toca: `<p><b>"toca"</b> is a small musical experiment, which is meant to blend four separate audio tracks of a song I did with a bit of HTML5 Canvas and audio API trickery.</p>
-                <p>how successful is that blend, I hear you ask ?</p>
-                <p>well, I don't know. I guess I'll leave it up to you to decide :)</p>`,
+            toca: `<p><b>"toca"</b> is a small musical experiment, which is meant to blend four separate audio tracks of a song I did with a bit of HTML5 <b>Canvas</b> and <b>Web Audio API</b> trickery.</p>`,
         },
         {
             river: `
-                <p><b>La vie d'un fleuve</b> is a WebGL experience meant to relive the lifecycle of a river, from its inception in the source to its eventual demise in the ocean.</p>
-                <p>it was built as part of a Data Visualization workshop at Gobelins, and therefore it also seeks to imparts the viewer with a few key figures along the way.</p>
-                <p>I couldn't have done it without the precious help of talented designer Roxane Peuvrier :)</p>`,
+                <p><b>La Vie d'un Fleuve</b> is a <b>WebGL</b> experience meant to relive the lifecycle of a river, from its inception in the source to its eventual demise in the ocean.</p>
+                <p>It was built as part of a Data Visualization workshop at Gobelins, and therefore it also seeks to imparts the viewer with a few key figures along the way.</p>
+                <p>I couldn't have done it without the precious help of talented designer <a href="https://www.instagram.com/roxanep_n.bis/">Roxane Peuvrier.</a></p>`,
         },
         {
             horslesmurs: `
                 <p><b>Hors les Murs</b> follows a boy's physical and spiritual journey through the Figure d'Artiste exposition at the Petite Galerie, which is located in the Louvre museum.</p>  
                 <p>In it, you'll get to use novel technologies such as Augmented Reality to prop up a virtual gallery and find out what it means to be an artist.</p>
-                <p>This was a group project, built in Unity as part of a workshop with the Louvre at Gobelins.</p> 
-                <p>I'd like to profusely thank Marius Ballot, Rachel Duvauchelle and Ouri Levin, who worked with me to bring this fairly ambitious project to life in just a few short weeks :)</p>`,
+                <p>This was a group project, built in <b>Unity</b> as part of a workshop with the Louvre at Gobelins.</p> 
+                <p>I'd like to profusely thank <a href="https://www.instagram.com/marius.ballot">Marius Ballot</a>, <a href="https://rachelduvauchelle.myportfolio.com">Rachel Duvauchelle</a> and <a href="https://www.instagram.com/ouri.levin">Ouri Levin</a>, who worked with me to bring this fairly ambitious project to life in just a few short weeks.</p>`,
         },
         {
             postit: '<p>I really should finish my portfolio.</p>',
