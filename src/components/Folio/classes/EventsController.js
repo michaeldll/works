@@ -5,7 +5,6 @@ import getActiveScreen from '../utils/getActiveScreen'
 import showScreen from '../utils/showScreen'
 import gsap from 'gsap'
 import d2r from '../utils/d2r.js'
-import { Sphere } from 'cannon'
 
 class EventsController {
     constructor(canvas, scene, engine, audio, subtitles, howler) {
@@ -86,7 +85,7 @@ class EventsController {
                         )
 
                     phone.physicsImpostor.applyImpulse(
-                        new Vector3(0, 1, 3),
+                        new Vector3(0, 1, 1.5),
                         phone.getAbsolutePosition()
                     )
 
@@ -113,9 +112,23 @@ class EventsController {
                                 ? (this.volume = 0)
                                 : (this.volume = 1)
                             this.howler.volume(this.volume)
+                            const speaker = this.scene.meshes.find(
+                                (mesh) => mesh.name === 'speaker left'
+                            )
+                            speaker.physicsImpostor.applyImpulse(
+                                new Vector3(1.5, 0, 0.8),
+                                speaker.getAbsolutePosition()
+                            )
                             break
                         case 'Keyboard.001':
                             showScreen(this.scene, 'next')
+                            const keyboard = this.scene.meshes.find(
+                                (mesh) => mesh.name === 'Keyboard.001'
+                            )
+                            keyboard.physicsImpostor.applyImpulse(
+                                new Vector3(3.5, 2, -0.8),
+                                keyboard.getAbsolutePosition()
+                            )
                             break
                         case 'MOUSE':
                             if (!this.hasClickedMouse) {
@@ -126,7 +139,10 @@ class EventsController {
                                         )
                                         break
                                     case 1:
-                                        window.open()
+                                        window.open(
+                                            window.location.origin +
+                                                '/horslesmurs'
+                                        )
                                         break
                                     case 2:
                                         window.open(
@@ -141,6 +157,13 @@ class EventsController {
                                     default:
                                         break
                                 }
+                                const mouse = this.scene.meshes.find(
+                                    (mesh) => mesh.name === 'MOUSE'
+                                )
+                                mouse.physicsImpostor.applyImpulse(
+                                    new Vector3(3.5, 2, -0.8),
+                                    mouse.getAbsolutePosition()
+                                )
                                 this.hasClickedMouse = true
                             }
                             break

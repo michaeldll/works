@@ -11,6 +11,7 @@ import { AppContext } from './reducer/'
 
 import Home from './components/Home'
 import Folio from './components/Folio'
+import HorsLesMurs from './components/HorsLesMurs'
 import ProtectedPage from './components/Auth/ProtectedPage'
 import LoginPage from './components/Auth/LoginPage'
 
@@ -49,6 +50,9 @@ export default function App() {
                     </Route>
                     <Route path="/folio">
                         <Folio />
+                    </Route>
+                    <Route path="/horslesmurs">
+                        <HorsLesMurs />
                     </Route>
                     <Route path="/login">
                         <LoginPage />

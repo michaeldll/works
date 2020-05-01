@@ -259,6 +259,26 @@ class BabylonScene {
                 const phone = scene.meshes.find((mesh) => mesh.name === 'phone')
                 phone.position = new Vector3(-0.554, 0.211, -0.569)
                 phone.rotation = new Vector3(d2r(90), d2r(11), d2r(124))
+
+                const keyboard = scene.meshes.find(
+                    (mesh) => mesh.name === 'Keyboard.001'
+                )
+                keyboard.setParent(null)
+                keyboard.physicsImpostor = new PhysicsImpostor(
+                    keyboard,
+                    PhysicsImpostor.BoxImpostor,
+                    { mass: 10, restitution: 0.2 },
+                    scene
+                )
+
+                const mouse = scene.meshes.find((mesh) => mesh.name === 'MOUSE')
+                mouse.setParent(null)
+                mouse.physicsImpostor = new PhysicsImpostor(
+                    mouse,
+                    PhysicsImpostor.BoxImpostor,
+                    { mass: 10, restitution: 0.2 },
+                    scene
+                )
             }
 
             const init = () => {

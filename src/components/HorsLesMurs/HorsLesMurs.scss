@@ -1,0 +1,19 @@
+.horslesmurs video {
+    height: 450px;
+    border: 3px solid silver;
+}
+.horslesmurs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+img.small {
+    width: 100%;
+}
+
+.back {
+    position: absolute;
+    left: 10%;
+    top: 10%;
+}
