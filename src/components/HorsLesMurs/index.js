@@ -6,16 +6,15 @@ import './HorsLesMurs.scss'
 
 const HorsLesMurs = () => {
     return (
-        <div className={'horslesmurs'} tabIndex="0">
-            <div className="back">
-                <Link to="/" style={{ color: 'white', fontSize: '20px' }}>
-                    BACK
-                </Link>
-            </div>
-            <div style={{ padding: '0 0 50px 0' }}>
+        <div className="horslesmurs">
+            <Link className="back window" to="/">
+                {'<'} HOME
+            </Link>
+
+            <div className="container nopadtop">
                 <img className="small" src={pic} alt="pic" />
             </div>
-            <div style={{ padding: '50px 0' }}>
+            <div className="container">
                 <video loop muted controls src={horslesmurs} type="video/mp4" />
             </div>
         </div>

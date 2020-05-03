@@ -13,12 +13,10 @@ canvas {
 
 div#scene-explorer-host {
     position: absolute !important;
-    left: -17%;
 }
 
 div#inspector-host {
     position: absolute !important;
-    right: -17%;
 }
 
 .crosshair {
@@ -27,5 +25,26 @@ div#inspector-host {
     top: 50%;
     width: 5px;
     opacity: 0.7;
+    z-index: 2;
+}
+
+.crosshair.throwing {
+    border-radius: 100%;
+}
+
+#canvas-container {
+    width: 75vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#canvas-container video {
+    display: none;
+}
+.overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
     z-index: 2;
 }

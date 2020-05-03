@@ -21,7 +21,7 @@ class Skybox {
     init() {
         this.skyboxMaterial.backFaceCulling = false
         this.skyboxMaterial.reflectionTexture = new CubeTexture(
-            'skybox/skybox',
+            'skybox/2/skybox',
             this.scene
         )
         this.skyboxMaterial.reflectionTexture.coordinatesMode =
@@ -29,6 +29,10 @@ class Skybox {
         this.skyboxMaterial.diffuseColor = new Color3(0, 0, 0)
         this.skyboxMaterial.specularColor = new Color3(0, 0, 0)
         this.skybox.material = this.skyboxMaterial
+        this.scene.environmentTexture = new CubeTexture(
+            'skybox/2/skybox',
+            this.scene
+        )
         this.scene.environmentTexture = new CubeTexture(
             'skybox/skybox',
             this.scene

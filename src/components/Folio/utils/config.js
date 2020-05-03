@@ -1,4 +1,4 @@
-// import d2r from '../utils/d2r.js'
+import d2r from '../utils/d2r.js'
 
 export default {
     camera: {
@@ -25,6 +25,23 @@ export default {
             z: -0.496,
         },
     },
+    phone: {
+        position: {
+            x: -0.554,
+            y: 0.211,
+            z: -0.569,
+        },
+        rotation: {
+            x: d2r(90),
+            y: d2r(11),
+            z: d2r(124),
+        },
+    },
+    physicsGround: {
+        position: {
+            y: -0.33,
+        },
+    },
     activeEdgeMeshes: [
         'MOUSE',
         'Keyboard.001',
@@ -36,5 +53,5 @@ export default {
         'speaker left',
     ],
     activeOutlineMeshes: ['phone'],
-    debug: false,
+    debug: true,
 }
