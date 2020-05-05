@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import {
     BrowserRouter as Router,
     Switch,
@@ -41,6 +41,19 @@ function PrivateRoute({ children, ...rest }) {
 }
 
 export default function App() {
+    // get state and dispatch logic from reducer
+
+    useEffect(() => {
+        window.addEventListener(
+            'touchstart',
+            function onFirstTouch() {
+                window.USER_HAS_TOUCHED = true
+                window.removeEventListener('touchstart', onFirstTouch, false)
+            },
+            false
+        )
+    }, [])
+
     return (
         <AppProvider>
             <Router>

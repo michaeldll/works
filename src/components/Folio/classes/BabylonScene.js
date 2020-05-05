@@ -32,7 +32,7 @@ import limitCamera from '../utils/limitCamera'
 import showScreen from '../utils/showScreen'
 
 //Assets
-import birds from '../../../assets/audio/birds.mp3'
+import birds from '../../../assets/audio/birds4.mp3'
 import pensa from '../../../assets/audio/pensa3.mp3'
 import toca from '../../../assets/audio/toca2.mp3'
 import horslesmurs from '../../../assets/audio/horslesmurs2.mp3'
@@ -49,7 +49,7 @@ class BabylonScene {
             birds: new Howl({
                 src: birds,
                 loop: true,
-                volume: 0.01,
+                volume: 1.0,
             }),
             pensa: new Howl({
                 src: pensa,
@@ -109,8 +109,9 @@ class BabylonScene {
             postit: new SubtitleController('postit-sub', 3500, [0]),
         }
         this.hasClickedMouse = false
-        this.scene = null
         this.canvas = null
+        this.scene = null
+        this.engine = null
         new LoadingScreen()
         this.init()
     }
@@ -123,23 +124,20 @@ class BabylonScene {
                 'afterbegin',
                 '<canvas id="babylon-canvas"></canvas>'
             )
-        const canvas = document.getElementById('babylon-canvas')
-        this.canvas = canvas
+        this.canvas = document.getElementById('babylon-canvas')
 
         // Associate a Babylon Engine to it.
-        const engine = new Engine(canvas, false, null, true)
-        engine.setHardwareScalingLevel(window.innerWidth / 480)
-        engine.displayLoadingUI()
+        this.engine = new Engine(this.canvas, false, null, true)
+        this.engine.setHardwareScalingLevel(window.innerWidth / 480)
+        this.engine.displayLoadingUI()
 
         // Create a scene.
-        this.scene = new Scene(engine)
+        this.scene = new Scene(this.engine)
 
-        SceneLoader.Load('models/', 'scene.glb', engine, (gltf) => {
+        SceneLoader.Load('models/', 'scene.glb', this.engine, (gltf) => {
             this.scene = gltf
 
             const init = () => {
-                // this.scene.enableCollisions = true
-
                 new Skybox(this.scene, 3)
                 new Screen(
                     this.scene,
@@ -169,9 +167,9 @@ class BabylonScene {
                 showScreen(this.scene, 'random')
 
                 new EventsController(
-                    canvas,
+                    this.canvas,
                     this.scene,
-                    engine,
+                    this.engine,
                     this.audio,
                     this.subtitles,
                     Howler
@@ -202,11 +200,11 @@ class BabylonScene {
             }
 
             window.addEventListener('resize', (e) => {
-                engine.resize()
+                this.engine.resize()
             })
 
             // Render every frame
-            engine.runRenderLoop(() => {
+            this.engine.runRenderLoop(() => {
                 this.scene.render()
             })
         })

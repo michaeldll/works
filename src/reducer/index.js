@@ -16,6 +16,8 @@ const reducer = (state, action) => {
     switch (action.type) {
         case 'clear':
             return { ...initialState }
+        case 'set-mobile':
+            return { ...initialState, isMobile: action.value }
         case 'set-logged-in':
             return { ...state, isLoggedIn: action.value }
         default:

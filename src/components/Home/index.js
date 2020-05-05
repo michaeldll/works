@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { AppContext } from '../../reducer/'
 import About from '../About'
 import { Redirect } from 'react-router-dom'
 import press from '../../assets/text/PRESS.png'
+import touch from '../../assets/text/TOUCH.png'
 import copyright from '../../assets/text/COPY.png'
 import start1 from '../../assets/text/START1.png'
 import start2 from '../../assets/text/START2.png'
@@ -24,21 +26,13 @@ const Home = () => {
             setPresses(presses + 1)
 
             if (presses === 0 && !entered) setEntered(true)
+
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                 optionNumber === 0
                     ? setOptionNumber(optionNumber + 1)
                     : setOptionNumber(optionNumber - 1)
             }
-            if (
-                presses > 0 &&
-                (e.key === 'Enter' || e.keyCode === 32) &&
-                !optionSelected
-            ) {
-                setOptionSelected(true)
-                setTimeout(() => {
-                    setOptionSelected(false)
-                }, 10)
-            }
+
             if (
                 presses > 0 &&
                 (e.key === 'Enter' || e.keyCode === 32) &&
@@ -59,8 +53,33 @@ const Home = () => {
                 setAboutSelected(!aboutSelected)
             }
         }
+        const onTouchEnd = (e) => {
+            setPresses(presses + 1)
+
+            if (presses === 0 && !entered) setEntered(true)
+
+            if (e.target.classList.contains('about')) {
+                setAboutSelected(!aboutSelected)
+            } else if (e.target.classList.contains('start')) {
+                setOptionSelected(true)
+                setTimeout(() => {
+                    setOptionSelected(false)
+                }, 10)
+            } else if (
+                (!aboutSelected && e.target.classList.contains('menu')) ||
+                e.target.classList.contains('logo-video') ||
+                e.target.classList.contains('home-container') ||
+                e.target.classList.contains('menu-item') ||
+                e.target.classList.contains('text-logo')
+            ) {
+                optionNumber === 0
+                    ? setOptionNumber(optionNumber + 1)
+                    : setOptionNumber(optionNumber - 1)
+            }
+        }
 
         window.onkeydown = onKeyDown
+        window.ontouchend = onTouchEnd
     }, [entered, presses, optionNumber, optionSelected, aboutSelected])
 
     useEffect(() => {
@@ -69,6 +88,15 @@ const Home = () => {
                 document.querySelector('.press img').classList.toggle('d-none')
         }, 1000)
     }, [])
+
+    if (aboutSelected)
+        document
+            .querySelectorAll('#root, .home-container')
+            .forEach((node) => node.classList.add('about-open'))
+    else
+        document
+            .querySelectorAll('#root, .home-container')
+            .forEach((node) => node.classList.remove('about-open'))
 
     return (
         <div
@@ -102,7 +130,11 @@ const Home = () => {
                 {!entered ? (
                     <>
                         <div className="press">
-                            <img src={press} alt="press" />
+                            {window.innerWidth < 450 ? (
+                                <img src={touch} alt="touch" />
+                            ) : (
+                                <img src={press} alt="press" />
+                            )}
                         </div>
                         <img className="copy" src={copyright} alt="copy" />
                     </>

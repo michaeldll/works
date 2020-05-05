@@ -6,6 +6,11 @@ body {
     padding: 0;
     margin: 0;
     background: #000;
+    overflow-x: hidden;
+}
+
+html {
+    font-size: 10px;
 }
 
 #app,
@@ -17,4 +22,14 @@ body {
 
 .hide {
     display: none;
+}
+
+@media screen and (max-width: 450px) {
+    #root {
+        height: 100vh;
+        overflow: hidden;
+    }
+    #root.about-open {
+        height: 100%;
+    }
 }

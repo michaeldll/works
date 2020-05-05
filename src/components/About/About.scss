@@ -4,7 +4,6 @@
     p,
     span,
     button {
-        font-size: 13px !important;
         text-align: center;
     }
     select {
@@ -33,18 +32,23 @@
             margin-top: 5px;
         }
     }
+    &.minimized {
+        -moz-animation: scale-down-bottom 0.3s linear both;
+        -webkit-animation: scale-down-bottom 0.3s linear both;
+        animation: scale-down-bottom 0.3s linear both;
+    }
+    &.maximized {
+        -moz-animation: scale-up-bottom 0.3s linear both;
+        -webkit-animation: scale-up-bottom 0.3s linear both;
+        animation: scale-up-bottom 0.3s linear both;
+        font-size: 1.3rem;
+    }
 }
 
-.about-container.minimized {
-    -moz-animation: scale-down-bottom 0.3s linear both;
-    -webkit-animation: scale-down-bottom 0.3s linear both;
-    animation: scale-down-bottom 0.3s linear both;
-}
-
-.about-container.maximized {
-    -moz-animation: scale-up-bottom 0.3s linear both;
-    -webkit-animation: scale-up-bottom 0.3s linear both;
-    animation: scale-up-bottom 0.3s linear both;
+@media screen and (max-width: 450px) {
+    .about-container {
+        width: 80%;
+    }
 }
 
 /* ----------------------------------------------

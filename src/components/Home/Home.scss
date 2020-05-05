@@ -94,3 +94,30 @@
 .logo-video.entered:hover {
     opacity: 1;
 }
+@media screen and (max-width: 450px) {
+    .home-container {
+        padding-bottom: 30px;
+        overflow: hidden;
+    }
+    .home-container.about-open {
+        height: 100%;
+    }
+    img.copy {
+        width: 70%;
+    }
+    .press {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .press > img {
+        height: 90%;
+        width: 60%;
+    }
+    .logo-container {
+        height: 81.5%;
+    }
+    .menu:first-of-type {
+        margin-bottom: 0px;
+    }
+}
