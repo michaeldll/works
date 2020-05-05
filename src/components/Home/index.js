@@ -54,28 +54,30 @@ const Home = () => {
             }
         }
         const onTouchEnd = (e) => {
-            setPresses(presses + 1)
-
             if (presses === 0 && !entered) setEntered(true)
 
             if (e.target.classList.contains('about')) {
+                setPresses(presses + 1)
                 setAboutSelected(!aboutSelected)
+                setOptionNumber(1)
             } else if (e.target.classList.contains('start')) {
+                setOptionNumber(0)
                 setOptionSelected(true)
                 setTimeout(() => {
                     setOptionSelected(false)
                 }, 10)
-            } else if (
-                (!aboutSelected && e.target.classList.contains('menu')) ||
-                e.target.classList.contains('logo-video') ||
-                e.target.classList.contains('home-container') ||
-                e.target.classList.contains('menu-item') ||
-                e.target.classList.contains('text-logo')
-            ) {
-                optionNumber === 0
-                    ? setOptionNumber(optionNumber + 1)
-                    : setOptionNumber(optionNumber - 1)
             }
+            // else if (
+            //     (!aboutSelected && e.target.classList.contains('menu')) ||
+            //     e.target.classList.contains('logo-video') ||
+            //     e.target.classList.contains('home-container') ||
+            //     e.target.classList.contains('menu-item') ||
+            //     e.target.classList.contains('text-logo')
+            // ) {
+            //     optionNumber === 0
+            //         ? setOptionNumber(optionNumber + 1)
+            //         : setOptionNumber(optionNumber - 1)
+            // }
         }
 
         window.onkeydown = onKeyDown
@@ -116,6 +118,7 @@ const Home = () => {
                     )}
                     <video
                         autoPlay
+                        playsInline
                         loop
                         muted
                         className={

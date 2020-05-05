@@ -48,29 +48,33 @@ const Folio = () => {
             <img className="crosshair" src={crosshair} alt="crosshair" />
             <img className="overlay" src={layout} alt="layout" />
             <video
-                autoPlay={true}
-                loop={true}
+                autoPlay
+                playsInline
+                loop
                 id="life-river"
                 src={life}
                 type="video/mp4"
             />
             <video
-                autoPlay={true}
-                loop={true}
+                autoPlay
+                playsInline
+                loop
                 id="horslesmurs"
                 src={horslesmurs}
                 type="video/mp4"
             />
             <video
-                autoPlay={true}
-                loop={true}
+                autoPlay
+                playsInline
+                loop
                 id="pensa"
                 src={pensa}
                 type="video/mp4"
             />
             <video
-                autoPlay={true}
-                loop={true}
+                autoPlay
+                playsInline
+                loop
                 id="toca"
                 src={toca}
                 type="video/mp4"

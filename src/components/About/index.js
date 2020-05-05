@@ -21,8 +21,9 @@ const About = (props) => {
         containerEl.current.classList.remove('minimized')
     }
     const onEmail = (e) => {
-        emailEl.current.innerHTML =
-            '<a href="mailto:delabordemichael@gmail.com">delabordemichael@gmail.com</a>'
+        emailEl.current.innerHTML = `<a href="mailto:delabordemichael@gmail.com">delabordemichael${
+            window.USER_HAS_TOUCHED ? '<br />' : ''
+        }@gmail.com</a>`
         emailBtnEl.current.disabled = true
     }
 
@@ -50,7 +51,6 @@ const About = (props) => {
                     <span>
                         <select>
                             <option>creative developer.</option>
-                            <option>film photographer.</option>
                             <option>terrible musician.</option>
                         </select>
                     </span>

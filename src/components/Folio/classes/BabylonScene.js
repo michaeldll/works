@@ -8,6 +8,7 @@ import { Scene } from '@babylonjs/core/scene'
 
 import { Vector3, Color4, Color3 } from '@babylonjs/core/Maths/math'
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
+import { DeviceOrientationCamera } from '@babylonjs/core/Cameras/deviceOrientationCamera'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 
 // Required side effects to populate the SceneLoader class
@@ -128,7 +129,9 @@ class BabylonScene {
 
         // Associate a Babylon Engine to it.
         this.engine = new Engine(this.canvas, false, null, true)
-        this.engine.setHardwareScalingLevel(window.innerWidth / 480)
+        window.innerWidth > 450
+            ? this.engine.setHardwareScalingLevel(window.innerWidth / 480)
+            : this.engine.setHardwareScalingLevel(2.7)
         this.engine.displayLoadingUI()
 
         // Create a scene.
@@ -263,7 +266,17 @@ class BabylonScene {
             config.camera.target.y,
             config.camera.target.z
         )
-        this.camera = new UniversalCamera('camera1', cameraPos, this.scene)
+        window.innerWidth > 450
+            ? (this.camera = new UniversalCamera(
+                  'camera1',
+                  cameraPos,
+                  this.scene
+              ))
+            : (this.camera = new DeviceOrientationCamera(
+                  'camera1',
+                  cameraPos,
+                  this.scene
+              ))
         this.camera.minZ = config.camera.near
         this.camera.fov = d2r(config.camera.fov)
         this.camera.setTarget(cameraTarget)
