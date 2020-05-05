@@ -45,10 +45,23 @@ export default function App() {
 
     useEffect(() => {
         window.addEventListener(
-            'touchstart',
+            'touchend',
             function onFirstTouch() {
                 window.USER_HAS_TOUCHED = true
-                window.removeEventListener('touchstart', onFirstTouch, false)
+                // detect iOS 13+ and add permissions
+
+                if (
+                    typeof DeviceOrientationEvent.requestPermission ===
+                    'function'
+                ) {
+                    DeviceOrientationEvent.requestPermission()
+                        .then((permissionState) => {
+                            console.log('permission state: ', permissionState)
+                        })
+                        .catch(console.error)
+                }
+
+                window.removeEventListener('touchend', onFirstTouch, false)
             },
             false
         )
