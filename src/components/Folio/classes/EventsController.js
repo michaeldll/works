@@ -39,20 +39,6 @@ class EventsController {
                 return false
             }
         }
-        const setPointerLock = () => {
-            this.canvas.addEventListener(
-                'click',
-                (e) => {
-                    this.canvas.requestPointerLock =
-                        this.canvas.requestPointerLock ||
-                        this.canvas.mozRequestPointerLock
-                    if (this.canvas.requestPointerLock) {
-                        this.canvas.requestPointerLock()
-                    }
-                },
-                false
-            )
-        }
         const isVoicePlaying = () => {
             let isPlaying = false
 
@@ -68,127 +54,132 @@ class EventsController {
 
             return isPlaying
         }
-        const onCanvasClick = () => {
-            const onClick = (e) => {
-                const pickedMesh = this.scene.pick(
-                    this.canvas.clientWidth / 2,
-                    this.canvas.clientHeight / 2
-                ).pickedMesh
+        const onClick = (e) => {
+            const pickedMesh = this.scene.pick(
+                this.canvas.clientWidth / 2,
+                this.canvas.clientHeight / 2
+            ).pickedMesh
 
-                if (isPointerLocked() && !this.throwingMode && pickedMesh) {
-                    switch (pickedMesh.name) {
-                        case 'phone':
-                            const phone = this.scene.meshes.find(
-                                (mesh) => mesh.name === 'phone'
-                            )
-                            const phoneChild = this.scene.meshes.find(
-                                (mesh) => mesh.name === 'phone.child'
-                            )
-                            if (phone.isEnabled) {
-                                phoneChild.setEnabled(true)
-                                phone.setEnabled(false)
-                                this.throwingMode = true
-                                document
-                                    .querySelector('.crosshair')
-                                    .classList.add('throwing')
-                            }
-                            break
-                        case 'speaker left':
-                            this.volume === 1
-                                ? (this.volume = 0)
-                                : (this.volume = 1)
-                            this.howler.volume(this.volume)
+            let interactCondition
+            let throwCondition
 
-                            const speaker = this.scene.meshes.find(
-                                (mesh) => mesh.name === 'speaker left'
-                            )
-                            this.physics.touch(speaker)
-
-                            break
-                        case 'Keyboard.001':
-                            showScreen(this.scene, 'next')
-
-                            const keyboard = this.scene.meshes.find(
-                                (mesh) => mesh.name === 'Keyboard.001'
-                            )
-                            this.physics.touch(
-                                keyboard,
-                                new Vector3(3.5, 2, -1)
-                            )
-                            break
-                        case 'MOUSE':
-                            if (!this.hasClickedMouse) {
-                                switch (getActiveScreen(this.scene)[1]) {
-                                    case 0:
-                                        window.open(
-                                            'https://river.michaels.works/'
-                                        )
-                                        break
-                                    case 1:
-                                        window.open(
-                                            window.location.origin +
-                                                '/horslesmurs'
-                                        )
-                                        break
-                                    case 2:
-                                        window.open(
-                                            'https://toca.michaels.works/'
-                                        )
-                                        break
-                                    case 3:
-                                        window.open(
-                                            'https://pensa.michaels.works/'
-                                        )
-                                        break
-                                    default:
-                                        break
-                                }
-                                const mouse = this.scene.meshes.find(
-                                    (mesh) => mesh.name === 'MOUSE'
-                                )
-                                this.physics.touch(
-                                    mouse,
-                                    new Vector3(3.5, 2, -0.8)
-                                )
-                                this.hasClickedMouse = true
-                            }
-                            break
-                        default:
-                            break
-                    }
-
-                    if (!isVoicePlaying()) {
-                        if (pickedMesh.name === 'horsLesMursScreen') {
-                            this.audio.horslesmurs.play()
-                            this.subtitles.horslesmurs.init()
-                        } else if (pickedMesh.name === 'postit') {
-                            this.audio.portfolio.play()
-                            this.subtitles.postit.init()
-                        } else if (pickedMesh.name === 'riverScreen') {
-                            this.audio.river.play()
-                            this.subtitles.river.init()
-                        } else if (pickedMesh.name === 'tocaScreen') {
-                            this.audio.toca.play()
-                            this.subtitles.toca.init()
-                        } else if (pickedMesh.name === 'pensaScreen') {
-                            this.audio.pensa.play()
-                            this.subtitles.pensa.init()
-                        }
-                    }
-                } else if (isPointerLocked() && this.throwingMode) {
-                    this.physics.throwPhone()
-                    this.throwingMode = false
-                    document
-                        .querySelector('.crosshair')
-                        .classList.remove('throwing')
-                }
+            if (window.innerWidth < 450) {
+                interactCondition = !this.throwingMode && pickedMesh
+                throwCondition = isPointerLocked() && this.throwingMode
+            } else {
+                interactCondition =
+                    isPointerLocked() && !this.throwingMode && pickedMesh
+                throwCondition = this.throwingMode
             }
-            document.addEventListener('click', onClick)
-            document.addEventListener('touchend', onClick)
-        }
 
-        setPointerLock()
-        onCanvasClick()
+            if (interactCondition) {
+                switch (pickedMesh.name) {
+                    case 'phone':
+                        const phone = this.scene.meshes.find(
+                            (mesh) => mesh.name === 'phone'
+                        )
+                        const phoneChild = this.scene.meshes.find(
+                            (mesh) => mesh.name === 'phone.child'
+                        )
+                        if (phone.isEnabled) {
+                            phoneChild.setEnabled(true)
+                            phone.setEnabled(false)
+                            this.throwingMode = true
+                            document
+                                .querySelector('.crosshair')
+                                .classList.add('throwing')
+                        }
+                        break
+                    case 'speaker left':
+                        this.volume === 1
+                            ? (this.volume = 0)
+                            : (this.volume = 1)
+                        this.howler.volume(this.volume)
+
+                        const speaker = this.scene.meshes.find(
+                            (mesh) => mesh.name === 'speaker left'
+                        )
+                        this.physics.touch(speaker)
+
+                        break
+                    case 'Keyboard.001':
+                        showScreen(this.scene, 'next')
+
+                        const keyboard = this.scene.meshes.find(
+                            (mesh) => mesh.name === 'Keyboard.001'
+                        )
+                        this.physics.touch(keyboard, new Vector3(3.5, 2, -1))
+                        break
+                    case 'MOUSE':
+                        if (!this.hasClickedMouse) {
+                            switch (getActiveScreen(this.scene)[1]) {
+                                case 0:
+                                    window.open('https://river.michaels.works/')
+                                    break
+                                case 1:
+                                    window.open(
+                                        window.location.origin + '/horslesmurs'
+                                    )
+                                    break
+                                case 2:
+                                    window.open('https://toca.michaels.works/')
+                                    break
+                                case 3:
+                                    window.open('https://pensa.michaels.works/')
+                                    break
+                                default:
+                                    break
+                            }
+                            const mouse = this.scene.meshes.find(
+                                (mesh) => mesh.name === 'MOUSE'
+                            )
+                            this.physics.touch(mouse, new Vector3(3.5, 2, -0.8))
+                            this.hasClickedMouse = true
+                        }
+                        break
+                    default:
+                        break
+                }
+                if (!isVoicePlaying()) {
+                    if (pickedMesh.name === 'horsLesMursScreen') {
+                        this.audio.horslesmurs.play()
+                        this.subtitles.horslesmurs.init()
+                    } else if (pickedMesh.name === 'postit') {
+                        this.audio.portfolio.play()
+                        this.subtitles.postit.init()
+                    } else if (pickedMesh.name === 'riverScreen') {
+                        this.audio.river.play()
+                        this.subtitles.river.init()
+                    } else if (pickedMesh.name === 'tocaScreen') {
+                        this.audio.toca.play()
+                        this.subtitles.toca.init()
+                    } else if (pickedMesh.name === 'pensaScreen') {
+                        this.audio.pensa.play()
+                        this.subtitles.pensa.init()
+                    }
+                }
+            } else if (throwCondition) {
+                this.physics.throwPhone()
+                this.throwingMode = false
+                document
+                    .querySelector('.crosshair')
+                    .classList.remove('throwing')
+            }
+        }
+        this.canvas.addEventListener(
+            'click',
+            (e) => {
+                this.canvas.requestPointerLock =
+                    this.canvas.requestPointerLock ||
+                    this.canvas.mozRequestPointerLock
+                if (this.canvas.requestPointerLock) {
+                    this.canvas.requestPointerLock()
+                }
+            },
+            false
+        )
+        document.addEventListener('click', onClick)
+        document.addEventListener('touchend', onClick)
     }
     onCameraRotation() {
         const pickedMesh = this.scene.pick(
