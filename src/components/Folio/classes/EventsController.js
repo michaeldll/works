@@ -69,7 +69,7 @@ class EventsController {
             return isPlaying
         }
         const onCanvasClick = () => {
-            document.addEventListener('click', (e) => {
+            const onClick = (e) => {
                 const pickedMesh = this.scene.pick(
                     this.canvas.clientWidth / 2,
                     this.canvas.clientHeight / 2
@@ -182,73 +182,66 @@ class EventsController {
                         .querySelector('.crosshair')
                         .classList.remove('throwing')
                 }
-            })
-        }
-        const onCanvasMouseMove = () => {
-            document.addEventListener('mousemove', (e) => {
-                const pickedMesh = this.scene.pick(
-                    this.canvas.clientWidth / 2,
-                    this.canvas.clientHeight / 2
-                ).pickedMesh
-
-                const arm = this.scene.rootNodes[0]._children.find((child) => {
-                    if (child.name === 'main_enfant.004') return child
-                })
-
-                if (pickedMesh) {
-                    this.scene.meshes.forEach((mesh) => {
-                        if (mesh.id !== pickedMesh.id && mesh._edgesRenderer) {
-                            mesh.disableEdgesRendering()
-                        }
-                    })
-
-                    this.scene.meshes.forEach((mesh) => {
-                        if (mesh.id !== pickedMesh.id && mesh.renderOutline) {
-                            mesh.renderOutline = false
-                        }
-                    })
-
-                    if (
-                        !pickedMesh._edgesRenderer &&
-                        config.activeEdgeMeshes.includes(pickedMesh.name)
-                    ) {
-                        pickedMesh.enableEdgesRendering(0.95, true)
-                    }
-
-                    if (
-                        !pickedMesh.renderOutline &&
-                        config.activeOutlineMeshes.includes(pickedMesh.name) &&
-                        arm.position.y === 0.22
-                    ) {
-                        pickedMesh.renderOutline = true
-                        gsap.to(arm.position, { y: 0.309, duration: 0.5 })
-                    } else if (
-                        !config.activeOutlineMeshes.includes(pickedMesh.name)
-                    ) {
-                        if (!this.throwingMode)
-                            gsap.to(arm.position, { y: 0.22, duration: 0.2 })
-                    }
-
-                    if (pickedMesh.name !== 'MOUSE' && this.hasClickedMouse) {
-                        this.hasClickedMouse = false
-                    }
-                }
-            })
+            }
+            document.addEventListener('click', onClick)
+            document.addEventListener('touchend', onClick)
         }
 
         setPointerLock()
-        onCanvasMouseMove()
         onCanvasClick()
+    }
+    onCameraRotation() {
+        const pickedMesh = this.scene.pick(
+            this.canvas.clientWidth / 2,
+            this.canvas.clientHeight / 2
+        ).pickedMesh
+
+        const arm = this.scene.rootNodes[0]._children.find((child) => {
+            if (child.name === 'main_enfant.004') return child
+        })
+
+        if (pickedMesh) {
+            this.scene.meshes.forEach((mesh) => {
+                if (mesh.id !== pickedMesh.id && mesh._edgesRenderer) {
+                    mesh.disableEdgesRendering()
+                }
+            })
+
+            this.scene.meshes.forEach((mesh) => {
+                if (mesh.id !== pickedMesh.id && mesh.renderOutline) {
+                    mesh.renderOutline = false
+                }
+            })
+
+            if (
+                !pickedMesh._edgesRenderer &&
+                config.activeEdgeMeshes.includes(pickedMesh.name)
+            ) {
+                pickedMesh.enableEdgesRendering(0.95, true)
+            }
+
+            if (
+                !pickedMesh.renderOutline &&
+                config.activeOutlineMeshes.includes(pickedMesh.name) &&
+                arm.position.y === 0.22
+            ) {
+                pickedMesh.renderOutline = true
+                gsap.to(arm.position, { y: 0.309, duration: 0.5 })
+            } else if (!config.activeOutlineMeshes.includes(pickedMesh.name)) {
+                if (!this.throwingMode)
+                    gsap.to(arm.position, { y: 0.22, duration: 0.2 })
+            }
+
+            if (pickedMesh.name !== 'MOUSE' && this.hasClickedMouse) {
+                this.hasClickedMouse = false
+            }
+        }
     }
     managePhone() {
         const phone = this.scene.meshes.find((mesh) => mesh.name === 'phone')
 
         const isOutOfBounds = (phone) => {
-            return phone
-                ? phone.position.y < 0.32 ||
-                      phone.position.z < config.camera.position.z + 0.5 ||
-                      phone.position.z > -0.33
-                : false
+            return phone ? phone.position.y < 0.32 : false
         }
 
         // console.log('isOutOfBounds : ' + isOutOfBounds())

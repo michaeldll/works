@@ -113,6 +113,7 @@ class BabylonScene {
         this.canvas = null
         this.scene = null
         this.engine = null
+        this.eventsController = null
         new LoadingScreen()
         this.init()
     }
@@ -169,7 +170,7 @@ class BabylonScene {
                 this.setEdgesAndOutlines()
                 showScreen(this.scene, 'random')
 
-                new EventsController(
+                this.eventsController = new EventsController(
                     this.canvas,
                     this.scene,
                     this.engine,
@@ -198,13 +199,11 @@ class BabylonScene {
 
             this.scene.beforeRender = () => {
                 this.positionArm()
+                if (this.eventsController)
+                    this.eventsController.onCameraRotation()
                 limitCamera(this.camera, { lower: -0.22, upper: 0.52 }, 'x')
                 limitCamera(this.camera, { lower: -0.55, upper: 0.55 }, 'y')
             }
-
-            window.addEventListener('resize', (e) => {
-                this.engine.resize()
-            })
 
             // Render every frame
             this.engine.runRenderLoop(() => {

@@ -16,11 +16,19 @@ class LoadingScreen {
             }
             this._loadingDiv = document.createElement('div')
             this._loadingDiv.id = 'customLoadingScreenDiv'
-            this._loadingDiv.innerHTML = `
+            if (window.innerWidth < 450) {
+                this._loadingDiv.innerHTML = `
+                    <div class="window loading-text">LOADING</div>
+                    <br>
+                    <div class="window loading-text">Twist your phone to explore !</div>
+                `
+            } else {
+                this._loadingDiv.innerHTML = `
                     <div class="window loading-text">LOADING</div>
                     <br>
                     <div class="window loading-text">Use your mouse to explore !</div>
-				`
+                `
+            }
             var customLoadingScreenCss = document.createElement('style')
             customLoadingScreenCss.type = 'text/css'
             customLoadingScreenCss.innerHTML = `
