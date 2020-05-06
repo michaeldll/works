@@ -266,17 +266,7 @@ class BabylonScene {
             config.camera.target.y,
             config.camera.target.z
         )
-        window.innerWidth > 450
-            ? (this.camera = new UniversalCamera(
-                  'camera1',
-                  cameraPos,
-                  this.scene
-              ))
-            : (this.camera = new DeviceOrientationCamera(
-                  'camera1',
-                  cameraPos,
-                  this.scene
-              ))
+        this.camera = new UniversalCamera('camera1', cameraPos, this.scene)
         this.camera.minZ = config.camera.near
         this.camera.fov = d2r(config.camera.fov)
         this.camera.setTarget(cameraTarget)
