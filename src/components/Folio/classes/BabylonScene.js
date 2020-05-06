@@ -50,7 +50,7 @@ class BabylonScene {
             birds: new Howl({
                 src: birds,
                 loop: true,
-                volume: 1.0,
+                volume: 0.8,
             }),
             pensa: new Howl({
                 src: pensa,
@@ -198,8 +198,8 @@ class BabylonScene {
 
             this.scene.beforeRender = () => {
                 this.positionArm()
-                limitCamera(this.camera, { lower: -0.21, upper: 0.62 }, 'x')
-                limitCamera(this.camera, { lower: -0.55, upper: 0.62 }, 'y')
+                limitCamera(this.camera, { lower: -0.22, upper: 0.52 }, 'x')
+                limitCamera(this.camera, { lower: -0.55, upper: 0.55 }, 'y')
             }
 
             window.addEventListener('resize', (e) => {
@@ -266,7 +266,15 @@ class BabylonScene {
             config.camera.target.y,
             config.camera.target.z
         )
-        this.camera = new UniversalCamera('camera1', cameraPos, this.scene)
+        if (window.innerWidth < 450) {
+            this.camera = new DeviceOrientationCamera(
+                'camera1',
+                cameraPos,
+                this.scene
+            )
+        } else {
+            this.camera = new UniversalCamera('camera1', cameraPos, this.scene)
+        }
         this.camera.minZ = config.camera.near
         this.camera.fov = d2r(config.camera.fov)
         this.camera.setTarget(cameraTarget)

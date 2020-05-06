@@ -53,5 +53,5 @@ export default {
         'speaker left',
     ],
     activeOutlineMeshes: ['phone'],
-    debug: false,
+    debug: true,
 }

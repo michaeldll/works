@@ -1,4 +1,5 @@
 import { Vector3 } from '@babylonjs/core/Maths/math'
+import config from './config'
 
 const limitCamera = (camera, radians, angle) => {
     switch (angle) {
@@ -35,6 +36,10 @@ const limitCamera = (camera, radians, angle) => {
         default:
             break
     }
+
+    camera.position.x = config.camera.position.x
+    camera.position.y = config.camera.position.y
+    camera.position.z = config.camera.position.z
 }
 
 export default limitCamera

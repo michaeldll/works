@@ -215,9 +215,7 @@ class PhysicsController {
                     collisionsSounds[
                         Math.floor(Math.random() * collisionsSounds.length)
                     ]
-                randSound.rate(
-                    1.5 - Math.floor(Math.random() * collisionsSounds.length)
-                )
+                randSound.rate(1.5 - Math.floor(Math.random()))
                 randSound.play()
             }
         }
