@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { AppContext } from '../../reducer/'
 import About from '../About'
 import { Redirect } from 'react-router-dom'
@@ -9,7 +9,10 @@ import start1 from '../../assets/text/START1.png'
 import start2 from '../../assets/text/START2.png'
 import about1 from '../../assets/text/ABOUT1.png'
 import about2 from '../../assets/text/ABOUT2.png'
-import video from '../../assets/video/logo_4.mp4'
+import video_toca from '../../assets/video/logo/logo_toca.mp4'
+import video_hlm from '../../assets/video/logo/logo_hlm.mp4'
+import video_lvdf from '../../assets/video/logo/logo_lvdf.mp4'
+import video_pensa from '../../assets/video/logo/logo_pensa.mp4'
 import logo from '../../assets/text/logo.png'
 // import overlay from '../../assets/BG.png'
 import './Home.scss'
@@ -20,6 +23,7 @@ const Home = () => {
     const [optionNumber, setOptionNumber] = useState(0)
     const [optionSelected, setOptionSelected] = useState(false)
     const [aboutSelected, setAboutSelected] = useState(false)
+    const [logoVideoIndex, setLogoVideoIndex] = useState(0)
 
     useEffect(() => {
         const onKeyDown = (e) => {
@@ -89,7 +93,31 @@ const Home = () => {
             document.querySelector('.press img') &&
                 document.querySelector('.press img').classList.toggle('d-none')
         }, 1000)
+
+        const randomNumber = Math.floor(Math.random() * 100)
+
+        if (randomNumber >= 25 && randomNumber < 50) {
+            setLogoVideoIndex(1)
+        } else if (randomNumber >= 50 && randomNumber < 75) {
+            setLogoVideoIndex(2)
+        } else if (randomNumber >= 75 && randomNumber <= 100) {
+            setLogoVideoIndex(3)
+        }
     }, [])
+
+    // useCallback(() => {
+    //     const randomNumber = Math.floor(Math.random() * 100)
+
+    //     if (randomNumber >= 25 && randomNumber < 50) {
+    //         setLogoVideoIndex(1)
+    //     } else if (randomNumber >= 50 && randomNumber < 75) {
+    //         setLogoVideoIndex(2)
+    //     } else if (randomNumber >= 75 && randomNumber <= 100) {
+    //         setLogoVideoIndex(3)
+    //     }
+    // }, [])
+
+    const videos = [video_toca, video_pensa, video_hlm, video_lvdf]
 
     if (aboutSelected)
         document
@@ -116,6 +144,7 @@ const Home = () => {
                     ) : (
                         ''
                     )}
+
                     <video
                         autoPlay
                         playsInline
@@ -124,7 +153,7 @@ const Home = () => {
                         className={
                             !entered ? 'logo-video' : 'logo-video entered'
                         }
-                        src={video}
+                        src={videos[logoVideoIndex]}
                         type="video/mp4"
                     />
                 </div>

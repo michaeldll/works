@@ -3,6 +3,11 @@ import Subtitle from './Subtitle/index'
 import BabylonScene from './classes/BabylonScene'
 import layout from '../../assets/img/overlay.png'
 import crosshair from '../../assets/img/crosshair.png'
+import discover0 from '../../assets/img/discover/0.png'
+import discover1 from '../../assets/img/discover/1.png'
+import discover2 from '../../assets/img/discover/2.png'
+import discover3 from '../../assets/img/discover/3.png'
+import discover4 from '../../assets/img/discover/4.png'
 import life from '../../assets/video/life.mp4'
 import horslesmurs from '../../assets/video/horslesmurs.mp4'
 import pensa from '../../assets/video/pensa.mp4'
@@ -21,7 +26,6 @@ const Folio = () => {
         {
             river: `
                 <p><b>La Vie d'un Fleuve</b> is a <b>WebGL</b> experience meant to relive the lifecycle of a river, from its inception in the source to its eventual demise in the ocean.</p>
-                <p>It was built as part of a Data Visualization workshop at Gobelins, and therefore it also seeks to imparts the viewer with a few key figures along the way.</p>
                 <p>I couldn't have done it without the precious help of talented designer <a href="https://www.instagram.com/roxanep_n.bis/">Roxane Peuvrier.</a></p>`,
         },
         {
@@ -40,6 +44,9 @@ const Folio = () => {
         new BabylonScene()
     }, [])
 
+    //#f9d586
+    //f9e9c5
+
     return (
         <div
             id="canvas-container"
@@ -47,6 +54,35 @@ const Folio = () => {
         >
             <img className="crosshair" src={crosshair} alt="crosshair" />
             <img className="overlay" src={layout} alt="layout" />
+
+            <div className="discover">
+                <img
+                    className="zero hide"
+                    src={discover0}
+                    alt="discover_project"
+                />
+                <img
+                    className="one hide"
+                    src={discover1}
+                    alt="discover_project"
+                />
+                <img
+                    className="two hide"
+                    src={discover2}
+                    alt="discover_project"
+                />
+                <img
+                    className="three hide"
+                    src={discover3}
+                    alt="discover_project"
+                />
+                <img
+                    className="four hide"
+                    src={discover4}
+                    alt="discover_project"
+                />
+            </div>
+
             <video
                 autoPlay
                 playsInline

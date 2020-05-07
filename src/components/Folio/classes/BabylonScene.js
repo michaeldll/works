@@ -5,7 +5,6 @@ import { Howl, Howler } from 'howler'
 //Babylon for 3D
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { Scene } from '@babylonjs/core/scene'
-
 import { Vector3, Color4, Color3 } from '@babylonjs/core/Maths/math'
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
 import { DeviceOrientationCamera } from '@babylonjs/core/Cameras/deviceOrientationCamera'
@@ -24,6 +23,7 @@ import Skybox from './Skybox'
 import PhysicsController from './PhysicsController'
 import EventsController from './EventsController'
 import SubtitleController from './SubtitleController'
+import ProgressionController from './ProgressionController'
 // import GizmoController from './GizmoController'
 
 // Utilities
@@ -34,14 +34,18 @@ import showScreen from '../utils/showScreen'
 
 //Assets
 import birds from '../../../assets/audio/birds4.mp3'
-import pensa from '../../../assets/audio/pensa3.mp3'
-import toca from '../../../assets/audio/toca2.mp3'
-import horslesmurs from '../../../assets/audio/horslesmurs2.mp3'
-import portfolio from '../../../assets/audio/portfolio.mp3'
-import fleuve from '../../../assets/audio/river.mp3'
+import pensa from '../../../assets/audio/voices/pensa.mp3'
+import toca from '../../../assets/audio/voices/toca.mp3'
+import horslesmurs from '../../../assets/audio/voices/horslesmurs.mp3'
+import portfolio from '../../../assets/audio/voices/portfolio.mp3'
+import fleuve from '../../../assets/audio/voices/river.mp3'
+import click_in from '../../../assets/audio/click_in.mp3'
+import click_out from '../../../assets/audio/click_out.mp3'
 import sfx_phone_1 from '../../../assets/audio/sfx_phone_1.mp3'
 import sfx_phone_2 from '../../../assets/audio/sfx_phone_2.mp3'
 import sfx_phone_3 from '../../../assets/audio/sfx_phone_3.mp3'
+import sfx_keyboard from '../../../assets/audio/kbclick.mp3'
+import sfx_mouse from '../../../assets/audio/mouseclick.mp3'
 
 class BabylonScene {
     constructor() {
@@ -50,32 +54,32 @@ class BabylonScene {
             birds: new Howl({
                 src: birds,
                 loop: true,
-                volume: 0.8,
+                volume: 0.7,
             }),
             pensa: new Howl({
                 src: pensa,
                 loop: false,
-                volume: 0.5,
+                volume: 2.0,
             }),
             portfolio: new Howl({
                 src: portfolio,
                 loop: false,
-                volume: 0.5,
+                volume: 3.0,
             }),
             toca: new Howl({
                 src: toca,
                 loop: false,
-                volume: 1.0,
+                volume: 2.8,
             }),
             horslesmurs: new Howl({
                 src: horslesmurs,
                 loop: false,
-                volume: 1.0,
+                volume: 2.8,
             }),
             river: new Howl({
                 src: fleuve,
                 loop: false,
-                volume: 2.0,
+                volume: 2.8,
             }),
             phoneCollision1: new Howl({
                 src: sfx_phone_1,
@@ -92,6 +96,29 @@ class BabylonScene {
                 loop: false,
                 volume: 0.08,
             }),
+            click_in: new Howl({
+                src: click_in,
+                loop: false,
+                volume: 0.8,
+                rate: 0.9,
+            }),
+            click_out: new Howl({
+                src: click_out,
+                loop: false,
+                volume: 0.6,
+                rate: 0.9,
+            }),
+            kb: new Howl({
+                src: sfx_keyboard,
+                loop: false,
+                volume: 0.2,
+                rate: 0.8,
+            }),
+            mouse: new Howl({
+                src: sfx_mouse,
+                loop: false,
+                volume: 0.2,
+            }),
         }
         this.subtitles = {
             pensa: new SubtitleController('pensa-sub', 10500, [0]),
@@ -102,11 +129,7 @@ class BabylonScene {
                 20000,
                 27000,
             ]),
-            river: new SubtitleController('river-sub', 34000, [
-                0,
-                13000,
-                27500,
-            ]),
+            river: new SubtitleController('river-sub', 19000, [0, 11500]),
             postit: new SubtitleController('postit-sub', 3500, [0]),
         }
         this.hasClickedMouse = false
@@ -114,7 +137,8 @@ class BabylonScene {
         this.scene = null
         this.engine = null
         this.eventsController = null
-        new LoadingScreen()
+        this.loadingScreen = new LoadingScreen()
+        this.progression = new ProgressionController()
         this.init()
     }
 
@@ -176,7 +200,8 @@ class BabylonScene {
                     this.engine,
                     this.audio,
                     this.subtitles,
-                    Howler
+                    Howler,
+                    this.progression
                 )
 
                 //ambient sound

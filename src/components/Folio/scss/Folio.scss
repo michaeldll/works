@@ -34,7 +34,6 @@ div#inspector-host {
         opacity: 0.7;
         z-index: 2;
     }
-
     .crosshair.throwing {
         border-radius: 100%;
     }
@@ -44,6 +43,21 @@ div#inspector-host {
         width: 100%;
         pointer-events: none;
         z-index: 2;
+    }
+}
+
+.discover {
+    position: absolute;
+    z-index: 2;
+    top: 5%;
+    width: 12%;
+    left: 5%;
+    img {
+        width: 100%;
+        transition: opacity 1s ease-in-out;
+    }
+    img.fadeout {
+        opacity: 0;
     }
 }
 

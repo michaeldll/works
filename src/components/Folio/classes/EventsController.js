@@ -10,13 +10,14 @@ import getActiveScreen from '../utils/getActiveScreen'
 import showScreen from '../utils/showScreen'
 
 class EventsController {
-    constructor(canvas, scene, engine, audio, subtitles, howler) {
+    constructor(canvas, scene, engine, audio, subtitles, howler, progression) {
         this.canvas = canvas
         this.scene = scene
         this.engine = engine
         this.audio = audio
         this.subtitles = subtitles
         this.howler = howler
+        this.progression = progression
         this.volume = 1
         this.throwingMode = false
         this.physics = new PhysicsController(
@@ -91,6 +92,10 @@ class EventsController {
                         }
                         break
                     case 'speaker left':
+                        Math.floor(Math.random() * 10) * 0.1 > 0.5
+                            ? this.audio.click_out.play()
+                            : this.audio.click_in.play()
+
                         this.volume === 1
                             ? (this.volume = 0)
                             : (this.volume = 1)
@@ -103,6 +108,7 @@ class EventsController {
 
                         break
                     case 'Keyboard.001':
+                        this.audio.kb.play()
                         showScreen(this.scene, 'next')
 
                         const keyboard = this.scene.meshes.find(
@@ -112,29 +118,48 @@ class EventsController {
                         break
                     case 'MOUSE':
                         if (!this.hasClickedMouse) {
-                            switch (getActiveScreen(this.scene)[1]) {
-                                case 0:
-                                    window.open('https://river.michaels.works/')
-                                    break
-                                case 1:
-                                    window.open(
-                                        window.location.origin + '/horslesmurs'
-                                    )
-                                    break
-                                case 2:
-                                    window.open('https://toca.michaels.works/')
-                                    break
-                                case 3:
-                                    window.open('https://pensa.michaels.works/')
-                                    break
-                                default:
-                                    break
-                            }
+                            this.audio.mouse.play()
                             const mouse = this.scene.meshes.find(
                                 (mesh) => mesh.name === 'MOUSE'
                             )
                             this.physics.touch(mouse, new Vector3(3.5, 2, -0.8))
                             this.hasClickedMouse = true
+                            const onMouseClick = (string, url) => {
+                                if (!localStorage.getItem(string)) {
+                                    localStorage.setItem(string, '1')
+                                    this.progression.advance()
+                                }
+
+                                window.open(url)
+                            }
+                            switch (getActiveScreen(this.scene)[1]) {
+                                case 0:
+                                    onMouseClick(
+                                        'project-river',
+                                        'https://river.michaels.works/'
+                                    )
+                                    break
+                                case 1:
+                                    onMouseClick(
+                                        'project-horslesmurs',
+                                        window.location.origin + '/horslesmurs'
+                                    )
+                                    break
+                                case 2:
+                                    onMouseClick(
+                                        'project-toca',
+                                        'https://toca.michaels.works/'
+                                    )
+                                    break
+                                case 3:
+                                    onMouseClick(
+                                        'project-pensa',
+                                        'https://pensa.michaels.works/'
+                                    )
+                                    break
+                                default:
+                                    break
+                            }
                         }
                         break
                     default:
@@ -180,6 +205,9 @@ class EventsController {
         )
         document.addEventListener('click', onClick)
         document.addEventListener('touchend', onClick)
+        window.addEventListener('resize', (e) => {
+            this.engine.resize()
+        })
     }
     onCameraRotation() {
         const pickedMesh = this.scene.pick(

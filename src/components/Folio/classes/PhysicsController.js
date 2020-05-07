@@ -204,19 +204,30 @@ class PhysicsController {
             this.audio.phoneCollision2,
             this.audio.phoneCollision3,
         ]
+
+        let previousCollidedAgainst
+
         const onPhoneCollide = (collider, collidedAgainst) => {
             if (
                 !collisionsSounds.find((collisionSound) =>
                     collisionSound.playing()
                 )
             ) {
-                //play random sound
-                const randSound =
-                    collisionsSounds[
-                        Math.floor(Math.random() * collisionsSounds.length)
-                    ]
-                randSound.rate(1.5 - Math.floor(Math.random()))
-                randSound.play()
+                // console.log(previousCollidedAgainst)
+
+                if (
+                    !previousCollidedAgainst ||
+                    previousCollidedAgainst !== collidedAgainst
+                ) {
+                    //play random sound
+                    const randSound =
+                        collisionsSounds[
+                            Math.floor(Math.random() * collisionsSounds.length)
+                        ]
+                    randSound.rate(1.5 - Math.floor(Math.random() * 10) * 0.1)
+                    randSound.play()
+                    previousCollidedAgainst = collidedAgainst
+                }
             }
         }
         phone.physicsImpostor.registerOnPhysicsCollide(

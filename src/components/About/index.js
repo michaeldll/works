@@ -47,7 +47,7 @@ const About = (props) => {
 
             <div className="window-body">
                 <p>
-                    Hi. My name's Michael and I'm a
+                    Hi. My name's Michael and I'm a{' '}
                     <span>
                         <select>
                             <option>creative developer.</option>
