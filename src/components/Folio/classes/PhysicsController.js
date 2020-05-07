@@ -63,6 +63,7 @@ class PhysicsController {
             this.scene
         )
         this.meshesWithCollisionSounds.push(drawer)
+        drawer.isPickable = false
 
         //Speakers
         const rightSpeaker = this.scene.meshes.find(
@@ -118,6 +119,7 @@ class PhysicsController {
             this.scene
         )
         this.meshesWithCollisionSounds.push(ground)
+        ground.isPickable = false
 
         //keyboard
         const keyboard = this.scene.meshes.find(
@@ -158,6 +160,8 @@ class PhysicsController {
             this.scene
         )
 
+        rightWall.isPickable = false
+
         //left wall
         const leftWall = Mesh.CreateBox('leftWall', 1, this.scene)
 
@@ -173,6 +177,8 @@ class PhysicsController {
             { mass: 0, restitution: 0 },
             this.scene
         )
+
+        leftWall.isPickable = false
 
         //front wall
         const frontWall = Mesh.CreateBox('frontWall', 1, this.scene)
@@ -190,6 +196,8 @@ class PhysicsController {
             this.scene
         )
 
+        frontWall.isPickable = false
+
         //phone
         const phone = this.scene.meshes.find((mesh) => mesh.name === 'phone')
         phone.physicsImpostor = new PhysicsImpostor(
@@ -198,6 +206,18 @@ class PhysicsController {
             { mass: 1, friction: 0.3, restitution: 0.1 },
             this.scene
         )
+
+        //phone reset bounding box
+        const phoneBoundingBox = Mesh.CreateBox(
+            'phoneBoundingBox',
+            1,
+            this.scene
+        )
+        phoneBoundingBox.position = new Vector3(-0.55, 0.237, -0.55)
+        phoneBoundingBox.scaling = new Vector3(0.9, 0.232, 0.264)
+
+        phoneBoundingBox.isPickable = false
+
         //phone collision
         const collisionsSounds = [
             this.audio.phoneCollision1,
@@ -205,6 +225,7 @@ class PhysicsController {
             this.audio.phoneCollision3,
         ]
 
+        //collisions
         let previousCollidedAgainst
 
         const onPhoneCollide = (collider, collidedAgainst) => {
@@ -235,12 +256,14 @@ class PhysicsController {
             onPhoneCollide
         )
 
+        //transparent material
         this.transMat.alpha = 0
         ground.material = this.transMat
         crt.material = this.transMat
         frontWall.material = this.transMat
         rightWall.material = this.transMat
         leftWall.material = this.transMat
+        phoneBoundingBox.material = this.transMat
     }
     push(mesh, direction, power) {
         mesh.physicsImpostor.setLinearVelocity(
@@ -297,7 +320,6 @@ class PhysicsController {
         phone.physicsImpostor.setLinearVelocity(Vector3.Zero())
         phone.physicsImpostor.setAngularVelocity(Vector3.Zero())
     }
-
     touch(mesh, vector = new Vector3(1.5, 0, 0.8)) {
         mesh.physicsImpostor.applyImpulse(vector, mesh.getAbsolutePosition())
     }

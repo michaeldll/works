@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { AppContext } from '../../reducer/'
-import About from '../About'
+//React
+import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
+//Components
+import About from '../About'
+//Assets
 import press from '../../assets/text/PRESS.png'
 import touch from '../../assets/text/TOUCH.png'
 import copyright from '../../assets/text/COPY.png'
@@ -14,7 +16,8 @@ import video_hlm from '../../assets/video/logo/logo_hlm.mp4'
 import video_lvdf from '../../assets/video/logo/logo_lvdf.mp4'
 import video_pensa from '../../assets/video/logo/logo_pensa.mp4'
 import logo from '../../assets/text/logo.png'
-// import overlay from '../../assets/BG.png'
+import placeholder from '../../assets/img/cover_seo.jpg'
+//CSS
 import './Home.scss'
 
 const Home = () => {
@@ -105,19 +108,8 @@ const Home = () => {
         }
     }, [])
 
-    // useCallback(() => {
-    //     const randomNumber = Math.floor(Math.random() * 100)
-
-    //     if (randomNumber >= 25 && randomNumber < 50) {
-    //         setLogoVideoIndex(1)
-    //     } else if (randomNumber >= 50 && randomNumber < 75) {
-    //         setLogoVideoIndex(2)
-    //     } else if (randomNumber >= 75 && randomNumber <= 100) {
-    //         setLogoVideoIndex(3)
-    //     }
-    // }, [])
-
     const videos = [video_toca, video_pensa, video_hlm, video_lvdf]
+    const isMobile = window.innerWidth < 450
 
     if (aboutSelected)
         document
@@ -147,6 +139,7 @@ const Home = () => {
 
                     <video
                         autoPlay
+                        poster={isMobile ? placeholder : null}
                         playsInline
                         loop
                         muted

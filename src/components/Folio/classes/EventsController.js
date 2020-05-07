@@ -2,6 +2,7 @@
 import gsap from 'gsap'
 
 import { Vector3 } from '@babylonjs/core/Maths/math'
+import { Ray, Axis } from '@babylonjs/core/'
 
 import PhysicsController from './PhysicsController'
 
@@ -24,10 +25,8 @@ class EventsController {
             this.scene,
             this.scene.activeCamera
         )
+        this.manageResetPhoneInterval = null
         this.init()
-        setInterval(() => {
-            this.managePhone()
-        }, 1000)
     }
     init() {
         const isPointerLocked = () => {
@@ -185,6 +184,10 @@ class EventsController {
                 }
             } else if (throwCondition) {
                 this.physics.throwPhone()
+                this.manageResetPhoneInterval = setInterval(() => {
+                    this.manageResetPhone()
+                }, 3000)
+                this.manageResetPhone()
                 this.throwingMode = false
                 document
                     .querySelector('.crosshair')
@@ -261,11 +264,60 @@ class EventsController {
             }
         }
     }
-    managePhone() {
+    manageResetPhone() {
         const phone = this.scene.meshes.find((mesh) => mesh.name === 'phone')
 
-        const isOutOfBounds = (phone) => {
-            return phone ? phone.position.y < 0.32 : false
+        const pointIsInside = (meshName, point) => {
+            const mesh = this.scene.meshes.find(
+                (mesh) => mesh.name === meshName
+            )
+            var boundInfo = mesh.getBoundingInfo()
+            var max = boundInfo.boundingBox.maximumWorld
+            var min = boundInfo.boundingBox.minimumWorld
+            var diameter = 2 * boundInfo.boundingSphere.radius
+
+            if (point.x < min.x || point.x > max.x) {
+                return false
+            }
+            if (point.y < min.y || point.y > max.y) {
+                return false
+            }
+            if (point.z < min.z || point.z > max.z) {
+                return false
+            }
+
+            var pointFound = false
+            var d = 0
+            var hitCount = 0
+            var ray = new Ray(Vector3.Zero(), Axis.X, diameter)
+            var pickInfo
+            var direction = Vector3.Zero()
+
+            while (d < 2 && !pointFound) {
+                hitCount = 0
+                direction = Axis.X.scale(2 * (0.5 - d))
+                ray.origin = point
+                ray.direction = direction
+                ray.distance = diameter
+                pickInfo = ray.intersectsMesh(mesh)
+                while (pickInfo.hit) {
+                    hitCount++
+                    pickInfo.pickedPoint.addToRef(
+                        direction.scale(0.00000001),
+                        point
+                    )
+                    ray.origin = point
+                    pickInfo = ray.intersectsMesh(mesh)
+                }
+                if (hitCount % 2 === 1) {
+                    pointFound = true
+                } else if (hitCount % 2 === 0 && hitCount > 0) {
+                    pointFound = true
+                }
+                d++
+            }
+
+            return pointFound
         }
 
         // console.log('isOutOfBounds : ' + isOutOfBounds())
@@ -273,8 +325,9 @@ class EventsController {
         if (
             !this.scene.activeCamera.isActiveMesh(phone) &&
             !this.throwingMode &&
-            isOutOfBounds(phone)
+            !pointIsInside('phoneBoundingBox', phone.getAbsolutePivotPoint())
         ) {
+            clearInterval(this.manageResetPhoneInterval)
             this.physics.resetPhone()
         }
     }
