@@ -243,6 +243,11 @@ class BabylonScene {
             mesh.edgesColor = new Color4(249 / 255, 213 / 255, 134 / 255, 1)
             mesh.outlineColor = new Color3(249 / 255, 213 / 255, 134 / 255)
         })
+        this.scene.meshes
+            .filter((mesh) => mesh.name.indexOf('Screen') > -1)
+            .forEach((screen) => {
+                screen.outlineWidth = 0.034
+            })
     }
 
     setPhone() {

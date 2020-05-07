@@ -42,16 +42,14 @@ export default {
             y: -0.33,
         },
     },
-    activeEdgeMeshes: [
-        'MOUSE',
-        'Keyboard.001',
-        'postit',
+    activeEdgeMeshes: ['MOUSE', 'Keyboard.001', 'postit', 'speaker left'],
+    activeOutlineMeshes: [
+        'phone',
         'horsLesMursScreen',
         'pensaScreen',
         'riverScreen',
         'tocaScreen',
-        'speaker left',
     ],
-    activeOutlineMeshes: ['phone'],
-    debug: false,
+    activeGrabMeshes: ['phone'],
+    debug: true,
 }

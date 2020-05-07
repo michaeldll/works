@@ -241,12 +241,17 @@ class EventsController {
 
             if (
                 !pickedMesh.renderOutline &&
-                config.activeOutlineMeshes.includes(pickedMesh.name) &&
-                arm.position.y === 0.22
+                config.activeOutlineMeshes.includes(pickedMesh.name)
             ) {
                 pickedMesh.renderOutline = true
+            }
+
+            if (
+                arm.position.y === 0.22 &&
+                config.activeGrabMeshes.includes(pickedMesh.name)
+            ) {
                 gsap.to(arm.position, { y: 0.309, duration: 0.5 })
-            } else if (!config.activeOutlineMeshes.includes(pickedMesh.name)) {
+            } else if (!config.activeGrabMeshes.includes(pickedMesh.name)) {
                 if (!this.throwingMode)
                     gsap.to(arm.position, { y: 0.22, duration: 0.2 })
             }
