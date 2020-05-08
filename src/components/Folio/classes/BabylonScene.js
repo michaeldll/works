@@ -59,7 +59,7 @@ class BabylonScene {
             pensa: new Howl({
                 src: pensa,
                 loop: false,
-                volume: 2.0,
+                volume: 2.2,
             }),
             portfolio: new Howl({
                 src: portfolio,
@@ -241,20 +241,20 @@ class BabylonScene {
                 })
             },
             (progressEvent) => {
-                // onProgress
-                var loadedPercent = 0
+                // onProgressEvent
+                let loadedPercent = 0
                 if (progressEvent.lengthComputable) {
                     loadedPercent = (
                         (progressEvent.loaded * 100) /
                         progressEvent.total
                     ).toFixed()
                 } else {
-                    var dlCount = progressEvent.loaded / (1024 * 1024)
+                    const dlCount = progressEvent.loaded / (1024 * 1024)
                     loadedPercent = Math.floor(dlCount * 100.0) / 100.0
                 }
-                // assuming "loadingScreenPercent" is an existing html element
-                // document.getElementById('loading-bar').innerHTML = loadedPercent
                 console.log(loadedPercent)
+                document.getElementById('loading-bar').style.width =
+                    loadedPercent * 38.9105058366 + '%'
             }
         )
     }

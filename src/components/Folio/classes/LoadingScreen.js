@@ -30,7 +30,7 @@ class LoadingScreen {
                     <div class="window loading-text">LOADING</div>
                     <br>
                     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                    <div id="loading-bar"></div>
+                    <div class="loading-bar-container"><div id="loading-bar"></div></div>
                     <br>
                     <div class="window loading-text">Use your mouse to explore !</div>
                 `
@@ -53,7 +53,16 @@ class LoadingScreen {
                 background: none;
                 padding: 0;
                 font-size: 40px;
-            }    
+            }
+            #loading-bar{
+              background: #f9d586;
+              width: 0px;
+              height: 20px;
+              transition: width 1.3s ease-in-out;
+            }
+            .loading-bar-container{
+              width: 50%;
+            }
             @media screen and (max-width: 450px){
                 .discover {
                   width: 25%;

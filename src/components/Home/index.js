@@ -29,6 +29,10 @@ const Home = () => {
     const [logoVideoIndex, setLogoVideoIndex] = useState(0)
 
     useEffect(() => {
+        localStorage.setItem('shouldRefresh', '0')
+    }, [])
+
+    useEffect(() => {
         const onKeyDown = (e) => {
             setPresses(presses + 1)
 
@@ -106,6 +110,30 @@ const Home = () => {
         } else if (randomNumber >= 75 && randomNumber <= 100) {
             setLogoVideoIndex(3)
         }
+    }, [])
+
+    useEffect(() => {
+        window.addEventListener(
+            'touchend',
+            function onFirstTouch() {
+                window.USER_HAS_TOUCHED = true
+                // detect iOS 13+ and add permissions
+
+                if (
+                    typeof DeviceOrientationEvent.requestPermission ===
+                    'function'
+                ) {
+                    DeviceOrientationEvent.requestPermission()
+                        .then((permissionState) => {
+                            console.log('permission state: ', permissionState)
+                        })
+                        .catch(console.error)
+                }
+
+                window.removeEventListener('touchend', onFirstTouch, false)
+            },
+            false
+        )
     }, [])
 
     const videos = [video_toca, video_pensa, video_hlm, video_lvdf]

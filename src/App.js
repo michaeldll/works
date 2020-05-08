@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
     BrowserRouter as Router,
     Switch,
@@ -7,31 +7,29 @@ import {
 } from 'react-router-dom'
 
 import { AppProvider } from './reducer'
-import { AppContext } from './reducer/'
 
 import Home from './components/Home'
 import Folio from './components/Folio'
 import HorsLesMurs from './components/HorsLesMurs'
-import ProtectedPage from './components/Auth/ProtectedPage'
-import LoginPage from './components/Auth/LoginPage'
 
-// A wrapper for <Route> that redirects to the login
-// screen if you're not yet authenticated.
-function PrivateRoute({ children, ...rest }) {
-    // get state and dispatch logic from reducer
-    const [state, dispatch] = useContext(AppContext)
+// Redirects when refreshed
+// https://stackoverflow.com/questions/51054653/react-router-v4-redirect-to-home-on-page-reload-inside-application
+const RefreshRoute = ({ component: Component, ...rest }) => {
+    useEffect(() => {
+        localStorage.setItem('shouldRefresh', '1')
+    }, [])
 
     return (
         <Route
             {...rest}
-            render={({ location }) =>
-                state.isAuthenticated ? (
-                    children
+            render={(props) =>
+                localStorage.getItem('shouldRefresh') === null ||
+                localStorage.getItem('shouldRefresh') === '0' ? (
+                    <Component {...props} />
                 ) : (
                     <Redirect
                         to={{
-                            pathname: '/login',
-                            state: { from: location },
+                            pathname: '/',
                         }}
                     />
                 )
@@ -43,30 +41,6 @@ function PrivateRoute({ children, ...rest }) {
 export default function App() {
     // get state and dispatch logic from reducer
 
-    useEffect(() => {
-        window.addEventListener(
-            'touchend',
-            function onFirstTouch() {
-                window.USER_HAS_TOUCHED = true
-                // detect iOS 13+ and add permissions
-
-                if (
-                    typeof DeviceOrientationEvent.requestPermission ===
-                    'function'
-                ) {
-                    DeviceOrientationEvent.requestPermission()
-                        .then((permissionState) => {
-                            console.log('permission state: ', permissionState)
-                        })
-                        .catch(console.error)
-                }
-
-                window.removeEventListener('touchend', onFirstTouch, false)
-            },
-            false
-        )
-    }, [])
-
     return (
         <AppProvider>
             <Router>
@@ -74,18 +48,10 @@ export default function App() {
                     <Route exact path="/">
                         <Home />
                     </Route>
-                    <Route path="/folio">
-                        <Folio />
-                    </Route>
+                    <RefreshRoute component={Folio} path="/folio" />
                     <Route path="/horslesmurs">
                         <HorsLesMurs />
                     </Route>
-                    <Route path="/login">
-                        <LoginPage />
-                    </Route>
-                    <PrivateRoute path="/protected">
-                        <ProtectedPage />
-                    </PrivateRoute>
                 </Switch>
             </Router>
         </AppProvider>
