@@ -156,7 +156,7 @@ class BabylonScene {
         this.engine = new Engine(this.canvas, false, null, true)
         window.innerWidth > 450
             ? this.engine.setHardwareScalingLevel(window.innerWidth / 480)
-            : this.engine.setHardwareScalingLevel(2.7)
+            : this.engine.setHardwareScalingLevel(2.5)
         this.engine.displayLoadingUI()
 
         // Create a scene.
