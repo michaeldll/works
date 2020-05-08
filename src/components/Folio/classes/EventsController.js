@@ -209,7 +209,6 @@ class EventsController {
             false
         )
         document.addEventListener('click', onClick)
-        document.addEventListener('touchend', onClick)
         window.addEventListener('resize', (e) => {
             this.engine.resize()
         })
