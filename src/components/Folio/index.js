@@ -17,8 +17,13 @@ import './scss/Folio.scss'
 const Folio = () => {
     const subtitles = [
         {
-            pensa: `<p><b>"pensa"</b> is another small experiment which uses
-                <b>React</b> and <b>Markov Chains</b> to generate new lyrics from previous ones. </p>`,
+            pensa: `
+            <p>
+                <b>"pensa"</b> is another small experiment which uses
+            </p>
+            <p>
+                <b>React</b> and <b>Markov Chains</b> to generate new lyrics from previous ones. 
+            </p>`,
         },
         {
             toca: `<p><b>"toca"</b> is a small musical experiment, which is meant to blend four separate audio tracks of a song I did with a bit of HTML5 <b>Canvas</b> and <b>Web Audio API</b> trickery.</p>`,

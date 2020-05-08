@@ -185,6 +185,21 @@ class EventsController {
                         this.audio.pensa.play()
                         this.subtitles.pensa.init()
                     }
+                    if (pickedMesh.name.indexOf('Screen') > -1) {
+                        this.scene.meshes
+                            .filter((mesh) => mesh.name.indexOf('Screen') > -1)
+                            .forEach((screen) => {
+                                gsap.to(screen, {
+                                    outlineWidth: 0.02,
+                                    duration: 0.1,
+                                })
+                                gsap.to(screen, {
+                                    outlineWidth: 0.034,
+                                    duration: 0.1,
+                                    delay: 0.1,
+                                })
+                            })
+                    }
                 }
             } else if (throwCondition) {
                 this.physics.throwPhone()

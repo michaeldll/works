@@ -121,7 +121,7 @@ class BabylonScene {
             }),
         }
         this.subtitles = {
-            pensa: new SubtitleController('pensa-sub', 10500, [0]),
+            pensa: new SubtitleController('pensa-sub', 10500, [0, 3800]),
             toca: new SubtitleController('toca-sub', 13300, [0]),
             horslesmurs: new SubtitleController('horslesmurs-sub', 39000, [
                 0,
