@@ -5,6 +5,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math'
 import { Ray, Axis } from '@babylonjs/core/'
 
 import PhysicsController from './PhysicsController'
+import OrientationController from '../classes/OrientationController'
 
 import config from '../utils/config'
 import getActiveScreen from '../utils/getActiveScreen'
@@ -26,6 +27,7 @@ class EventsController {
             this.scene.activeCamera
         )
         this.manageResetPhoneInterval = null
+        this.OrientationController = new OrientationController()
         this.init()
     }
     init() {
@@ -212,6 +214,10 @@ class EventsController {
         window.addEventListener('resize', (e) => {
             this.engine.resize()
         })
+        window.onorientationchange = () => {
+            if (window.orientation !== 0) this.OrientationController.show()
+            else this.OrientationController.hide()
+        }
     }
     onCameraRotation() {
         const pickedMesh = this.scene.pick(

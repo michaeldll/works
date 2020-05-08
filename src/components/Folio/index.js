@@ -44,6 +44,7 @@ const Folio = () => {
         new BabylonScene()
     }, [])
 
+    //colors
     //#f9d586
     //f9e9c5
 
@@ -122,6 +123,11 @@ const Folio = () => {
                     text={Object.values(sub)[0]}
                 />
             ))}
+            <div id="orientationScreen" className="hide">
+                <div className="window orientationText">
+                    Please rotate your screen
+                </div>
+            </div>
         </div>
     )
 }
