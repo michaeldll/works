@@ -88,6 +88,7 @@ div#inspector-host {
     width: 0px;
     height: 20px;
     transition: width 1.3s ease-in-out;
+    max-width: 100%;
 }
 .loading-bar-container {
     width: 50%;
