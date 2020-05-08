@@ -84,22 +84,22 @@ class BabylonScene {
             phoneCollision1: new Howl({
                 src: sfx_phone_1,
                 loop: false,
-                volume: 0.08,
+                volume: 0.1,
             }),
             phoneCollision2: new Howl({
                 src: sfx_phone_2,
                 loop: false,
-                volume: 0.08,
+                volume: 0.1,
             }),
             phoneCollision3: new Howl({
                 src: sfx_phone_3,
                 loop: false,
-                volume: 0.08,
+                volume: 0.1,
             }),
             click_in: new Howl({
                 src: click_in,
                 loop: false,
-                volume: 0.8,
+                volume: 0.6,
                 rate: 0.9,
             }),
             click_out: new Howl({
@@ -111,13 +111,13 @@ class BabylonScene {
             kb: new Howl({
                 src: sfx_keyboard,
                 loop: false,
-                volume: 0.2,
+                volume: 0.1,
                 rate: 0.8,
             }),
             mouse: new Howl({
                 src: sfx_mouse,
                 loop: false,
-                volume: 0.2,
+                volume: 0.1,
             }),
         }
         this.subtitles = {
@@ -162,79 +162,101 @@ class BabylonScene {
         // Create a scene.
         this.scene = new Scene(this.engine)
 
-        SceneLoader.Load('models/', 'scene.glb', this.engine, (gltf) => {
-            this.scene = gltf
+        SceneLoader.Load(
+            'models/',
+            'scene.glb',
+            this.engine,
+            (gltf) => {
+                this.scene = gltf
 
-            const init = () => {
-                new Skybox(this.scene, 3)
-                new Screen(
-                    this.scene,
-                    document.getElementById('life-river'),
-                    'riverScreen'
-                )
-                new Screen(
-                    this.scene,
-                    document.getElementById('horslesmurs'),
-                    'horsLesMursScreen'
-                )
-                new Screen(
-                    this.scene,
-                    document.getElementById('toca'),
-                    'tocaScreen'
-                )
-                new Screen(
-                    this.scene,
-                    document.getElementById('pensa'),
-                    'pensaScreen'
-                )
+                const init = () => {
+                    new Skybox(this.scene, 3)
+                    new Screen(
+                        this.scene,
+                        document.getElementById('life-river'),
+                        'riverScreen'
+                    )
+                    new Screen(
+                        this.scene,
+                        document.getElementById('horslesmurs'),
+                        'horsLesMursScreen'
+                    )
+                    new Screen(
+                        this.scene,
+                        document.getElementById('toca'),
+                        'tocaScreen'
+                    )
+                    new Screen(
+                        this.scene,
+                        document.getElementById('pensa'),
+                        'pensaScreen'
+                    )
 
-                this.setPhone()
-                this.setCamera()
-                this.setArm()
-                this.setEdgesAndOutlines()
-                showScreen(this.scene, 'random')
+                    this.setPhone()
+                    this.setCamera()
+                    this.setArm()
+                    this.setEdgesAndOutlines()
+                    showScreen(this.scene, 'random')
 
-                this.eventsController = new EventsController(
-                    this.canvas,
-                    this.scene,
-                    this.engine,
-                    this.audio,
-                    this.subtitles,
-                    Howler,
-                    this.progression
-                )
+                    this.eventsController = new EventsController(
+                        this.canvas,
+                        this.scene,
+                        this.engine,
+                        this.audio,
+                        this.subtitles,
+                        Howler,
+                        this.progression
+                    )
 
-                //ambient sound
-                this.audio.birds.play()
+                    //ambient sound
+                    this.audio.birds.play()
 
-                new PhysicsController(this.scene, this.audio).init()
+                    new PhysicsController(this.scene, this.audio).init()
+                }
+
+                init()
+
+                if (config.debug) {
+                    document.getElementById('canvas-container').style.width =
+                        '100%'
+                    this.scene.debugLayer.show()
+                    // new GizmoController(
+                    //     this.scene,
+                    //     this.scene.meshes.find((mesh) => mesh.name === 'phone')
+                    // )
+                    // this.scene.forceShowBoundingBoxes = true
+                }
+
+                this.scene.beforeRender = () => {
+                    this.positionArm()
+                    if (this.eventsController)
+                        this.eventsController.onCameraRotation()
+                    limitCamera(this.camera, { lower: -0.22, upper: 0.52 }, 'x')
+                    limitCamera(this.camera, { lower: -0.55, upper: 0.55 }, 'y')
+                }
+
+                // Render every frame
+                this.engine.runRenderLoop(() => {
+                    this.scene.render()
+                })
+            },
+            (progressEvent) => {
+                // onProgress
+                var loadedPercent = 0
+                if (progressEvent.lengthComputable) {
+                    loadedPercent = (
+                        (progressEvent.loaded * 100) /
+                        progressEvent.total
+                    ).toFixed()
+                } else {
+                    var dlCount = progressEvent.loaded / (1024 * 1024)
+                    loadedPercent = Math.floor(dlCount * 100.0) / 100.0
+                }
+                // assuming "loadingScreenPercent" is an existing html element
+                // document.getElementById('loading-bar').innerHTML = loadedPercent
+                console.log(loadedPercent)
             }
-
-            init()
-
-            if (config.debug) {
-                document.getElementById('canvas-container').style.width = '100%'
-                this.scene.debugLayer.show()
-                // new GizmoController(
-                //     this.scene,
-                //     this.scene.meshes.find((mesh) => mesh.name === 'phone')
-                // )
-                // this.scene.forceShowBoundingBoxes = true
-            }
-
-            this.scene.beforeRender = () => {
-                this.positionArm()
-                if (this.eventsController)
-                    this.eventsController.onCameraRotation()
-                limitCamera(this.camera, { lower: -0.22, upper: 0.52 }, 'x')
-                limitCamera(this.camera, { lower: -0.55, upper: 0.55 }, 'y')
-            }
-
-            // Render every frame
-            this.engine.runRenderLoop(() => {
-                this.scene.render()
-            })
-        })
+        )
     }
 
     setEdgesAndOutlines() {
@@ -243,6 +265,7 @@ class BabylonScene {
             mesh.edgesColor = new Color4(249 / 255, 213 / 255, 134 / 255, 1)
             mesh.outlineColor = new Color3(249 / 255, 213 / 255, 134 / 255)
         })
+
         this.scene.meshes.find(
             (mesh) => mesh.name.indexOf('MOUSE') > -1
         ).outlineWidth = 0.005
@@ -312,7 +335,10 @@ class BabylonScene {
             this.camera = new UniversalCamera('camera1', cameraPos, this.scene)
         }
         this.camera.minZ = config.camera.near
-        this.camera.fov = d2r(config.camera.fov)
+        this.camera.fov =
+            window.innerWidth < 450
+                ? d2r(config.camera.fovMobile)
+                : d2r(config.camera.fov)
         this.camera.setTarget(cameraTarget)
         this.camera.attachControl(this.canvas, true)
         this.camera.speed = config.camera.speed

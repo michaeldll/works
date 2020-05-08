@@ -21,14 +21,16 @@ class LoadingScreen {
                     <div class="window loading-text">LOADING</div>
                     <br>
                     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                    <div id="loading-bar"></div>
                     <br>
-                    <div class="window loading-text">Twist your phone to explore !</div>
+                    <div class="window loading-text">Move your phone to explore !</div>
                 `
             } else {
                 this._loadingDiv.innerHTML = `
                     <div class="window loading-text">LOADING</div>
                     <br>
                     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                    <div id="loading-bar"></div>
                     <br>
                     <div class="window loading-text">Use your mouse to explore !</div>
                 `
@@ -36,14 +38,14 @@ class LoadingScreen {
             var customLoadingScreenCss = document.createElement('style')
             customLoadingScreenCss.type = 'text/css'
             customLoadingScreenCss.innerHTML = `
-			#customLoadingScreenDiv{
-				display: flex;
-                justify-content: center;
-				align-items: center;
-				background-color: black;
-				text-align: center;
-				z-index: 2;
-                flex-direction: column;                
+			      #customLoadingScreenDiv{
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: black;
+              text-align: center;
+              z-index: 2;
+              flex-direction: column;                
             }
             .loading-text {
                 color: #f9d586;
@@ -51,7 +53,15 @@ class LoadingScreen {
                 background: none;
                 padding: 0;
                 font-size: 40px;
-            }      
+            }    
+            @media screen and (max-width: 450px){
+                .discover {
+                  width: 25%;
+                }
+                .subtitle{
+                  padding: 10px 50px;
+                }
+            }            
             .lds-ellipsis {
                 display: inline-block;
                 position: relative;
@@ -105,7 +115,8 @@ class LoadingScreen {
                 100% {
                   transform: translate(24px, 0);
                 }
-              }                    
+              }     
+            }               
 			`
             document
                 .getElementsByTagName('head')[0]

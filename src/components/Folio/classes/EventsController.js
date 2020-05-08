@@ -104,16 +104,15 @@ class EventsController {
                             (mesh) => mesh.name === 'speaker left'
                         )
                         this.physics.touch(speaker)
-
                         break
+
                     case 'Keyboard.001':
                         this.audio.kb.play()
-                        showScreen(this.scene, 'next')
-
                         const keyboard = this.scene.meshes.find(
                             (mesh) => mesh.name === 'Keyboard.001'
                         )
                         this.physics.touch(keyboard, new Vector3(3.5, 2, -1))
+                        showScreen(this.scene, 'next')
                         break
                     case 'MOUSE':
                         if (!this.hasClickedMouse) {
@@ -123,42 +122,45 @@ class EventsController {
                             )
                             this.physics.touch(mouse, new Vector3(3.5, 2, -0.8))
                             this.hasClickedMouse = true
-                            const onMouseClick = (string, url) => {
-                                if (!localStorage.getItem(string)) {
-                                    localStorage.setItem(string, '1')
-                                    this.progression.advance()
-                                }
+                            setTimeout(() => {
+                                const onMouseClick = (string, url) => {
+                                    if (!localStorage.getItem(string)) {
+                                        localStorage.setItem(string, '1')
+                                        this.progression.advance()
+                                    }
 
-                                window.open(url)
-                            }
-                            switch (getActiveScreen(this.scene)[1]) {
-                                case 0:
-                                    onMouseClick(
-                                        'project-river',
-                                        'https://river.michaels.works/'
-                                    )
-                                    break
-                                case 1:
-                                    onMouseClick(
-                                        'project-horslesmurs',
-                                        window.location.origin + '/horslesmurs'
-                                    )
-                                    break
-                                case 2:
-                                    onMouseClick(
-                                        'project-toca',
-                                        'https://toca.michaels.works/'
-                                    )
-                                    break
-                                case 3:
-                                    onMouseClick(
-                                        'project-pensa',
-                                        'https://pensa.michaels.works/'
-                                    )
-                                    break
-                                default:
-                                    break
-                            }
+                                    window.open(url)
+                                }
+                                switch (getActiveScreen(this.scene)[1]) {
+                                    case 0:
+                                        onMouseClick(
+                                            'project-river',
+                                            'https://river.michaels.works/'
+                                        )
+                                        break
+                                    case 1:
+                                        onMouseClick(
+                                            'project-horslesmurs',
+                                            window.location.origin +
+                                                '/horslesmurs'
+                                        )
+                                        break
+                                    case 2:
+                                        onMouseClick(
+                                            'project-toca',
+                                            'https://toca.michaels.works/'
+                                        )
+                                        break
+                                    case 3:
+                                        onMouseClick(
+                                            'project-pensa',
+                                            'https://pensa.michaels.works/'
+                                        )
+                                        break
+                                    default:
+                                        break
+                                }
+                            }, 200)
                         }
                         break
                     default:
@@ -186,7 +188,7 @@ class EventsController {
                 this.physics.throwPhone()
                 this.manageResetPhoneInterval = setInterval(() => {
                     this.manageResetPhone()
-                }, 3000)
+                }, 2800)
                 this.manageResetPhone()
                 this.throwingMode = false
                 document
