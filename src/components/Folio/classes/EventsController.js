@@ -65,11 +65,11 @@ class EventsController {
 
             if (window.innerWidth < 450) {
                 interactCondition = !this.throwingMode && pickedMesh
-                throwCondition = isPointerLocked() && this.throwingMode
+                throwCondition = this.throwingMode
             } else {
                 interactCondition =
                     isPointerLocked() && !this.throwingMode && pickedMesh
-                throwCondition = this.throwingMode
+                throwCondition = isPointerLocked() && this.throwingMode
             }
 
             if (interactCondition) {
