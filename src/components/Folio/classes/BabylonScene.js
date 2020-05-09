@@ -137,7 +137,7 @@ class BabylonScene {
                 27000,
             ]),
             river: new SubtitleController('river-sub', 19000, [0, 11500]),
-            postit: new SubtitleController('postit-sub', 3500, [0]),
+            portfolio: new SubtitleController('postit-sub', 3500, [0]),
         }
         this.hasClickedMouse = false
         this.canvas = null
