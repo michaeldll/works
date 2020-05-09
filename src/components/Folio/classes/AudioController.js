@@ -22,15 +22,25 @@ class AudioController {
         this.findAudio(name).stop()
     }
     /**
-     * @param {string} name
+     * @param {string} voice
      */
-    speak(name) {
-        if (!this.findAudio(name).playing()) {
-            this.play(name)
-            this.subtitles[name].show()
-        } else if (this.findAudio(name).playing()) {
-            this.stop(name)
-            this.subtitles[name].hide()
+    speak(voice) {
+        const otherVoices = Object.keys(this.audio.voices).filter(
+            (voiceName) => voiceName.indexOf(voice) === -1
+        )
+
+        otherVoices.forEach((voice) => {
+            if (this.audio.voices[voice].playing()) {
+                this.shutUp()
+            }
+        })
+
+        if (!this.findAudio(voice).playing()) {
+            this.play(voice)
+            this.subtitles[voice].show()
+        } else if (this.findAudio(voice).playing()) {
+            this.stop(voice)
+            this.subtitles[voice].hide()
         }
     }
     shutUp() {
