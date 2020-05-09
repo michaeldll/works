@@ -13,6 +13,7 @@ import horslesmurs from '../../assets/video/horslesmurs.mp4'
 import pensa from '../../assets/video/pensa.mp4'
 import toca from '../../assets/video/toca.mp4'
 import './scss/Folio.scss'
+import '98.css'
 
 const Folio = () => {
     const subtitles = [

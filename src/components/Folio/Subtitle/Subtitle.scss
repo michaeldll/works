@@ -8,6 +8,8 @@
     background: rgba($color: #000000, $alpha: 0.7);
     padding: 10px 130px;
     min-width: 60%;
+    cursor: pointer;
+
     &.show {
         display: block;
     }

@@ -1,6 +1,5 @@
 import React from 'react'
 import './Subtitle.scss'
-import '98.css'
 
 const Subtitle = (props) => {
     const setMarkup = (text) => ({ __html: text })
