@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /**
  * @param {BABYLON.Scene} scene
  */

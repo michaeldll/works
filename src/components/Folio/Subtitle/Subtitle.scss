@@ -1,4 +1,4 @@
-.subtitle {
+body .subtitle {
     display: none;
     position: absolute;
     bottom: 5%;
@@ -23,13 +23,33 @@
             display: block;
         }
     }
-    a {
+    a,
+    .close-subtitle {
         color: #f9d586;
     }
-    .window {
+    .window,
+    .close-subtitle {
         box-shadow: none;
         background: none;
         padding: 0;
+    }
+    .close-subtitle {
+        position: absolute;
+        right: 5%;
+        top: 5%;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.1s ease-in-out;
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        min-width: 0;
+        max-width: 0;
+        min-height: 0;
+    }
+    &:hover .close-subtitle {
+        opacity: 1;
+        visibility: visible;
     }
 }
 

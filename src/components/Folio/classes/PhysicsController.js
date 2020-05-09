@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 //Cannon for physics
 import * as CANNON from 'cannon'
 import { CannonJSPlugin } from '@babylonjs/core/Physics/Plugins/cannonJSPlugin'
@@ -257,6 +258,7 @@ class PhysicsController {
         leftWall.material = this.transMat
         phoneBoundingBox.material = this.transMat
     }
+
     /**
      * @param {Mesh} mesh
      * @param {Vector3} direction
@@ -267,6 +269,7 @@ class PhysicsController {
             mesh.physicsImpostor.getLinearVelocity().add(direction.scale(power))
         )
     }
+
     throwPhone() {
         const phone = findMesh('phone', this.scene)
         const phoneInHand = findMesh('phone.child', this.scene)
@@ -297,6 +300,7 @@ class PhysicsController {
 
         this.push(phone, this.scene.activeCamera.getForwardRay().direction, 6)
     }
+
     resetPhone() {
         const phone = findMesh('phone', this.scene)
 
@@ -316,6 +320,7 @@ class PhysicsController {
         phone.physicsImpostor.setLinearVelocity(Vector3.Zero())
         phone.physicsImpostor.setAngularVelocity(Vector3.Zero())
     }
+
     /**
      * @param {Mesh} mesh
      * @param {Vector3} vector

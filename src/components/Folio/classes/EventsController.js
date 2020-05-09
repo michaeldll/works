@@ -1,12 +1,11 @@
+/* eslint-disable array-callback-return */
 import { Howler } from 'howler'
 
 //Greensock for ""animation"""
 import gsap from 'gsap'
 
 import { Vector3 } from '@babylonjs/core/Maths/math'
-import { Ray, Axis } from '@babylonjs/core/'
 
-import PhysicsController from './PhysicsController'
 import OrientationController from '../classes/OrientationController'
 import AudioController from '../classes/AudioController'
 
@@ -14,24 +13,29 @@ import config from '../utils/config'
 import getActiveScreen from '../utils/getActiveScreen'
 import showScreen from '../utils/showScreen'
 import findMesh from '../utils/findMesh'
+import pointIsInside from '../utils/pointIsInside'
 
 class EventsController {
-    constructor(canvas, scene, engine, audio, subtitles, progression) {
+    constructor(
+        canvas,
+        scene,
+        engine,
+        audio,
+        subtitles,
+        progression,
+        PhysicsController
+    ) {
         this.canvas = canvas
         this.scene = scene
         this.engine = engine
         this.audio = audio
-        this.SubtitleController = subtitles
         this.progression = progression
         this.volume = 1
         this.throwingMode = false
         this.manageResetPhoneInterval = null
-        this.physics = new PhysicsController(
-            this.scene,
-            this.scene.activeCamera
-        )
+        this.PhysicsController = PhysicsController
         this.OrientationController = new OrientationController()
-        this.AudioController = new AudioController(this.audio)
+        this.AudioController = new AudioController(audio, subtitles)
         this.init()
     }
     init() {
@@ -90,12 +94,14 @@ class EventsController {
                             parseInt(sessionStorage.getItem('volume'))
                         )
 
-                        this.physics.touch(findMesh('speaker left', this.scene))
+                        this.PhysicsController.touch(
+                            findMesh('speaker left', this.scene)
+                        )
                         break
 
                     case 'Keyboard.001':
                         this.audio.sfx.kb.play()
-                        this.physics.touch(
+                        this.PhysicsController.touch(
                             findMesh('Keyboard.001', this.scene),
                             new Vector3(3.5, 2, -1)
                         )
@@ -104,7 +110,7 @@ class EventsController {
                     case 'MOUSE':
                         if (!this.hasClickedMouse) {
                             this.audio.sfx.mouse.play()
-                            this.physics.touch(
+                            this.PhysicsController.touch(
                                 findMesh('MOUSE', this.scene),
                                 new Vector3(3.5, 2, -0.8)
                             )
@@ -152,29 +158,23 @@ class EventsController {
                         break
                     case 'horsLesMursScreen':
                         this.AudioController.speak('horslesmurs')
-                        // this.audio.voices.horslesmurs.play()
-                        this.SubtitleController.horslesmurs.init()
                         break
                     case 'postit':
                         this.AudioController.speak('portfolio')
-                        this.SubtitleController.postit.init()
                         break
                     case 'riverScreen':
                         this.AudioController.speak('river')
-                        this.SubtitleController.river.init()
                         break
                     case 'tocaScreen':
                         this.AudioController.speak('toca')
-                        this.SubtitleController.toca.init()
                         break
                     case 'pensaScreen':
                         this.AudioController.speak('pensa')
-                        this.SubtitleController.pensa.init()
                         break
                     default:
                         break
                 }
-                //interpolate screen outline width
+                //interpolate screens outline width
                 if (pickedMesh.name.indexOf('Screen') > -1) {
                     this.scene.meshes
                         .filter((mesh) => mesh.name.indexOf('Screen') > -1)
@@ -191,7 +191,7 @@ class EventsController {
                         })
                 }
             } else if (throwCondition) {
-                this.physics.throwPhone()
+                this.PhysicsController.throwPhone()
                 this.manageResetPhoneInterval = setInterval(() => {
                     this.manageResetPhone()
                 }, 2800)
@@ -222,6 +222,11 @@ class EventsController {
             if (window.orientation !== 0) this.OrientationController.show()
             else this.OrientationController.hide()
         }
+        document.querySelectorAll('.subtitle').forEach((subtitle) => {
+            subtitle.addEventListener('click', (e) => {
+                this.AudioController.shutUp()
+            })
+        })
     }
     onCameraRotation() {
         const pickedMesh = this.scene.pick(
@@ -278,58 +283,6 @@ class EventsController {
     manageResetPhone() {
         const phone = findMesh('phone', this.scene)
 
-        const pointIsInside = (mesh, point) => {
-            var boundInfo = mesh.getBoundingInfo()
-            var max = boundInfo.boundingBox.maximumWorld
-            var min = boundInfo.boundingBox.minimumWorld
-            var diameter = 2 * boundInfo.boundingSphere.radius
-
-            if (point.x < min.x || point.x > max.x) {
-                return false
-            }
-            if (point.y < min.y || point.y > max.y) {
-                return false
-            }
-            if (point.z < min.z || point.z > max.z) {
-                return false
-            }
-
-            var pointFound = false
-            var d = 0
-            var hitCount = 0
-            var ray = new Ray(Vector3.Zero(), Axis.X, diameter)
-            var pickInfo
-            var direction = Vector3.Zero()
-
-            while (d < 2 && !pointFound) {
-                hitCount = 0
-                direction = Axis.X.scale(2 * (0.5 - d))
-                ray.origin = point
-                ray.direction = direction
-                ray.distance = diameter
-                pickInfo = ray.intersectsMesh(mesh)
-                while (pickInfo.hit) {
-                    hitCount++
-                    pickInfo.pickedPoint.addToRef(
-                        direction.scale(0.00000001),
-                        point
-                    )
-                    ray.origin = point
-                    pickInfo = ray.intersectsMesh(mesh)
-                }
-                if (hitCount % 2 === 1) {
-                    pointFound = true
-                } else if (hitCount % 2 === 0 && hitCount > 0) {
-                    pointFound = true
-                }
-                d++
-            }
-
-            return pointFound
-        }
-
-        // console.log('isOutOfBounds : ' + isOutOfBounds())
-
         if (
             !this.scene.activeCamera.isActiveMesh(phone) &&
             !this.throwingMode &&
@@ -339,7 +292,7 @@ class EventsController {
             )
         ) {
             clearInterval(this.manageResetPhoneInterval)
-            this.physics.resetPhone()
+            this.PhysicsController.resetPhone()
         }
     }
 }

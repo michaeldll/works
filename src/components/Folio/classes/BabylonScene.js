@@ -143,7 +143,8 @@ class BabylonScene {
         this.canvas = null
         this.scene = null
         this.engine = null
-        this.eventsController = null
+        this.EventsController = null
+        this.PhysicsController = null
         this.loadingScreen = new LoadingScreen().init()
         this.progression = new ProgressionController()
     }
@@ -203,15 +204,6 @@ class BabylonScene {
                 this.setEdgesAndOutlines()
                 showScreen(this.scene, 'random')
 
-                this.eventsController = new EventsController(
-                    this.canvas,
-                    this.scene,
-                    this.engine,
-                    this.audio,
-                    this.subtitles,
-                    this.progression
-                )
-
                 if (sessionStorage.getItem('volume')) {
                     Howler.volume(parseInt(sessionStorage.getItem('volume')))
                 } else {
@@ -221,7 +213,22 @@ class BabylonScene {
                 //ambient sound
                 this.audio.ambient.birds.play()
 
-                new PhysicsController(this.scene, this.audio).init()
+                this.PhysicsController = new PhysicsController(
+                    this.scene,
+                    this.audio
+                )
+
+                this.PhysicsController.init()
+
+                this.EventsController = new EventsController(
+                    this.canvas,
+                    this.scene,
+                    this.engine,
+                    this.audio,
+                    this.subtitles,
+                    this.progression,
+                    this.PhysicsController
+                )
 
                 if (config.debug) {
                     document.getElementById('canvas-container').style.width =
@@ -236,8 +243,8 @@ class BabylonScene {
 
                 this.scene.beforeRender = () => {
                     this.positionArm()
-                    if (this.eventsController)
-                        this.eventsController.onCameraRotation()
+                    if (this.EventsController)
+                        this.EventsController.onCameraRotation()
                     limitCamera(this.camera, { lower: -0.22, upper: 0.52 }, 'x')
                     limitCamera(this.camera, { lower: -0.55, upper: 0.55 }, 'y')
                 }
@@ -248,7 +255,6 @@ class BabylonScene {
                 })
             },
             (progressEvent) => {
-                // onProgressEvent
                 let loadedPercent = 0
                 if (progressEvent.lengthComputable) {
                     loadedPercent = (
@@ -259,7 +265,6 @@ class BabylonScene {
                     const dlCount = progressEvent.loaded / (1024 * 1024)
                     loadedPercent = Math.floor(dlCount * 100.0) / 100.0
                 }
-                console.log(loadedPercent)
                 document.getElementById('loading-bar').style.width =
                     loadedPercent * 38.9105058366 + '%'
             }

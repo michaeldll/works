@@ -1,36 +1,44 @@
 class SubtitleController {
-    constructor(id, duration, timeouts) {
+    /**
+     * @param {String} id
+     * @param {Number} duration
+     * @param {Array} timeoutsTime
+     */
+    constructor(id, duration, timeoutsTime) {
         this.id = id
         this.duration = duration
-        this.timeouts = timeouts
-        this.paragraphs = document.querySelectorAll(`#${this.id} p`)
-    }
-
-    init() {
-        this.show()
-        this.revealParagraphs()
-        setTimeout(() => {
-            this.hide()
-        }, this.duration)
-    }
-
-    revealParagraphs() {
-        this.timeouts.forEach((timeout, i) => {
-            setTimeout(() => {
-                this.paragraphs[i - 1] &&
-                    this.paragraphs[i - 1].classList.remove('show')
-                this.paragraphs[i] && this.paragraphs[i].classList.add('show')
-            }, timeout)
-        })
+        this.timeoutsTime = timeoutsTime
+        this.timeouts = []
+        this.paragraphElements = document.querySelectorAll(`#${this.id} p`)
     }
 
     show() {
         document.getElementById(this.id).classList.add('show')
+
+        this.timeoutsTime.forEach((timeout, i) => {
+            this.timeouts.push(
+                setTimeout(() => {
+                    this.paragraphElements[i - 1] &&
+                        this.paragraphElements[i - 1].classList.remove('show')
+                    this.paragraphElements[i] &&
+                        this.paragraphElements[i].classList.add('show')
+                }, timeout)
+            )
+        })
+
+        this.timeouts.push(
+            setTimeout(() => {
+                this.hide()
+            }, this.duration)
+        )
     }
 
     hide() {
         document.getElementById(this.id).classList.remove('show')
-        this.paragraphs.forEach((p) => p.classList.remove('show'))
+        this.paragraphElements.forEach((p) => p.classList.remove('show'))
+        this.timeouts.forEach((timeout) => {
+            clearTimeout(timeout)
+        })
     }
 }
 export default SubtitleController
