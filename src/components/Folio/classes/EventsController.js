@@ -22,14 +22,14 @@ class EventsController {
         engine,
         audio,
         subtitles,
-        progression,
+        ProgressionController,
         PhysicsController
     ) {
         this.canvas = canvas
         this.scene = scene
         this.engine = engine
         this.audio = audio
-        this.progression = progression
+        this.ProgressionController = ProgressionController
         this.volume = 1
         this.throwingMode = false
         this.manageResetPhoneInterval = null
@@ -117,9 +117,9 @@ class EventsController {
                             this.hasClickedMouse = true
                             setTimeout(() => {
                                 const onMouseClick = (string, url) => {
-                                    if (!localStorage.getItem(string)) {
-                                        localStorage.setItem(string, '1')
-                                        this.progression.advance()
+                                    if (!sessionStorage.getItem(string)) {
+                                        sessionStorage.setItem(string, '1')
+                                        this.ProgressionController.advance()
                                     }
 
                                     window.open(url)

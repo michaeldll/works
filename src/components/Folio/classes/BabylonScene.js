@@ -145,8 +145,8 @@ class BabylonScene {
         this.engine = null
         this.EventsController = null
         this.PhysicsController = null
+        this.ProgressionController = new ProgressionController()
         this.loadingScreen = new LoadingScreen().init()
-        this.progression = new ProgressionController()
     }
 
     init() {
@@ -226,7 +226,7 @@ class BabylonScene {
                     this.engine,
                     this.audio,
                     this.subtitles,
-                    this.progression,
+                    this.ProgressionController,
                     this.PhysicsController
                 )
 

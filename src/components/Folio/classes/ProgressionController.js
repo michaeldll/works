@@ -1,14 +1,14 @@
 class ProgressionController {
     constructor() {
-        if (!localStorage.getItem('progression'))
-            localStorage.setItem('progression', '0')
-        this.step = parseInt(localStorage.getItem('progression'))
+        if (!sessionStorage.getItem('progression'))
+            sessionStorage.setItem('progression', '0')
+        this.step = parseInt(sessionStorage.getItem('progression'))
         this.showText()
     }
 
     advance() {
         this.step += 1
-        localStorage.setItem('progression', '' + this.step)
+        sessionStorage.setItem('progression', '' + this.step)
         this.showText()
     }
 
