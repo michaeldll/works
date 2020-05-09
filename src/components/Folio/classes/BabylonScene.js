@@ -31,6 +31,7 @@ import d2r from '../utils/d2r.js'
 import config from '../utils/config'
 import limitCamera from '../utils/limitCamera'
 import showScreen from '../utils/showScreen'
+import findMesh from '../utils/findMesh'
 
 //Assets
 import birds from '../../../assets/audio/birds4.mp3'
@@ -169,52 +170,53 @@ class BabylonScene {
             (gltf) => {
                 this.scene = gltf
 
-                const init = () => {
-                    new Skybox(this.scene, 3)
-                    new Screen(
-                        this.scene,
-                        document.getElementById('life-river'),
-                        'riverScreen'
-                    )
-                    new Screen(
-                        this.scene,
-                        document.getElementById('horslesmurs'),
-                        'horsLesMursScreen'
-                    )
-                    new Screen(
-                        this.scene,
-                        document.getElementById('toca'),
-                        'tocaScreen'
-                    )
-                    new Screen(
-                        this.scene,
-                        document.getElementById('pensa'),
-                        'pensaScreen'
-                    )
+                new Skybox(this.scene, 3)
+                new Screen(
+                    this.scene,
+                    document.getElementById('life-river'),
+                    'riverScreen'
+                )
+                new Screen(
+                    this.scene,
+                    document.getElementById('horslesmurs'),
+                    'horsLesMursScreen'
+                )
+                new Screen(
+                    this.scene,
+                    document.getElementById('toca'),
+                    'tocaScreen'
+                )
+                new Screen(
+                    this.scene,
+                    document.getElementById('pensa'),
+                    'pensaScreen'
+                )
 
-                    this.setPhone()
-                    this.setCamera()
-                    this.setArm()
-                    this.setEdgesAndOutlines()
-                    showScreen(this.scene, 'random')
+                this.setPhone()
+                this.setCamera()
+                this.setArm()
+                this.setEdgesAndOutlines()
+                showScreen(this.scene, 'random')
 
-                    this.eventsController = new EventsController(
-                        this.canvas,
-                        this.scene,
-                        this.engine,
-                        this.audio,
-                        this.subtitles,
-                        Howler,
-                        this.progression
-                    )
+                this.eventsController = new EventsController(
+                    this.canvas,
+                    this.scene,
+                    this.engine,
+                    this.audio,
+                    this.subtitles,
+                    this.progression
+                )
 
-                    //ambient sound
-                    this.audio.birds.play()
-
-                    new PhysicsController(this.scene, this.audio).init()
+                if (sessionStorage.getItem('volume')) {
+                    Howler.volume(parseInt(sessionStorage.getItem('volume')))
+                } else {
+                    sessionStorage.setItem('volume', '1')
                 }
 
-                init()
+                //ambient sound
+                this.audio.birds.play()
+
+                new PhysicsController(this.scene, this.audio).init()
 
                 if (config.debug) {
                     document.getElementById('canvas-container').style.width =
@@ -222,7 +224,7 @@ class BabylonScene {
                     this.scene.debugLayer.show()
                     // new GizmoController(
                     //     this.scene,
-                    //     this.scene.meshes.find((mesh) => mesh.name === 'phone')
+                    //     findMesh('phone', this.scene)
                     // )
                     // this.scene.forceShowBoundingBoxes = true
                 }
@@ -266,13 +268,8 @@ class BabylonScene {
             mesh.outlineColor = new Color3(249 / 255, 213 / 255, 134 / 255)
         })
 
-        this.scene.meshes.find(
-            (mesh) => mesh.name.indexOf('MOUSE') > -1
-        ).outlineWidth = 0.005
-
-        this.scene.meshes.find(
-            (mesh) => mesh.name === 'phone'
-        ).outlineWidth = 0.006
+        findMesh('MOUSE', this.scene).outlineWidth = 0.005
+        findMesh('phone', this.scene).outlineWidth = 0.006
 
         this.scene.meshes
             .filter((mesh) => mesh.name.indexOf('Screen') > -1)
@@ -282,11 +279,10 @@ class BabylonScene {
     }
 
     setPhone() {
-        const phone = this.scene.meshes.find((mesh) => mesh.name === 'phone')
-        const phoneChild = this.scene.meshes.find(
-            (mesh) => mesh.name === 'phone.child'
-        )
-        phoneChild.setEnabled(false)
+        const phone = findMesh('phone', this.scene)
+        const phoneInHand = findMesh('phone.child', this.scene)
+
+        phoneInHand.setEnabled(false)
 
         phone.scaling = new Vector3(0.5, 0.5, 0.5)
         phone.setParent(null)

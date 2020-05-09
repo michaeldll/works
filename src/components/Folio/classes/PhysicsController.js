@@ -11,6 +11,7 @@ import { Mesh } from '@babylonjs/core/Meshes'
 import { StandardMaterial } from '@babylonjs/core/Materials'
 
 import config from '../utils/config'
+import findMesh from '../utils/findMesh'
 import d2r from '../utils/d2r.js'
 
 class PhysicsController {
@@ -26,6 +27,9 @@ class PhysicsController {
         this.scene.enablePhysics(this.gravityVector, this.physicsPlugin)
         this.scene.getPhysicsEngine().setTimeStep(1 / 60)
 
+        //this part is very ugly, sorry
+        //all transparent PhysicsImpostors are here for the phone to bounce off of
+
         //CRT
         const crt = Mesh.CreateBox('transparentCRT', 1, this.scene)
         crt.isPickable = false
@@ -40,21 +44,17 @@ class PhysicsController {
         this.meshesWithCollisionSounds.push(crt)
 
         //PS1 Controller
-        const ps1Controller = this.scene.meshes.find(
-            (mesh) => mesh.name === 'playstation-analog-controller'
-        )
-        ps1Controller.setParent(null)
-        ps1Controller.physicsImpostor = new PhysicsImpostor(
-            ps1Controller,
+        const controller = findMesh('playstation-analog-controller', this.scene)
+        controller.setParent(null)
+        controller.physicsImpostor = new PhysicsImpostor(
+            controller,
             PhysicsImpostor.BoxImpostor,
             { mass: 5, restitution: 0.1 },
             this.scene
         )
 
         //Drawer
-        const drawer = this.scene.meshes.find(
-            (mesh) => mesh.name === 'drawer_primitive1'
-        )
+        const drawer = findMesh('drawer_primitive1', this.scene)
         drawer.setParent(null)
         drawer.physicsImpostor = new PhysicsImpostor(
             drawer,
@@ -66,9 +66,7 @@ class PhysicsController {
         drawer.isPickable = false
 
         //Speakers
-        const rightSpeaker = this.scene.meshes.find(
-            (mesh) => mesh.name === 'speaker right'
-        )
+        const rightSpeaker = findMesh('speaker right', this.scene)
         rightSpeaker.setParent(null)
         rightSpeaker.physicsImpostor = new PhysicsImpostor(
             rightSpeaker,
@@ -78,9 +76,7 @@ class PhysicsController {
         )
         this.meshesWithCollisionSounds.push(rightSpeaker)
 
-        const leftSpeaker = this.scene.meshes.find(
-            (mesh) => mesh.name === 'speaker left'
-        )
+        const leftSpeaker = findMesh('speaker left', this.scene)
         leftSpeaker.setParent(null)
         leftSpeaker.physicsImpostor = new PhysicsImpostor(
             leftSpeaker,
@@ -90,10 +86,8 @@ class PhysicsController {
         )
         this.meshesWithCollisionSounds.push(leftSpeaker)
 
-        //desktop
-        const deskTop = this.scene.meshes.find(
-            (mesh) => mesh.name === 'Desk Top'
-        )
+        //Desk top
+        const deskTop = findMesh('Desk Top', this.scene)
         deskTop.setParent(null)
         deskTop.physicsImpostor = new PhysicsImpostor(
             deskTop,
@@ -103,7 +97,7 @@ class PhysicsController {
         )
         this.meshesWithCollisionSounds.push(deskTop)
 
-        //ground
+        //Ground
         const ground = Mesh.CreateGround(
             'transparentGround',
             100,
@@ -121,10 +115,8 @@ class PhysicsController {
         this.meshesWithCollisionSounds.push(ground)
         ground.isPickable = false
 
-        //keyboard
-        const keyboard = this.scene.meshes.find(
-            (mesh) => mesh.name === 'Keyboard.001'
-        )
+        //Keyboard
+        const keyboard = findMesh('Keyboard.001', this.scene)
         keyboard.setParent(null)
         keyboard.physicsImpostor = new PhysicsImpostor(
             keyboard,
@@ -133,8 +125,8 @@ class PhysicsController {
             this.scene
         )
 
-        //mouse
-        const mouse = this.scene.meshes.find((mesh) => mesh.name === 'MOUSE')
+        //Mouse
+        const mouse = findMesh('MOUSE', this.scene)
         mouse.position.y += 0.01
         mouse.setParent(null)
         mouse.physicsImpostor = new PhysicsImpostor(
@@ -144,7 +136,7 @@ class PhysicsController {
             this.scene
         )
 
-        //right wall
+        //Right wall
         const rightWall = Mesh.CreateBox('rightWall', 1, this.scene)
 
         rightWall.position = new Vector3(0.316, 0, -0)
@@ -162,7 +154,7 @@ class PhysicsController {
 
         rightWall.isPickable = false
 
-        //left wall
+        //Left wall
         const leftWall = Mesh.CreateBox('leftWall', 1, this.scene)
 
         leftWall.position = new Vector3(-1.415, -0.011, 0)
@@ -180,7 +172,7 @@ class PhysicsController {
 
         leftWall.isPickable = false
 
-        //front wall
+        //Front wall
         const frontWall = Mesh.CreateBox('frontWall', 1, this.scene)
 
         frontWall.position = new Vector3(-0.508, 0, 0)
@@ -198,8 +190,8 @@ class PhysicsController {
 
         frontWall.isPickable = false
 
-        //phone
-        const phone = this.scene.meshes.find((mesh) => mesh.name === 'phone')
+        //Phone
+        const phone = findMesh('phone', this.scene)
         phone.physicsImpostor = new PhysicsImpostor(
             phone,
             PhysicsImpostor.BoxImpostor,
@@ -207,7 +199,7 @@ class PhysicsController {
             this.scene
         )
 
-        //phone reset bounding box
+        //Phone reset bounding box
         const phoneBoundingBox = Mesh.CreateBox(
             'phoneBoundingBox',
             1,
@@ -218,14 +210,14 @@ class PhysicsController {
 
         phoneBoundingBox.isPickable = false
 
-        //phone collision
+        //Phone collision
         const collisionsSounds = [
             this.audio.phoneCollision1,
             this.audio.phoneCollision2,
             this.audio.phoneCollision3,
         ]
 
-        //collisions
+        //Collisions
         let previousCollidedAgainst
 
         const onPhoneCollide = (collider, collidedAgainst) => {
@@ -256,7 +248,7 @@ class PhysicsController {
             onPhoneCollide
         )
 
-        //transparent material
+        //Transparent material
         this.transMat.alpha = 0
         ground.material = this.transMat
         crt.material = this.transMat
@@ -271,14 +263,13 @@ class PhysicsController {
         )
     }
     throwPhone() {
-        const phone = this.scene.meshes.find((mesh) => mesh.name === 'phone')
-        const phoneChild = this.scene.meshes.find(
-            (mesh) => mesh.name === 'phone.child'
-        )
+        const phone = findMesh('phone', this.scene)
+        const phoneInHand = findMesh('phone.child', this.scene)
         const arm = this.scene.rootNodes[0]._children.find((child) => {
             if (child.name === 'main_enfant.004') return child
         })
         const initial = -1.23
+
         gsap.to(arm.position, { z: initial + 0.008, duration: 0.1 })
         gsap.to(arm.position, {
             z: initial - 0.008,
@@ -287,7 +278,7 @@ class PhysicsController {
         })
 
         phone.setEnabled(true)
-        phoneChild.setEnabled(false)
+        phoneInHand.setEnabled(false)
 
         phone.physicsImpostor.setLinearVelocity(Vector3.Zero())
         phone.physicsImpostor.setAngularVelocity(Vector3.Zero())
@@ -302,7 +293,7 @@ class PhysicsController {
         this.push(phone, this.scene.activeCamera.getForwardRay().direction, 6)
     }
     resetPhone() {
-        const phone = this.scene.meshes.find((mesh) => mesh.name === 'phone')
+        const phone = findMesh('phone', this.scene)
 
         phone.position = new Vector3(
             config.phone.position.x,

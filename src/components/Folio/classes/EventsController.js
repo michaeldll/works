@@ -1,4 +1,6 @@
-//Greensock for animation
+import { Howler } from 'howler'
+
+//Greensock for ""animation"""
 import gsap from 'gsap'
 
 import { Vector3 } from '@babylonjs/core/Maths/math'
@@ -10,15 +12,15 @@ import OrientationController from '../classes/OrientationController'
 import config from '../utils/config'
 import getActiveScreen from '../utils/getActiveScreen'
 import showScreen from '../utils/showScreen'
+import findMesh from '../utils/findMesh'
 
 class EventsController {
-    constructor(canvas, scene, engine, audio, subtitles, howler, progression) {
+    constructor(canvas, scene, engine, audio, subtitles, progression) {
         this.canvas = canvas
         this.scene = scene
         this.engine = engine
         this.audio = audio
         this.subtitles = subtitles
-        this.howler = howler
         this.progression = progression
         this.volume = 1
         this.throwingMode = false
@@ -77,14 +79,10 @@ class EventsController {
             if (interactCondition) {
                 switch (pickedMesh.name) {
                     case 'phone':
-                        const phone = this.scene.meshes.find(
-                            (mesh) => mesh.name === 'phone'
-                        )
-                        const phoneChild = this.scene.meshes.find(
-                            (mesh) => mesh.name === 'phone.child'
-                        )
+                        const phone = findMesh('phone', this.scene)
+                        const phoneInHand = findMesh('phone.child', this.scene)
                         if (phone.isEnabled) {
-                            phoneChild.setEnabled(true)
+                            phoneInHand.setEnabled(true)
                             phone.setEnabled(false)
                             this.throwingMode = true
                             document
@@ -97,32 +95,32 @@ class EventsController {
                             ? this.audio.click_out.play()
                             : this.audio.click_in.play()
 
-                        this.volume === 1
+                        sessionStorage.getItem('volume') === '1'
                             ? (this.volume = 0)
                             : (this.volume = 1)
-                        this.howler.volume(this.volume)
-
-                        const speaker = this.scene.meshes.find(
-                            (mesh) => mesh.name === 'speaker left'
+                        sessionStorage.setItem('volume', '' + this.volume)
+                        Howler.volume(
+                            parseInt(sessionStorage.getItem('volume'))
                         )
-                        this.physics.touch(speaker)
+
+                        this.physics.touch(findMesh('speaker left', this.scene))
                         break
 
                     case 'Keyboard.001':
                         this.audio.kb.play()
-                        const keyboard = this.scene.meshes.find(
-                            (mesh) => mesh.name === 'Keyboard.001'
+                        this.physics.touch(
+                            findMesh('Keyboard.001', this.scene),
+                            new Vector3(3.5, 2, -1)
                         )
-                        this.physics.touch(keyboard, new Vector3(3.5, 2, -1))
                         showScreen(this.scene, 'next')
                         break
                     case 'MOUSE':
                         if (!this.hasClickedMouse) {
                             this.audio.mouse.play()
-                            const mouse = this.scene.meshes.find(
-                                (mesh) => mesh.name === 'MOUSE'
+                            this.physics.touch(
+                                findMesh('MOUSE', this.scene),
+                                new Vector3(3.5, 2, -0.8)
                             )
-                            this.physics.touch(mouse, new Vector3(3.5, 2, -0.8))
                             this.hasClickedMouse = true
                             setTimeout(() => {
                                 const onMouseClick = (string, url) => {
@@ -287,12 +285,9 @@ class EventsController {
         }
     }
     manageResetPhone() {
-        const phone = this.scene.meshes.find((mesh) => mesh.name === 'phone')
+        const phone = findMesh('phone', this.scene)
 
-        const pointIsInside = (meshName, point) => {
-            const mesh = this.scene.meshes.find(
-                (mesh) => mesh.name === meshName
-            )
+        const pointIsInside = (mesh, point) => {
             var boundInfo = mesh.getBoundingInfo()
             var max = boundInfo.boundingBox.maximumWorld
             var min = boundInfo.boundingBox.minimumWorld
@@ -347,7 +342,10 @@ class EventsController {
         if (
             !this.scene.activeCamera.isActiveMesh(phone) &&
             !this.throwingMode &&
-            !pointIsInside('phoneBoundingBox', phone.getAbsolutePivotPoint())
+            !pointIsInside(
+                findMesh('phoneBoundingBox', this.scene),
+                phone.getAbsolutePivotPoint()
+            )
         ) {
             clearInterval(this.manageResetPhoneInterval)
             this.physics.resetPhone()
