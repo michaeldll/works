@@ -1,5 +1,9 @@
 import getActiveScreen from './getActiveScreen'
 
+/**
+ * @param {BABYLON.Scene} scene
+ * @param {String} mode
+ */
 const showScreen = (scene, mode) => {
     const screens = scene.rootNodes.filter((nodes) => {
         if (nodes.name.indexOf('Screen') > -1) return nodes

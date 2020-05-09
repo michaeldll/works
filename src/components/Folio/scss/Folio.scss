@@ -75,8 +75,8 @@ div#inspector-host {
     position: absolute;
     z-index: 3;
 }
-.loading-text,
-.orientationText {
+body .loading-text,
+body .orientationText {
     color: #f9d586;
     box-shadow: none;
     background: none;

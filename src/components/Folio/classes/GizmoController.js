@@ -5,7 +5,6 @@ class GizmoController {
         this.scene = scene
         this.mesh = mesh
         this.gizmoManager = new GizmoManager(this.scene)
-        this.init()
     }
 
     init() {

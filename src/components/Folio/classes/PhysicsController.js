@@ -212,9 +212,9 @@ class PhysicsController {
 
         //Phone collision
         const collisionsSounds = [
-            this.audio.phoneCollision1,
-            this.audio.phoneCollision2,
-            this.audio.phoneCollision3,
+            this.audio.sfx.phoneCollision1,
+            this.audio.sfx.phoneCollision2,
+            this.audio.sfx.phoneCollision3,
         ]
 
         //Collisions
@@ -257,6 +257,11 @@ class PhysicsController {
         leftWall.material = this.transMat
         phoneBoundingBox.material = this.transMat
     }
+    /**
+     * @param {Mesh} mesh
+     * @param {Vector3} direction
+     * @param {Number} power
+     */
     push(mesh, direction, power) {
         mesh.physicsImpostor.setLinearVelocity(
             mesh.physicsImpostor.getLinearVelocity().add(direction.scale(power))
@@ -311,6 +316,10 @@ class PhysicsController {
         phone.physicsImpostor.setLinearVelocity(Vector3.Zero())
         phone.physicsImpostor.setAngularVelocity(Vector3.Zero())
     }
+    /**
+     * @param {Mesh} mesh
+     * @param {Vector3} vector
+     */
     touch(mesh, vector = new Vector3(1.5, 0, 0.8)) {
         mesh.physicsImpostor.applyImpulse(vector, mesh.getAbsolutePosition())
     }

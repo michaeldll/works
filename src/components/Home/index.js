@@ -29,10 +29,6 @@ const Home = () => {
     const [logoVideoIndex, setLogoVideoIndex] = useState(0)
 
     useEffect(() => {
-        localStorage.setItem('shouldRefresh', '0')
-    }, [])
-
-    useEffect(() => {
         const onKeyDown = (e) => {
             setPresses(presses + 1)
 
@@ -96,6 +92,8 @@ const Home = () => {
     }, [entered, presses, optionNumber, optionSelected, aboutSelected])
 
     useEffect(() => {
+        localStorage.setItem('shouldRefresh', '0')
+
         setInterval(() => {
             document.querySelector('.press img') &&
                 document.querySelector('.press img').classList.toggle('d-none')
@@ -110,12 +108,10 @@ const Home = () => {
         } else if (randomNumber >= 75 && randomNumber <= 100) {
             setLogoVideoIndex(3)
         }
-    }, [])
 
-    useEffect(() => {
         window.addEventListener(
             'touchend',
-            function onFirstTouch() {
+            function onFirstTouch(e) {
                 window.USER_HAS_TOUCHED = true
                 // detect iOS 13+ and add permissions
 

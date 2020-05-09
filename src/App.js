@@ -11,6 +11,7 @@ import { AppProvider } from './reducer'
 import Home from './components/Home'
 import Folio from './components/Folio'
 import HorsLesMurs from './components/HorsLesMurs'
+import '98.css'
 
 // Redirects when refreshed
 // https://stackoverflow.com/questions/51054653/react-router-v4-redirect-to-home-on-page-reload-inside-application

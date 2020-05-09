@@ -15,7 +15,6 @@ class Skybox {
             this.scene
         )
         this.skyboxMaterial = new StandardMaterial('skyBox', this.scene)
-        this.init()
     }
 
     init() {

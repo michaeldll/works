@@ -1,3 +1,6 @@
+/**
+ * @param {BABYLON.Scene} scene
+ */
 const getActiveScreen = (scene) => {
     const screens = scene.rootNodes.filter((nodes) => {
         if (nodes.name.indexOf('Screen') > -1) return nodes

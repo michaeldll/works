@@ -40,8 +40,8 @@ import toca from '../../../assets/audio/voices/toca.mp3'
 import horslesmurs from '../../../assets/audio/voices/horslesmurs.mp3'
 import portfolio from '../../../assets/audio/voices/portfolio.mp3'
 import fleuve from '../../../assets/audio/voices/river.mp3'
-import click_in from '../../../assets/audio/click_in.mp3'
-import click_out from '../../../assets/audio/click_out.mp3'
+import sfx_click_in from '../../../assets/audio/click_in.mp3'
+import sfx_click_out from '../../../assets/audio/click_out.mp3'
 import sfx_phone_1 from '../../../assets/audio/sfx_phone_1.mp3'
 import sfx_phone_2 from '../../../assets/audio/sfx_phone_2.mp3'
 import sfx_phone_3 from '../../../assets/audio/sfx_phone_3.mp3'
@@ -52,74 +52,80 @@ class BabylonScene {
     constructor() {
         this.camera = null
         this.audio = {
-            birds: new Howl({
-                src: birds,
-                loop: true,
-                volume: 0.7,
-            }),
-            pensa: new Howl({
-                src: pensa,
-                loop: false,
-                volume: 2.2,
-            }),
-            portfolio: new Howl({
-                src: portfolio,
-                loop: false,
-                volume: 3.0,
-            }),
-            toca: new Howl({
-                src: toca,
-                loop: false,
-                volume: 2.8,
-            }),
-            horslesmurs: new Howl({
-                src: horslesmurs,
-                loop: false,
-                volume: 2.8,
-            }),
-            river: new Howl({
-                src: fleuve,
-                loop: false,
-                volume: 2.8,
-            }),
-            phoneCollision1: new Howl({
-                src: sfx_phone_1,
-                loop: false,
-                volume: 0.1,
-            }),
-            phoneCollision2: new Howl({
-                src: sfx_phone_2,
-                loop: false,
-                volume: 0.1,
-            }),
-            phoneCollision3: new Howl({
-                src: sfx_phone_3,
-                loop: false,
-                volume: 0.1,
-            }),
-            click_in: new Howl({
-                src: click_in,
-                loop: false,
-                volume: 0.6,
-                rate: 0.9,
-            }),
-            click_out: new Howl({
-                src: click_out,
-                loop: false,
-                volume: 0.6,
-                rate: 0.9,
-            }),
-            kb: new Howl({
-                src: sfx_keyboard,
-                loop: false,
-                volume: 0.1,
-                rate: 0.8,
-            }),
-            mouse: new Howl({
-                src: sfx_mouse,
-                loop: false,
-                volume: 0.1,
-            }),
+            ambient: {
+                birds: new Howl({
+                    src: birds,
+                    loop: true,
+                    volume: 0.7,
+                }),
+            },
+            sfx: {
+                phoneCollision1: new Howl({
+                    src: sfx_phone_1,
+                    loop: false,
+                    volume: 0.1,
+                }),
+                phoneCollision2: new Howl({
+                    src: sfx_phone_2,
+                    loop: false,
+                    volume: 0.1,
+                }),
+                phoneCollision3: new Howl({
+                    src: sfx_phone_3,
+                    loop: false,
+                    volume: 0.1,
+                }),
+                click_in: new Howl({
+                    src: sfx_click_in,
+                    loop: false,
+                    volume: 0.6,
+                    rate: 0.9,
+                }),
+                click_out: new Howl({
+                    src: sfx_click_out,
+                    loop: false,
+                    volume: 0.6,
+                    rate: 0.9,
+                }),
+                kb: new Howl({
+                    src: sfx_keyboard,
+                    loop: false,
+                    volume: 0.1,
+                    rate: 0.8,
+                }),
+                mouse: new Howl({
+                    src: sfx_mouse,
+                    loop: false,
+                    volume: 0.1,
+                }),
+            },
+            voices: {
+                pensa: new Howl({
+                    src: pensa,
+                    loop: false,
+                    volume: 2.2,
+                }),
+                portfolio: new Howl({
+                    src: portfolio,
+                    loop: false,
+                    volume: 3.0,
+                }),
+                toca: new Howl({
+                    src: toca,
+                    loop: false,
+                    volume: 2.8,
+                }),
+                horslesmurs: new Howl({
+                    src: horslesmurs,
+                    loop: false,
+                    volume: 2.8,
+                }),
+                river: new Howl({
+                    src: fleuve,
+                    loop: false,
+                    volume: 2.8,
+                }),
+            },
         }
         this.subtitles = {
             pensa: new SubtitleController('pensa-sub', 10500, [0, 3800]),
@@ -138,9 +144,8 @@ class BabylonScene {
         this.scene = null
         this.engine = null
         this.eventsController = null
-        this.loadingScreen = new LoadingScreen()
+        this.loadingScreen = new LoadingScreen().init()
         this.progression = new ProgressionController()
-        this.init()
     }
 
     init() {
@@ -170,27 +175,27 @@ class BabylonScene {
             (gltf) => {
                 this.scene = gltf
 
-                new Skybox(this.scene, 3)
+                new Skybox(this.scene, 3).init()
                 new Screen(
                     this.scene,
                     document.getElementById('life-river'),
                     'riverScreen'
-                )
+                ).init()
                 new Screen(
                     this.scene,
                     document.getElementById('horslesmurs'),
                     'horsLesMursScreen'
-                )
+                ).init()
                 new Screen(
                     this.scene,
                     document.getElementById('toca'),
                     'tocaScreen'
-                )
+                ).init()
                 new Screen(
                     this.scene,
                     document.getElementById('pensa'),
                     'pensaScreen'
-                )
+                ).init()
 
                 this.setPhone()
                 this.setCamera()
@@ -214,7 +219,7 @@ class BabylonScene {
                 }
 
                 //ambient sound
-                this.audio.birds.play()
+                this.audio.ambient.birds.play()
 
                 new PhysicsController(this.scene, this.audio).init()
 
@@ -225,7 +230,7 @@ class BabylonScene {
                     // new GizmoController(
                     //     this.scene,
                     //     findMesh('phone', this.scene)
-                    // )
+                    // ).init()
                     // this.scene.forceShowBoundingBoxes = true
                 }
 

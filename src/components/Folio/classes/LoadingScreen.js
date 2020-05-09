@@ -1,10 +1,6 @@
 import { DefaultLoadingScreen } from '@babylonjs/core/Loading/loadingScreen'
 
 class LoadingScreen {
-    constructor() {
-        this.init()
-    }
-
     init() {
         DefaultLoadingScreen.prototype.displayLoadingUI = function () {
             if (document.getElementById('customLoadingScreenDiv')) {

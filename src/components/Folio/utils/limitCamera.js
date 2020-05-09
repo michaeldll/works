@@ -1,8 +1,13 @@
 import { Vector3 } from '@babylonjs/core/Maths/math'
 import config from './config'
 
-const limitCamera = (camera, radians, angle) => {
-    switch (angle) {
+/**
+ * @param {BABYLON.Camera} camera
+ * @param {Number} radians
+ * @param {String} axis
+ */
+const limitCamera = (camera, radians, axis) => {
+    switch (axis) {
         case 'x':
             if (camera.rotation.x <= radians.lower) {
                 camera.rotation = new Vector3(

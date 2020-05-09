@@ -8,6 +8,7 @@ import { Ray, Axis } from '@babylonjs/core/'
 
 import PhysicsController from './PhysicsController'
 import OrientationController from '../classes/OrientationController'
+import AudioController from '../classes/AudioController'
 
 import config from '../utils/config'
 import getActiveScreen from '../utils/getActiveScreen'
@@ -20,16 +21,17 @@ class EventsController {
         this.scene = scene
         this.engine = engine
         this.audio = audio
-        this.subtitles = subtitles
+        this.SubtitleController = subtitles
         this.progression = progression
         this.volume = 1
         this.throwingMode = false
+        this.manageResetPhoneInterval = null
         this.physics = new PhysicsController(
             this.scene,
             this.scene.activeCamera
         )
-        this.manageResetPhoneInterval = null
         this.OrientationController = new OrientationController()
+        this.AudioController = new AudioController(this.audio)
         this.init()
     }
     init() {
@@ -42,21 +44,6 @@ class EventsController {
             } else {
                 return false
             }
-        }
-        const isVoicePlaying = () => {
-            let isPlaying = false
-
-            Object.keys(this.audio).forEach((audio) => {
-                // console.log(this.audio[audio])
-                if (
-                    audio !== 'birds' &&
-                    this.audio[audio] &&
-                    this.audio[audio].playing()
-                )
-                    isPlaying = true
-            })
-
-            return isPlaying
         }
         const onClick = (e) => {
             const pickedMesh = this.scene.pick(
@@ -92,8 +79,8 @@ class EventsController {
                         break
                     case 'speaker left':
                         Math.floor(Math.random() * 10) * 0.1 > 0.5
-                            ? this.audio.click_out.play()
-                            : this.audio.click_in.play()
+                            ? this.audio.sfx.click_out.play()
+                            : this.audio.sfx.click_in.play()
 
                         sessionStorage.getItem('volume') === '1'
                             ? (this.volume = 0)
@@ -107,7 +94,7 @@ class EventsController {
                         break
 
                     case 'Keyboard.001':
-                        this.audio.kb.play()
+                        this.audio.sfx.kb.play()
                         this.physics.touch(
                             findMesh('Keyboard.001', this.scene),
                             new Vector3(3.5, 2, -1)
@@ -116,7 +103,7 @@ class EventsController {
                         break
                     case 'MOUSE':
                         if (!this.hasClickedMouse) {
-                            this.audio.mouse.play()
+                            this.audio.sfx.mouse.play()
                             this.physics.touch(
                                 findMesh('MOUSE', this.scene),
                                 new Vector3(3.5, 2, -0.8)
@@ -163,41 +150,45 @@ class EventsController {
                             }, 200)
                         }
                         break
+                    case 'horsLesMursScreen':
+                        this.AudioController.speak('horslesmurs')
+                        // this.audio.voices.horslesmurs.play()
+                        this.SubtitleController.horslesmurs.init()
+                        break
+                    case 'postit':
+                        this.AudioController.speak('portfolio')
+                        this.SubtitleController.postit.init()
+                        break
+                    case 'riverScreen':
+                        this.AudioController.speak('river')
+                        this.SubtitleController.river.init()
+                        break
+                    case 'tocaScreen':
+                        this.AudioController.speak('toca')
+                        this.SubtitleController.toca.init()
+                        break
+                    case 'pensaScreen':
+                        this.AudioController.speak('pensa')
+                        this.SubtitleController.pensa.init()
+                        break
                     default:
                         break
                 }
-                if (!isVoicePlaying()) {
-                    if (pickedMesh.name === 'horsLesMursScreen') {
-                        this.audio.horslesmurs.play()
-                        this.subtitles.horslesmurs.init()
-                    } else if (pickedMesh.name === 'postit') {
-                        this.audio.portfolio.play()
-                        this.subtitles.postit.init()
-                    } else if (pickedMesh.name === 'riverScreen') {
-                        this.audio.river.play()
-                        this.subtitles.river.init()
-                    } else if (pickedMesh.name === 'tocaScreen') {
-                        this.audio.toca.play()
-                        this.subtitles.toca.init()
-                    } else if (pickedMesh.name === 'pensaScreen') {
-                        this.audio.pensa.play()
-                        this.subtitles.pensa.init()
-                    }
-                    if (pickedMesh.name.indexOf('Screen') > -1) {
-                        this.scene.meshes
-                            .filter((mesh) => mesh.name.indexOf('Screen') > -1)
-                            .forEach((screen) => {
-                                gsap.to(screen, {
-                                    outlineWidth: 0.02,
-                                    duration: 0.1,
-                                })
-                                gsap.to(screen, {
-                                    outlineWidth: 0.034,
-                                    duration: 0.1,
-                                    delay: 0.1,
-                                })
+                //interpolate screen outline width
+                if (pickedMesh.name.indexOf('Screen') > -1) {
+                    this.scene.meshes
+                        .filter((mesh) => mesh.name.indexOf('Screen') > -1)
+                        .forEach((screen) => {
+                            gsap.to(screen, {
+                                outlineWidth: 0.02,
+                                duration: 0.1,
                             })
-                    }
+                            gsap.to(screen, {
+                                outlineWidth: 0.034,
+                                duration: 0.1,
+                                delay: 0.1,
+                            })
+                        })
                 }
             } else if (throwCondition) {
                 this.physics.throwPhone()

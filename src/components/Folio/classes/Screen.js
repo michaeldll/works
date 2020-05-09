@@ -30,7 +30,6 @@ class Screen {
             false,
             true
         )
-        this.init()
     }
 
     init = () => {

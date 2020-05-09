@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react'
 import './About.scss'
-import '98.css'
 
 const About = (props) => {
     const containerEl = useRef(null)
