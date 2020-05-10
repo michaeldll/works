@@ -37,6 +37,7 @@ class EventsController {
         this.OrientationController = new OrientationController()
         this.AudioController = new AudioController(audio, subtitles)
         this.overlayTimeline = overlayTimeline
+        this.isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
         this.init()
     }
     init() {
@@ -141,17 +142,34 @@ class EventsController {
                                 }
                                 switch (getActiveScreen(this.scene)[1]) {
                                     case 0:
-                                        onMouseClick(
-                                            'project-river',
-                                            'https://river.michaels.works/'
-                                        )
+                                        if (!this.isMobile) {
+                                            onMouseClick(
+                                                'project-river',
+                                                'https://river.michaels.works/'
+                                            )
+                                        } else {
+                                            onMouseClick(
+                                                'project-horslesmurs',
+                                                window.location.origin +
+                                                    '/horslesmurs'
+                                            )
+                                        }
+
                                         break
                                     case 1:
-                                        onMouseClick(
-                                            'project-horslesmurs',
-                                            window.location.origin +
-                                                '/horslesmurs'
-                                        )
+                                        if (!this.isMobile) {
+                                            onMouseClick(
+                                                'project-horslesmurs',
+                                                window.location.origin +
+                                                    '/horslesmurs'
+                                            )
+                                        } else {
+                                            onMouseClick(
+                                                'project-pensa',
+                                                'https://pensa.michaels.works/'
+                                            )
+                                        }
+
                                         break
                                     case 2:
                                         onMouseClick(

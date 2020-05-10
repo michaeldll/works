@@ -23,9 +23,10 @@ class ProgressionController {
 
         if ((!isMobile && this.step >= 4) || (isMobile && this.step >= 2)) {
             setTimeout(() => {
-                document
-                    .querySelector('.discover img:not(.hide)')
-                    .classList.add('fadeout')
+                document.querySelector('.discover img:not(.hide)') &&
+                    document
+                        .querySelector('.discover img:not(.hide)')
+                        .classList.add('fadeout')
             }, 3000)
         }
     }

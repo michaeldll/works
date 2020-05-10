@@ -113,14 +113,19 @@ const Folio = () => {
                 <img src={backToMenu} alt="backtomenu" />
             </div>
 
-            <video
-                autoPlay
-                playsInline
-                loop
-                id="life-river"
-                src={life}
-                type="video/mp4"
-            />
+            {!isMobile ? (
+                <video
+                    autoPlay
+                    playsInline
+                    loop
+                    id="life-river"
+                    src={life}
+                    type="video/mp4"
+                />
+            ) : (
+                ''
+            )}
+
             <video
                 autoPlay
                 playsInline
@@ -137,14 +142,19 @@ const Folio = () => {
                 src={pensa}
                 type="video/mp4"
             />
-            <video
-                autoPlay
-                playsInline
-                loop
-                id="toca"
-                src={toca}
-                type="video/mp4"
-            />
+
+            {!isMobile ? (
+                <video
+                    autoPlay
+                    playsInline
+                    loop
+                    id="toca"
+                    src={toca}
+                    type="video/mp4"
+                />
+            ) : (
+                ''
+            )}
 
             {subtitles.map((sub, i) => (
                 <Subtitle
