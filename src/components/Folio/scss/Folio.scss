@@ -179,6 +179,14 @@ body .orientationText {
         .overlay {
             height: 101%;
         }
+        .backtomenu {
+            justify-content: flex-end;
+            padding-top: 10px;
+            padding-right: 50px;
+            img {
+                width: 50%;
+            }
+        }
     }
     .discover {
         width: 25%;

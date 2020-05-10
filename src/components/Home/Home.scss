@@ -135,6 +135,14 @@
 
 //mobile
 @media screen and (max-width: 450px) {
+    #canvas-container .backtomenu {
+        justify-content: flex-end;
+        padding-top: 10px;
+        padding-right: 50px;
+    }
+    #canvas-container .backtomenu img {
+        width: 50%;
+    }
     .text-logo {
         width: 82vw;
     }
