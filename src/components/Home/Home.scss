@@ -135,6 +135,9 @@
 
 //mobile
 @media screen and (max-width: 450px) {
+    .text-logo {
+        width: 82vw;
+    }
     .home-container {
         padding-bottom: 30px;
         overflow: hidden;
