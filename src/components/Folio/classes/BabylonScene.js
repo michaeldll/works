@@ -283,8 +283,8 @@ class BabylonScene {
             mesh.edgesWidth = 0.9
             mesh.edgesColor = new Color4(249 / 255, 213 / 255, 134 / 255, 1)
             mesh.outlineColor = new Color3(249 / 255, 213 / 255, 134 / 255)
-            mesh.overlayColor = new Color3(249 / 255, 213 / 255, 134 / 255)
-            mesh.overlayAlpha = 0.5
+            mesh.overlayColor = new Color3(59 / 255, 99 / 255, 173 / 255)
+            mesh.overlayAlpha = 1
         })
 
         findMesh('MOUSE', this.scene).outlineWidth = 0.005
@@ -304,7 +304,7 @@ class BabylonScene {
                 this.overlayTimeline.fromTo(
                     postit,
                     { overlayAlpha: 0 },
-                    { overlayAlpha: 0.5, duration: 0.5 }
+                    { overlayAlpha: 1, duration: 1 }
                 )
             })
     }
