@@ -14,12 +14,14 @@ class ProgressionController {
     }
 
     showText() {
+        const isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
+
         document.querySelectorAll('.discover img').forEach((img, i) => {
             if (i === this.step) img.classList.remove('hide')
             else img.classList.add('hide')
         })
 
-        if (this.step >= 4) {
+        if ((!isMobile && this.step >= 4) || (isMobile && this.step >= 2)) {
             setTimeout(() => {
                 document
                     .querySelector('.discover img:not(.hide)')

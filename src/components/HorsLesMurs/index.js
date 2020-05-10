@@ -18,7 +18,6 @@ const HorsLesMurs = () => {
                     {'<'} HOME
                 </a>
             )}
-
             <div className="container nopadtop">
                 <img className="small" src={pic} alt="pic" />
             </div>

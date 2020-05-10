@@ -9,6 +9,9 @@ import discover1 from '../../assets/img/discover/1.png'
 import discover2 from '../../assets/img/discover/2.png'
 import discover3 from '../../assets/img/discover/3.png'
 import discover4 from '../../assets/img/discover/4.png'
+import discover0Mobile from '../../assets/img/discover/mobile/0.png'
+import discover1Mobile from '../../assets/img/discover/mobile/1.png'
+import discover2Mobile from '../../assets/img/discover/mobile/2.png'
 import backToMenu from '../../assets/img/back-to-menu.png'
 import life from '../../assets/video/life.mp4'
 import horslesmurs from '../../assets/video/horslesmurs.mp4'
@@ -47,6 +50,8 @@ const Folio = () => {
         },
     ]
 
+    const isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
+
     useEffect(() => {
         new BabylonScene().init()
     }, [])
@@ -67,29 +72,41 @@ const Folio = () => {
             <div className="discover">
                 <img
                     className="zero hide"
-                    src={discover0}
+                    src={!isMobile ? discover0 : discover0Mobile}
                     alt="discover_project"
                 />
+
                 <img
                     className="one hide"
-                    src={discover1}
+                    src={!isMobile ? discover1 : discover1Mobile}
                     alt="discover_project"
                 />
+
                 <img
                     className="two hide"
-                    src={discover2}
+                    src={!isMobile ? discover2 : discover2Mobile}
                     alt="discover_project"
                 />
-                <img
-                    className="three hide"
-                    src={discover3}
-                    alt="discover_project"
-                />
-                <img
-                    className="four hide"
-                    src={discover4}
-                    alt="discover_project"
-                />
+
+                {!isMobile ? (
+                    <img
+                        className="three hide"
+                        src={discover3}
+                        alt="discover_project"
+                    />
+                ) : (
+                    ''
+                )}
+
+                {!isMobile ? (
+                    <img
+                        className="four hide"
+                        src={discover4}
+                        alt="discover_project"
+                    />
+                ) : (
+                    ''
+                )}
             </div>
 
             <div className="backtomenu">
@@ -128,6 +145,7 @@ const Folio = () => {
                 src={toca}
                 type="video/mp4"
             />
+
             {subtitles.map((sub, i) => (
                 <Subtitle
                     key={i}
@@ -135,6 +153,7 @@ const Folio = () => {
                     text={Object.values(sub)[0]}
                 />
             ))}
+
             <div id="orientationScreen" className="hide">
                 <div className="window orientationText">
                     Please rotate your screen
