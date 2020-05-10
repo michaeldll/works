@@ -1,4 +1,4 @@
-import d2r from '../utils/d2r.js'
+import d2r from './d2r.js'
 
 export default {
     camera: {
@@ -38,12 +38,46 @@ export default {
             z: d2r(124),
         },
     },
+    arm: {
+        initial: {
+            position: {
+                x: 0.413,
+                y: 0.22,
+                z: -1.23,
+            },
+        },
+        lowered: {
+            position: {
+                y: 0.22,
+            },
+        },
+        raised: {
+            position: {
+                y: 0.32,
+            },
+        },
+        tutorial: {
+            position: {
+                x: 0.486,
+                y: 0.35,
+                z: -1.346,
+            },
+        },
+    },
     physicsGround: {
         position: {
             y: -0.33,
         },
     },
-    activeEdgeMeshes: ['Keyboard.001', 'postit', 'speaker left'],
+    activeEdgeMeshes: [
+        'Keyboard.001',
+        'postit.001',
+        'speaker left',
+        'tuto.stack top',
+        'tuto.postit.speaker',
+        'tuto.postit.keyboard',
+        'tuto.postit.open',
+    ],
     activeOutlineMeshes: [
         'phone',
         'horsLesMursScreen',
@@ -53,5 +87,12 @@ export default {
         'MOUSE',
     ],
     activeGrabMeshes: ['phone'],
-    debug: false,
+    activeTutorialMeshes: [
+        'tuto.stack top',
+        'tuto.postit.speaker',
+        'tuto.postit.keyboard',
+        'tuto.postit.open',
+    ],
+    tutorial: true,
+    debug: true,
 }

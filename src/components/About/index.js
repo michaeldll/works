@@ -21,7 +21,7 @@ const About = (props) => {
     }
     const onEmail = (e) => {
         emailEl.current.innerHTML = `<a href="mailto:delabordemichael@gmail.com">delabordemichael${
-            window.USER_HAS_TOUCHED ? '<br />' : ''
+            sessionStorage.getItem('USER_HAS_TOUCHED') ? '<br />' : ''
         }@gmail.com</a>`
         emailBtnEl.current.disabled = true
     }

@@ -24,6 +24,7 @@ class PhysicsController {
         this.transMat = new StandardMaterial('transparent', this.scene)
         this.meshesWithCollisionSounds = []
     }
+
     init() {
         this.scene.enablePhysics(this.gravityVector, this.physicsPlugin)
         this.scene.getPhysicsEngine().setTimeStep(1 / 60)
@@ -200,6 +201,16 @@ class PhysicsController {
             this.scene
         )
 
+        //Postit Stack
+        const postitStack = findMesh('tuto.stack top', this.scene)
+        postitStack.setParent(null)
+        postitStack.physicsImpostor = new PhysicsImpostor(
+            postitStack,
+            PhysicsImpostor.BoxImpostor,
+            { mass: 10, restitution: 0.2 },
+            this.scene
+        )
+
         //Phone reset bounding box
         const phoneBoundingBox = Mesh.CreateBox(
             'phoneBoundingBox',
@@ -293,9 +304,9 @@ class PhysicsController {
         phone.rotationQuaternion.copyFromFloats(0, 0, 0, 1)
 
         phone.position = new Vector3(
-            this.scene.activeCamera.position.x - 0.01,
-            this.scene.activeCamera.position.y - 0.01,
-            this.scene.activeCamera.position.z + 0.01
+            this.scene.activeCamera.position.x + 0.05,
+            this.scene.activeCamera.position.y - 0.05,
+            this.scene.activeCamera.position.z + 0.05
         )
 
         this.push(phone, this.scene.activeCamera.getForwardRay().direction, 6)

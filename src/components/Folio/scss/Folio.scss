@@ -30,12 +30,9 @@ div#inspector-host {
         position: absolute;
         left: 50%;
         top: 50%;
-        width: 5px;
+        width: 6px;
         opacity: 0.7;
         z-index: 2;
-    }
-    .crosshair.throwing {
-        border-radius: 100%;
     }
     .overlay {
         position: absolute;
@@ -43,6 +40,34 @@ div#inspector-host {
         width: 100%;
         pointer-events: none;
         z-index: 2;
+    }
+    .backtomenu {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        z-index: 3;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.15s ease-in-out;
+        &.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        img {
+            cursor: pointer;
+            width: 20%;
+            transition: all 0.2s ease-in-out;
+            opacity: 0.98;
+            &:hover {
+                transform: scale(1.015);
+            }
+        }
     }
 }
 

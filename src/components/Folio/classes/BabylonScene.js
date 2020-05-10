@@ -2,6 +2,9 @@
 //Howler for sound
 import { Howl, Howler } from 'howler'
 
+//Greensock for interpolation
+import gsap from 'gsap'
+
 //Babylon for 3D
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { Scene } from '@babylonjs/core/scene'
@@ -140,6 +143,7 @@ class BabylonScene {
             portfolio: new SubtitleController('postit-sub', 3500, [0]),
         }
         this.hasClickedMouse = false
+        this.overlayTimeline = gsap.timeline({ repeat: -1, yoyo: true })
         this.canvas = null
         this.scene = null
         this.engine = null
@@ -171,7 +175,7 @@ class BabylonScene {
 
         SceneLoader.Load(
             'models/',
-            'scene.glb',
+            'scene_final.glb',
             this.engine,
             (gltf) => {
                 this.scene = gltf
@@ -201,7 +205,8 @@ class BabylonScene {
                 this.setPhone()
                 this.setCamera()
                 this.setArm()
-                this.setEdgesAndOutlines()
+                this.setHoverHighlights()
+                this.hidePostits()
                 showScreen(this.scene, 'random')
 
                 if (sessionStorage.getItem('volume')) {
@@ -227,12 +232,14 @@ class BabylonScene {
                     this.audio,
                     this.subtitles,
                     this.ProgressionController,
-                    this.PhysicsController
+                    this.PhysicsController,
+                    this.overlayTimeline
                 )
 
                 if (config.debug) {
                     document.getElementById('canvas-container').style.width =
                         '100%'
+                    document.querySelector('.discover').classList.add('hide')
                     this.scene.debugLayer.show()
                     // new GizmoController(
                     //     this.scene,
@@ -242,7 +249,7 @@ class BabylonScene {
                 }
 
                 this.scene.beforeRender = () => {
-                    this.positionArm()
+                    this.rotateArm()
                     if (this.EventsController)
                         this.EventsController.onCameraRotation()
                     limitCamera(this.camera, { lower: -0.22, upper: 0.52 }, 'x')
@@ -271,11 +278,13 @@ class BabylonScene {
         )
     }
 
-    setEdgesAndOutlines() {
+    setHoverHighlights() {
         this.scene.meshes.forEach((mesh) => {
             mesh.edgesWidth = 0.9
             mesh.edgesColor = new Color4(249 / 255, 213 / 255, 134 / 255, 1)
             mesh.outlineColor = new Color3(249 / 255, 213 / 255, 134 / 255)
+            mesh.overlayColor = new Color3(249 / 255, 213 / 255, 134 / 255)
+            mesh.overlayAlpha = 0.5
         })
 
         findMesh('MOUSE', this.scene).outlineWidth = 0.005
@@ -285,6 +294,18 @@ class BabylonScene {
             .filter((mesh) => mesh.name.indexOf('Screen') > -1)
             .forEach((screen) => {
                 screen.outlineWidth = 0.034
+            })
+
+        this.scene.meshes
+            .filter((mesh) => mesh.name.indexOf('tuto') > -1)
+            .forEach((postit) => {
+                postit.renderOverlay = true
+                postit.outlineWidth = 0.002
+                this.overlayTimeline.fromTo(
+                    postit,
+                    { overlayAlpha: 0 },
+                    { overlayAlpha: 0.5, duration: 0.5 }
+                )
             })
     }
 
@@ -309,17 +330,6 @@ class BabylonScene {
         )
     }
 
-    positionArm() {
-        const arm = this.scene.rootNodes[0]._children.find((child) => {
-            if (child.name === 'main_enfant.004') return child
-        })
-        arm.rotation = new Vector3(
-            this.camera.rotation.x,
-            -this.camera.rotation.y,
-            this.camera.rotation.z
-        )
-    }
-
     setCamera() {
         const cameraPos = new Vector3(
             config.camera.position.x,
@@ -331,7 +341,7 @@ class BabylonScene {
             config.camera.target.y,
             config.camera.target.z
         )
-        if (window.innerWidth < 450) {
+        if (sessionStorage.getItem('USER_HAS_TOUCHED')) {
             this.camera = new DeviceOrientationCamera(
                 'camera1',
                 cameraPos,
@@ -341,10 +351,9 @@ class BabylonScene {
             this.camera = new UniversalCamera('camera1', cameraPos, this.scene)
         }
         this.camera.minZ = config.camera.near
-        this.camera.fov =
-            window.innerWidth < 450
-                ? d2r(config.camera.fovMobile)
-                : d2r(config.camera.fov)
+        this.camera.fov = sessionStorage.getItem('USER_HAS_TOUCHED')
+            ? d2r(config.camera.fovMobile)
+            : d2r(config.camera.fov)
         this.camera.setTarget(cameraTarget)
         this.camera.attachControl(this.canvas, true)
         this.camera.speed = config.camera.speed
@@ -355,10 +364,37 @@ class BabylonScene {
         const arm = this.scene.rootNodes[0]._children.find((child) => {
             if (child.name === 'main_enfant.004') return child
         })
-        arm.position.x = 0.413
-        arm.position.y = 0.2 //when raised: 0,309
-        arm.position.z = -1.23
+        arm.position.x = config.arm.initial.position.x
+        arm.position.y = config.arm.initial.position.y
+        arm.position.z = config.arm.initial.position.z
         arm.scaling = new Vector3(0.5, 0.5, 0.5)
+    }
+
+    hidePostits() {
+        //TODO: try this more complex tutorial
+        // this.scene.meshes
+        //     .filter((mesh) => mesh.name.indexOf('tuto') > -1)
+        //     .forEach((tutorialPostit) => {
+        //         if (tutorialPostit.name !== 'tuto.stack top')
+        //             tutorialPostit.setEnabled(false)
+        //     })
+
+        this.scene.meshes
+            .filter((mesh) => mesh.name.indexOf('hand.postit') > -1)
+            .forEach((handPostit) => {
+                handPostit.setEnabled(false)
+            })
+    }
+
+    rotateArm() {
+        const arm = this.scene.rootNodes[0]._children.find((child) => {
+            if (child.name === 'main_enfant.004') return child
+        })
+        arm.rotation = new Vector3(
+            this.camera.rotation.x,
+            -this.camera.rotation.y,
+            this.camera.rotation.z
+        )
     }
 }
 

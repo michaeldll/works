@@ -3,11 +3,13 @@ import Subtitle from './Subtitle/index'
 import BabylonScene from './classes/BabylonScene'
 import layout from '../../assets/img/overlay.png'
 import crosshair from '../../assets/img/crosshair.png'
+import crosshairThrow from '../../assets/img/crosshair-throw.png'
 import discover0 from '../../assets/img/discover/0.png'
 import discover1 from '../../assets/img/discover/1.png'
 import discover2 from '../../assets/img/discover/2.png'
 import discover3 from '../../assets/img/discover/3.png'
 import discover4 from '../../assets/img/discover/4.png'
+import backToMenu from '../../assets/img/back-to-menu.png'
 import life from '../../assets/video/life.mp4'
 import horslesmurs from '../../assets/video/horslesmurs.mp4'
 import pensa from '../../assets/video/pensa.mp4'
@@ -55,6 +57,11 @@ const Folio = () => {
             className="h-100 d-flex justify-content-center align-items-center"
         >
             <img className="crosshair" src={crosshair} alt="crosshair" />
+            <img
+                className="crosshair crosshair-throw hide"
+                src={crosshairThrow}
+                alt="crosshair"
+            />
             <img className="overlay" src={layout} alt="layout" />
 
             <div className="discover">
@@ -83,6 +90,10 @@ const Folio = () => {
                     src={discover4}
                     alt="discover_project"
                 />
+            </div>
+
+            <div className="backtomenu">
+                <img src={backToMenu} alt="backtomenu" />
             </div>
 
             <video

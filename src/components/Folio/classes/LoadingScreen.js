@@ -12,7 +12,7 @@ class LoadingScreen {
             }
             this._loadingDiv = document.createElement('div')
             this._loadingDiv.id = 'customLoadingScreenDiv'
-            if (window.innerWidth < 450) {
+            if (sessionStorage.getItem('USER_HAS_TOUCHED')) {
                 this._loadingDiv.innerHTML = `
                     <div class="window loading-text">LOADING</div>
                     <br>

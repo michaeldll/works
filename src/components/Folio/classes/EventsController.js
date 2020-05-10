@@ -1,7 +1,5 @@
 /* eslint-disable array-callback-return */
 import { Howler } from 'howler'
-
-//Greensock for ""animation"""
 import gsap from 'gsap'
 
 import { Vector3 } from '@babylonjs/core/Maths/math'
@@ -23,19 +21,22 @@ class EventsController {
         audio,
         subtitles,
         ProgressionController,
-        PhysicsController
+        PhysicsController,
+        overlayTimeline
     ) {
         this.canvas = canvas
         this.scene = scene
         this.engine = engine
         this.audio = audio
-        this.ProgressionController = ProgressionController
         this.volume = 1
         this.throwingMode = false
+        this.tutorialMode = false
         this.manageResetPhoneInterval = null
+        this.ProgressionController = ProgressionController
         this.PhysicsController = PhysicsController
         this.OrientationController = new OrientationController()
         this.AudioController = new AudioController(audio, subtitles)
+        this.overlayTimeline = overlayTimeline
         this.init()
     }
     init() {
@@ -55,30 +56,44 @@ class EventsController {
                 this.canvas.clientHeight / 2
             ).pickedMesh
 
+            const phone = findMesh('phone', this.scene)
+            const phoneInHand = findMesh('phone.child', this.scene)
+            const arm = this.scene.rootNodes[0]._children.find((child) => {
+                if (child.name === 'main_enfant.004') return child
+            })
+
             let interactCondition
             let throwCondition
+            let tutorialCondition
 
-            if (window.innerWidth < 450) {
-                interactCondition = !this.throwingMode && pickedMesh
+            if (sessionStorage.getItem('USER_HAS_TOUCHED')) {
+                interactCondition =
+                    !this.throwingMode && !this.tutorialMode && pickedMesh
                 throwCondition = this.throwingMode
+                tutorialCondition = this.tutorialMode
             } else {
                 interactCondition =
-                    isPointerLocked() && !this.throwingMode && pickedMesh
+                    isPointerLocked() &&
+                    !this.throwingMode &&
+                    !this.tutorialMode &&
+                    pickedMesh
                 throwCondition = isPointerLocked() && this.throwingMode
+                tutorialCondition = isPointerLocked() && this.tutorialMode
             }
 
             if (interactCondition) {
                 switch (pickedMesh.name) {
                     case 'phone':
-                        const phone = findMesh('phone', this.scene)
-                        const phoneInHand = findMesh('phone.child', this.scene)
                         if (phone.isEnabled) {
                             phoneInHand.setEnabled(true)
                             phone.setEnabled(false)
                             this.throwingMode = true
                             document
                                 .querySelector('.crosshair')
-                                .classList.add('throwing')
+                                .classList.add('hide')
+                            document
+                                .querySelector('.crosshair-throw')
+                                .classList.remove('hide')
                         }
                         break
                     case 'speaker left':
@@ -159,7 +174,7 @@ class EventsController {
                     case 'horsLesMursScreen':
                         this.AudioController.speak('horslesmurs')
                         break
-                    case 'postit':
+                    case 'postit.001':
                         this.AudioController.speak('portfolio')
                         break
                     case 'riverScreen':
@@ -170,6 +185,10 @@ class EventsController {
                         break
                     case 'pensaScreen':
                         this.AudioController.speak('pensa')
+                        break
+                    case 'tuto.stack top':
+                        this.overlayTimeline.seek(0)
+                        this.overlayTimeline.kill()
                         break
                     default:
                         break
@@ -190,6 +209,28 @@ class EventsController {
                             })
                         })
                 }
+                //init tutorial
+                if (pickedMesh.name.indexOf('tuto') > -1 && config.tutorial) {
+                    this.AudioController.shutUp()
+                    this.tutorialMode = true
+                    document.querySelector('.backtomenu').classList.add('show')
+                    findMesh('hand.postit.menu', this.scene).setEnabled(true)
+                    this.PhysicsController.touch(
+                        findMesh('tuto.stack top', this.scene),
+                        new Vector3(3.5, 3, -0.8)
+                    )
+                    gsap.to(arm.position, {
+                        x: config.arm.tutorial.position.x,
+                        y: config.arm.tutorial.position.y,
+                        z: config.arm.tutorial.position.z,
+                        duration: 0.5,
+                    })
+                    document.exitPointerLock =
+                        document.exitPointerLock || document.mozExitPointerLock
+
+                    // Attempt to unlock
+                    document.exitPointerLock()
+                }
             } else if (throwCondition) {
                 this.PhysicsController.throwPhone()
                 this.manageResetPhoneInterval = setInterval(() => {
@@ -197,11 +238,21 @@ class EventsController {
                 }, 2800)
                 this.manageResetPhone()
                 this.throwingMode = false
-                document
-                    .querySelector('.crosshair')
-                    .classList.remove('throwing')
+                document.querySelector('.crosshair').classList.remove('hide')
+                document.querySelector('.crosshair-throw').classList.add('hide')
+            } else if (tutorialCondition) {
+                this.tutorialMode = false
+                document.querySelector('.backtomenu').classList.remove('show')
+                gsap.to(arm.position, {
+                    x: config.arm.initial.position.x,
+                    y: config.arm.initial.position.y,
+                    z: config.arm.initial.position.z,
+                    duration: 0.25,
+                })
+                findMesh('hand.postit.menu', this.scene).setEnabled(false)
             }
         }
+        //handle Pointer Lock
         this.canvas.addEventListener(
             'click',
             (e) => {
@@ -210,23 +261,35 @@ class EventsController {
                     this.canvas.mozRequestPointerLock
                 if (this.canvas.requestPointerLock) {
                     this.canvas.requestPointerLock()
+                    document
+                        .querySelector('.backtomenu')
+                        .classList.remove('show')
                 }
             },
             false
         )
+        //handle clicks
         document.addEventListener('click', onClick)
+        //handle resize
         window.addEventListener('resize', (e) => {
             this.engine.resize()
         })
+        //force portait mode
         window.onorientationchange = () => {
             if (window.orientation !== 0) this.OrientationController.show()
             else this.OrientationController.hide()
         }
+        //shut up when subtitle clicked
         document.querySelectorAll('.subtitle').forEach((subtitle) => {
             subtitle.addEventListener('click', (e) => {
                 this.AudioController.shutUp()
             })
         })
+        document
+            .querySelector('.backtomenu img')
+            .addEventListener('click', (e) => {
+                document.location.href = document.location.origin
+            })
     }
     onCameraRotation() {
         const pickedMesh = this.scene.pick(
@@ -239,14 +302,11 @@ class EventsController {
         })
 
         if (pickedMesh) {
+            //toggle edges and outline
             this.scene.meshes.forEach((mesh) => {
                 if (mesh.id !== pickedMesh.id && mesh._edgesRenderer) {
                     mesh.disableEdgesRendering()
-                }
-            })
-
-            this.scene.meshes.forEach((mesh) => {
-                if (mesh.id !== pickedMesh.id && mesh.renderOutline) {
+                } else if (mesh.id !== pickedMesh.id && mesh.renderOutline) {
                     mesh.renderOutline = false
                 }
             })
@@ -256,25 +316,38 @@ class EventsController {
                 config.activeEdgeMeshes.includes(pickedMesh.name)
             ) {
                 pickedMesh.enableEdgesRendering(0.95, true)
-            }
-
-            if (
+            } else if (
                 !pickedMesh.renderOutline &&
                 config.activeOutlineMeshes.includes(pickedMesh.name)
             ) {
                 pickedMesh.renderOutline = true
             }
 
+            //raise arm on hover
             if (
-                arm.position.y === 0.22 &&
-                config.activeGrabMeshes.includes(pickedMesh.name)
+                (arm.position.y === config.arm.lowered.position.y &&
+                    config.activeGrabMeshes.includes(pickedMesh.name)) ||
+                (arm.position.y === config.arm.lowered.position.y &&
+                    config.activeTutorialMeshes.includes(pickedMesh.name))
             ) {
-                gsap.to(arm.position, { y: 0.309, duration: 0.5 })
-            } else if (!config.activeGrabMeshes.includes(pickedMesh.name)) {
-                if (!this.throwingMode)
-                    gsap.to(arm.position, { y: 0.22, duration: 0.2 })
+                gsap.to(arm.position, {
+                    y: config.arm.raised.position.y,
+                    duration: 0.5,
+                })
+            } else if (
+                !config.activeGrabMeshes.includes(pickedMesh.name) &&
+                !config.activeTutorialMeshes.includes(pickedMesh.name)
+            ) {
+                if (!this.throwingMode && !this.tutorialMode)
+                    gsap.to(arm.position, {
+                        x: config.arm.initial.position.x,
+                        y: config.arm.initial.position.y,
+                        z: config.arm.initial.position.z,
+                        duration: 0.25,
+                    })
             }
 
+            //prevents bug when clicking mouse
             if (pickedMesh.name !== 'MOUSE' && this.hasClickedMouse) {
                 this.hasClickedMouse = false
             }

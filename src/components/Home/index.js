@@ -1,5 +1,5 @@
 //React
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Redirect } from 'react-router-dom'
 //Components
 import About from '../About'
@@ -27,12 +27,30 @@ const Home = () => {
     const [optionSelected, setOptionSelected] = useState(false)
     const [aboutSelected, setAboutSelected] = useState(false)
     const [logoVideoIndex, setLogoVideoIndex] = useState(0)
+    const [isIntervalCleared, setIsIntervalCleared] = useState(false)
+    const about = useRef(null)
+    const videos = [video_toca, video_pensa, video_hlm, video_lvdf]
+    const isMobile =
+        window.innerWidth <= 1024 || sessionStorage.getItem('USER_HAS_TOUCHED')
+
+    const onStartTouch = (e) => {
+        // detect iOS 13+ and add permissions
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission()
+                .then((permissionState) => {
+                    console.log('permission state: ', permissionState)
+                })
+                .catch(console.error)
+        }
+    }
 
     useEffect(() => {
         const onKeyDown = (e) => {
             setPresses(presses + 1)
 
-            if (presses === 0 && !entered) setEntered(true)
+            if (presses === 0 && !entered) {
+                setEntered(true)
+            }
 
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                 optionNumber === 0
@@ -74,17 +92,6 @@ const Home = () => {
                     setOptionSelected(false)
                 }, 10)
             }
-            // else if (
-            //     (!aboutSelected && e.target.classList.contains('menu')) ||
-            //     e.target.classList.contains('logo-video') ||
-            //     e.target.classList.contains('home-container') ||
-            //     e.target.classList.contains('menu-item') ||
-            //     e.target.classList.contains('text-logo')
-            // ) {
-            //     optionNumber === 0
-            //         ? setOptionNumber(optionNumber + 1)
-            //         : setOptionNumber(optionNumber - 1)
-            // }
         }
 
         window.onkeydown = onKeyDown
@@ -92,12 +99,19 @@ const Home = () => {
     }, [entered, presses, optionNumber, optionSelected, aboutSelected])
 
     useEffect(() => {
-        localStorage.setItem('shouldRefresh', '0')
+        if (!isIntervalCleared) {
+            console.log(1)
+            setIsIntervalCleared(true)
+        }
+    }, [isIntervalCleared])
 
+    useEffect(() => {
         setInterval(() => {
             document.querySelector('.press img') &&
                 document.querySelector('.press img').classList.toggle('d-none')
         }, 1000)
+
+        localStorage.setItem('shouldRefresh', '0')
 
         const randomNumber = Math.floor(Math.random() * 100)
 
@@ -112,28 +126,12 @@ const Home = () => {
         window.addEventListener(
             'touchend',
             function onFirstTouch(e) {
-                window.USER_HAS_TOUCHED = true
-                // detect iOS 13+ and add permissions
-
-                if (
-                    typeof DeviceOrientationEvent.requestPermission ===
-                    'function'
-                ) {
-                    DeviceOrientationEvent.requestPermission()
-                        .then((permissionState) => {
-                            console.log('permission state: ', permissionState)
-                        })
-                        .catch(console.error)
-                }
-
+                sessionStorage.setItem('USER_HAS_TOUCHED', '1')
                 window.removeEventListener('touchend', onFirstTouch, false)
             },
             false
         )
     }, [])
-
-    const videos = [video_toca, video_pensa, video_hlm, video_lvdf]
-    const isMobile = window.innerWidth < 450
 
     if (aboutSelected)
         document
@@ -179,7 +177,7 @@ const Home = () => {
                 {!entered ? (
                     <>
                         <div className="press">
-                            {window.innerWidth < 450 ? (
+                            {isMobile ? (
                                 <img src={touch} alt="touch" />
                             ) : (
                                 <img src={press} alt="press" />
@@ -200,6 +198,7 @@ const Home = () => {
                                 className="start"
                                 src={optionNumber === 0 ? start2 : start1}
                                 alt="start"
+                                onTouchEnd={onStartTouch}
                             />
                         </div>
                         <div
@@ -208,6 +207,7 @@ const Home = () => {
                                     ? 'menu-item d-flex justify-content-center align-items-center active'
                                     : 'menu-item d-flex justify-content-center align-items-center '
                             }
+                            ref={about}
                         >
                             <img
                                 className="about"
