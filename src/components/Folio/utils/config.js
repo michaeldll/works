@@ -94,5 +94,5 @@ export default {
         'tuto.postit.open',
     ],
     tutorial: true,
-    debug: true,
+    debug: false,
 }
