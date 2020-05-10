@@ -3,7 +3,7 @@ import d2r from './d2r.js'
 export default {
     camera: {
         fov: 43.6,
-        fovMobile: 58.6,
+        fovMobile: 56.6,
         near: 0.01,
         far: 1000,
         position: {
@@ -61,6 +61,13 @@ export default {
                 x: 0.486,
                 y: 0.35,
                 z: -1.346,
+            },
+            facingScreen: {
+                position: {
+                    x: 0.458,
+                    y: 0.336,
+                    z: -1.312,
+                },
             },
         },
     },

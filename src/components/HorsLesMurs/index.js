@@ -5,11 +5,19 @@ import pic from '../../assets/img/pic.png'
 import './HorsLesMurs.scss'
 
 const HorsLesMurs = () => {
+    const isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
     return (
         <div className="horslesmurs">
-            <Link className="back window" to="/">
-                {'<'} HOME
-            </Link>
+            {/* this is an ugly bugfix */}
+            {!isMobile ? (
+                <Link className="back window" to="/">
+                    {'<'} HOME
+                </Link>
+            ) : (
+                <a className="back window" href="https://michaels.works">
+                    {'<'} HOME
+                </a>
+            )}
 
             <div className="container nopadtop">
                 <img className="small" src={pic} alt="pic" />

@@ -211,25 +211,8 @@ class EventsController {
                 }
                 //init tutorial
                 if (pickedMesh.name.indexOf('tuto') > -1 && config.tutorial) {
-                    this.AudioController.shutUp()
-                    this.tutorialMode = true
-                    document.querySelector('.backtomenu').classList.add('show')
-                    findMesh('hand.postit.menu', this.scene).setEnabled(true)
-                    this.PhysicsController.touch(
-                        findMesh('tuto.stack top', this.scene),
-                        new Vector3(3.5, 3, -0.8)
-                    )
-                    gsap.to(arm.position, {
-                        x: config.arm.tutorial.position.x,
-                        y: config.arm.tutorial.position.y,
-                        z: config.arm.tutorial.position.z,
-                        duration: 0.5,
-                    })
-                    document.exitPointerLock =
-                        document.exitPointerLock || document.mozExitPointerLock
-
-                    // Attempt to unlock
-                    document.exitPointerLock()
+                    this.startTutorial()
+                    localStorage.setItem('hasGrabbedPostitStack', '1')
                 }
             } else if (throwCondition) {
                 this.PhysicsController.throwPhone()
@@ -290,6 +273,39 @@ class EventsController {
             .addEventListener('click', (e) => {
                 document.location.href = document.location.origin
             })
+    }
+    startTutorial(mode) {
+        const arm = this.scene.rootNodes[0]._children.find((child) => {
+            if (child.name === 'main_enfant.004') return child
+        })
+        this.AudioController.shutUp()
+        this.tutorialMode = true
+        document.querySelector('.backtomenu').classList.add('show')
+        findMesh('hand.postit.menu', this.scene).setEnabled(true)
+        this.PhysicsController.touch(
+            findMesh('tuto.stack top', this.scene),
+            new Vector3(3.5, 3, -0.8)
+        )
+        if (mode === 'facingScreen') {
+            gsap.to(arm.position, {
+                x: config.arm.tutorial.facingScreen.position.x,
+                y: config.arm.tutorial.facingScreen.position.y,
+                z: config.arm.tutorial.facingScreen.position.z,
+                duration: 0.5,
+            })
+        } else {
+            gsap.to(arm.position, {
+                x: config.arm.tutorial.position.x,
+                y: config.arm.tutorial.position.y,
+                z: config.arm.tutorial.position.z,
+                duration: 0.5,
+            })
+        }
+        document.exitPointerLock =
+            document.exitPointerLock || document.mozExitPointerLock
+
+        // Attempt to unlock
+        document.exitPointerLock()
     }
     onCameraRotation() {
         const pickedMesh = this.scene.pick(

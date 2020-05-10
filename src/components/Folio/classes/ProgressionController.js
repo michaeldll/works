@@ -1,5 +1,6 @@
 class ProgressionController {
-    constructor() {
+    constructor(scene) {
+        this.scene = scene
         if (!sessionStorage.getItem('progression'))
             sessionStorage.setItem('progression', '0')
         this.step = parseInt(sessionStorage.getItem('progression'))

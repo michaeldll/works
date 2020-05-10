@@ -149,7 +149,7 @@ class BabylonScene {
         this.engine = null
         this.EventsController = null
         this.PhysicsController = null
-        this.ProgressionController = new ProgressionController()
+        this.ProgressionController = null
         this.loadingScreen = new LoadingScreen().init()
     }
 
@@ -225,6 +225,10 @@ class BabylonScene {
 
                 this.PhysicsController.init()
 
+                this.ProgressionController = new ProgressionController(
+                    this.scene
+                )
+
                 this.EventsController = new EventsController(
                     this.canvas,
                     this.scene,
@@ -235,6 +239,25 @@ class BabylonScene {
                     this.PhysicsController,
                     this.overlayTimeline
                 )
+
+                if (!localStorage.getItem('hasSeenBeginningPostit')) {
+                    localStorage.setItem('hasSeenBeginningPostit', '1')
+                    this.EventsController.startTutorial('facingScreen')
+                }
+
+                if (!localStorage.getItem('hasGrabbedPostitStack')) {
+                    this.scene.meshes
+                        .filter((mesh) => mesh.name.indexOf('tuto') > -1)
+                        .forEach((postit) => {
+                            postit.renderOverlay = true
+                            postit.outlineWidth = 0.002
+                            this.overlayTimeline.fromTo(
+                                postit,
+                                { overlayAlpha: 0 },
+                                { overlayAlpha: 1, duration: 1 }
+                            )
+                        })
+                }
 
                 if (config.debug) {
                     document.getElementById('canvas-container').style.width =
@@ -294,18 +317,6 @@ class BabylonScene {
             .filter((mesh) => mesh.name.indexOf('Screen') > -1)
             .forEach((screen) => {
                 screen.outlineWidth = 0.034
-            })
-
-        this.scene.meshes
-            .filter((mesh) => mesh.name.indexOf('tuto') > -1)
-            .forEach((postit) => {
-                postit.renderOverlay = true
-                postit.outlineWidth = 0.002
-                this.overlayTimeline.fromTo(
-                    postit,
-                    { overlayAlpha: 0 },
-                    { overlayAlpha: 1, duration: 1 }
-                )
             })
     }
 
