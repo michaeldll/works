@@ -151,6 +151,7 @@ class BabylonScene {
         this.PhysicsController = null
         this.ProgressionController = null
         this.loadingScreen = new LoadingScreen().init()
+        this.isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
     }
 
     init() {
@@ -181,26 +182,41 @@ class BabylonScene {
                 this.scene = gltf
 
                 new Skybox(this.scene, 3).init()
-                new Screen(
-                    this.scene,
-                    document.getElementById('life-river'),
-                    'riverScreen'
-                ).init()
-                new Screen(
-                    this.scene,
-                    document.getElementById('horslesmurs'),
-                    'horsLesMursScreen'
-                ).init()
-                new Screen(
-                    this.scene,
-                    document.getElementById('toca'),
-                    'tocaScreen'
-                ).init()
-                new Screen(
-                    this.scene,
-                    document.getElementById('pensa'),
-                    'pensaScreen'
-                ).init()
+
+                if(this.isMobile){
+                    new Screen(
+                        this.scene,
+                        document.getElementById('horslesmurs'),
+                        'horsLesMursScreen'
+                    ).init()
+                    new Screen(
+                        this.scene,
+                        document.getElementById('pensa'),
+                        'pensaScreen'
+                    ).init()
+                }else{
+                    new Screen(
+                        this.scene,
+                        document.getElementById('life-river'),
+                        'riverScreen'
+                    ).init()
+                    new Screen(
+                        this.scene,
+                        document.getElementById('horslesmurs'),
+                        'horsLesMursScreen'
+                    ).init()
+                    new Screen(
+                        this.scene,
+                        document.getElementById('toca'),
+                        'tocaScreen'
+                    ).init()
+                    new Screen(
+                        this.scene,
+                        document.getElementById('pensa'),
+                        'pensaScreen'
+                    ).init()
+                }
+
 
                 this.setPhone()
                 this.setCamera()

@@ -19,7 +19,7 @@ class LoadingScreen {
                     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                     <div id="loading-bar"></div>
                     <br>
-                    <div class="window loading-text">Aim with your phone to explore !</div>
+                    <div class="window loading-text aim">Aim with your phone to explore !</div>
                 `
             } else {
                 this._loadingDiv.innerHTML = `
@@ -28,7 +28,7 @@ class LoadingScreen {
                     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                     <div class="loading-bar-container"><div id="loading-bar"></div></div>
                     <br>
-                    <div class="window loading-text">Aim with your mouse to explore !</div>
+                    <div class="window loading-text aim">Aim with your mouse to explore !</div>
                 `
             }
             this._resizeLoadingUI()
