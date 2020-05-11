@@ -67,6 +67,7 @@ const Folio = () => {
                 src={crosshairThrow}
                 alt="crosshair"
             />
+
             <img className="overlay" src={layout} alt="layout" />
 
             <div className="discover">
@@ -113,18 +114,14 @@ const Folio = () => {
                 <img src={backToMenu} alt="backtomenu" />
             </div>
 
-            {!isMobile ? (
-                <video
-                    autoPlay
-                    playsInline
-                    loop
-                    id="life-river"
-                    src={life}
-                    type="video/mp4"
-                />
-            ) : (
-                ''
-            )}
+            <video
+                autoPlay
+                playsInline
+                loop
+                id="life-river"
+                src={life}
+                type="video/mp4"
+            />
 
             <video
                 autoPlay
@@ -143,18 +140,14 @@ const Folio = () => {
                 type="video/mp4"
             />
 
-            {!isMobile ? (
-                <video
-                    autoPlay
-                    playsInline
-                    loop
-                    id="toca"
-                    src={toca}
-                    type="video/mp4"
-                />
-            ) : (
-                ''
-            )}
+            <video
+                autoPlay
+                playsInline
+                loop
+                id="toca"
+                src={toca}
+                type="video/mp4"
+            />
 
             {subtitles.map((sub, i) => (
                 <Subtitle

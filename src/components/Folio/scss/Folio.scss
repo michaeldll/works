@@ -179,7 +179,7 @@ body .orientationText {
     #canvas-container {
         width: 100vw;
         .overlay {
-            height: 101%;
+            display: none;
         }
         .backtomenu {
             img {
@@ -195,12 +195,12 @@ body .orientationText {
         width: 25%;
     }
 
-    body .loading-text{
+    body .loading-text {
         font-size: 3.4rem;
         padding: 0 20px;
     }
 
-    .aim{
+    .aim {
         margin-top: 15px;
     }
 }

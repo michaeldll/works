@@ -42,6 +42,24 @@ const Home = () => {
                 })
                 .catch(console.error)
         }
+
+        // detect iOS 12 and ask for gyro
+        function iOSversion() {
+            if (/iP(hone|od|ad)/.test(navigator.platform)) {
+                var v = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/)
+                return [
+                    parseInt(v[1], 10),
+                    parseInt(v[2], 10),
+                    parseInt(v[3] || 0, 10),
+                ]
+            }
+        }
+        if (!localStorage.getItem('hasAskedGyro') && iOSversion()[0] === 12) {
+            alert(
+                'Please enable "Movement and Orientation" in your Safari settings to explore.'
+            )
+            localStorage.setItem('hasAskedGyro', '1')
+        }
     }
 
     useEffect(() => {
@@ -100,7 +118,6 @@ const Home = () => {
 
     useEffect(() => {
         if (!isIntervalCleared) {
-            console.log(1)
             setIsIntervalCleared(true)
         }
     }, [isIntervalCleared])

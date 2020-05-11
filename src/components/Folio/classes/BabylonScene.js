@@ -168,7 +168,7 @@ class BabylonScene {
         this.engine = new Engine(this.canvas, false, null, true)
         window.innerWidth > 450
             ? this.engine.setHardwareScalingLevel(window.innerWidth / 480)
-            : this.engine.setHardwareScalingLevel(2.5)
+            : this.engine.setHardwareScalingLevel(2)
         this.engine.displayLoadingUI()
 
         // Create a scene.
@@ -183,40 +183,37 @@ class BabylonScene {
 
                 new Skybox(this.scene, 3).init()
 
-                if(this.isMobile){
-                    new Screen(
-                        this.scene,
-                        document.getElementById('horslesmurs'),
-                        'horsLesMursScreen'
-                    ).init()
-                    new Screen(
-                        this.scene,
-                        document.getElementById('pensa'),
-                        'pensaScreen'
-                    ).init()
-                }else{
-                    new Screen(
-                        this.scene,
-                        document.getElementById('life-river'),
-                        'riverScreen'
-                    ).init()
-                    new Screen(
-                        this.scene,
-                        document.getElementById('horslesmurs'),
-                        'horsLesMursScreen'
-                    ).init()
-                    new Screen(
-                        this.scene,
-                        document.getElementById('toca'),
-                        'tocaScreen'
-                    ).init()
-                    new Screen(
-                        this.scene,
-                        document.getElementById('pensa'),
-                        'pensaScreen'
-                    ).init()
-                }
+                new Screen(
+                    this.scene,
+                    document.getElementById('horslesmurs'),
+                    'horsLesMursScreen'
+                ).init()
+                new Screen(
+                    this.scene,
+                    document.getElementById('pensa'),
+                    'pensaScreen'
+                ).init()
 
+                new Screen(
+                    this.scene,
+                    document.getElementById('life-river'),
+                    'riverScreen'
+                ).init()
+                new Screen(
+                    this.scene,
+                    document.getElementById('horslesmurs'),
+                    'horsLesMursScreen'
+                ).init()
+                new Screen(
+                    this.scene,
+                    document.getElementById('toca'),
+                    'tocaScreen'
+                ).init()
+                new Screen(
+                    this.scene,
+                    document.getElementById('pensa'),
+                    'pensaScreen'
+                ).init()
 
                 this.setPhone()
                 this.setCamera()
