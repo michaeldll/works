@@ -38,13 +38,13 @@ const Home = () => {
         if (typeof DeviceOrientationEvent.requestPermission === 'function') {
             DeviceOrientationEvent.requestPermission()
                 .then((permissionState) => {
-                    console.log('permission state: ', permissionState)
+                    //do something with permissionState, or not
                 })
                 .catch(console.error)
         }
 
-        // detect iOS 12
-        function iOSversion() {
+        // detect iOS 12 and ask for gyro
+        const getiOSVersion = () => {
             if (/iP(hone|od|ad)/.test(navigator.platform)) {
                 var v = navigator.appVersion.match(/OS (\d+)_(\d+)_?(\d+)?/)
                 return [
@@ -54,12 +54,15 @@ const Home = () => {
                 ]
             }
         }
-        if (iOSversion()[0] <= 12) {
+        if (
+            !localStorage.getItem('hasAskedGyro') &&
+            getiOSVersion()[0] === 12 &&
+            getiOSVersion()[1] >= 2
+        ) {
             alert(
-                "Looks like you're running an outdated iOS version. Please explore on another device or update your software."
+                'Please enable "Movement and Orientation" in your Safari settings to explore.'
             )
-
-            window.location.href = window.location.origin
+            localStorage.setItem('hasAskedGyro', '1')
         }
     }
 
