@@ -349,10 +349,10 @@ class EventsController {
             }
         }
 
+        // Attempt to unlock
         document.exitPointerLock =
             document.exitPointerLock || document.mozExitPointerLock
 
-        // Attempt to unlock
         if (document.exitPointerLock) document.exitPointerLock()
     }
     stopTutorial() {

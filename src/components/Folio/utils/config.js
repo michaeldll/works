@@ -67,9 +67,9 @@ export default {
                 },
                 mobile: {
                     position: {
-                        x: 0.482,
-                        y: 0.35,
-                        z: -1.346,
+                        x: 0.425,
+                        y: 0.31,
+                        z: -1.315,
                     },
                 },
             },
