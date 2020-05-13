@@ -2,52 +2,43 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 750px;
     position: relative;
-    .container {
-        padding: 50px 0;
-        &.nopadtop {
-            padding-top: 0;
-        }
+    height: 100vh;
+    overflow: hidden;
+    img {
+        height: 100vh;
     }
     video {
-        height: 650px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        height: 66vh;
         border: 3px solid silver;
-    }
-    img.small {
-        width: 100%;
     }
     .back {
         position: absolute;
         left: 5%;
         top: 5%;
         padding: 5px 20px;
+        z-index: 2;
     }
 }
 
-@media screen and (max-width: 768px){
-    img.small {
-        width: 100vw!important;
-    }
-    .horslesmurs .back{
-        left: 10%;
-        top: 2%;
-    }
-    .horslesmurs .container{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0;
-    }
-    .horslesmurs .container:nth-of-type(1){
-        height: 30vh;
-        align-items: flex-start;
-    }
-    .horslesmurs .container:nth-of-type(2){
-        height: 70vh;
-    }
-    .horslesmurs video{
-        height: 46vh;
+@media screen and (max-width: 1024px) {
+    .horslesmurs {
+        .back {
+            font-size: 2.4rem;
+            left: 50%;
+            transform: translate(-50%, 0);
+        }
     }
 }
 
+@media screen and (max-width: 450px) {
+    .horslesmurs {
+        .back {
+            font-size: 1.2rem;
+        }
+    }
+}

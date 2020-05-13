@@ -1,0 +1,73 @@
+#canvas-container {
+    .logo-container {
+        position: absolute;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 2;
+        top: 1vh;
+        width: 33vw;
+        height: 15vh;
+        left: 3vw;
+        transition: opacity 0.1s ease-in-out;
+    }
+
+    .logo-container.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    img.crt-logo {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        z-index: -1;
+        top: 50%;
+        transform: translate(0, -50%);
+    }
+
+    .text-logo {
+        width: 100%;
+        z-index: 2;
+        top: 50%;
+        position: absolute;
+        transform: translate(0, -50%);
+    }
+
+    .logo-video,
+    .text-logo {
+        transition: all 0.5s ease-in-out;
+    }
+
+    .logo-container:hover .logo-video.entered {
+        opacity: 1;
+    }
+
+    .logo-video.entered:hover {
+        opacity: 1;
+    }
+
+    .logo-container:hover .text-logo {
+        opacity: 0;
+    }
+
+    .menu .logo-video.entered {
+        opacity: 0.5;
+    }
+
+    .logo-container:hover .logo-video.entered {
+        opacity: 1;
+    }
+
+    @media screen and (min-width: 1025px) {
+        .logo-container {
+            top: 10px !important;
+            width: 200px !important;
+        }
+    }
+    @media screen and (max-width: 1024px) and (min-width: 451px) {
+        .logo-container {
+            top: 15px !important;
+            width: 300px !important;
+        }
+    }
+}

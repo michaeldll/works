@@ -59,9 +59,6 @@ class EventsController {
 
             const phone = findMesh('phone', this.scene)
             const phoneInHand = findMesh('phone.child', this.scene)
-            const arm = this.scene.rootNodes[0]._children.find((child) => {
-                if (child.name === 'main_enfant.004') return child
-            })
 
             let interactCondition
             let throwCondition
@@ -230,7 +227,7 @@ class EventsController {
                 //init tutorial
                 if (pickedMesh.name.indexOf('tuto') > -1 && config.tutorial) {
                     this.startTutorial()
-                    localStorage.setItem('hasGrabbedPostitStack', '1')
+                    sessionStorage.setItem('hasGrabbedPostitStack', '1')
                 }
             } else if (throwCondition) {
                 this.PhysicsController.throwPhone()
@@ -242,33 +239,39 @@ class EventsController {
                 document.querySelector('.crosshair').classList.remove('hide')
                 document.querySelector('.crosshair-throw').classList.add('hide')
             } else if (tutorialCondition) {
-                this.tutorialMode = false
-                document.querySelector('.backtomenu').classList.remove('show')
-                gsap.to(arm.position, {
-                    x: config.arm.initial.position.x,
-                    y: config.arm.initial.position.y,
-                    z: config.arm.initial.position.z,
-                    duration: 0.25,
-                })
-                findMesh('hand.postit.menu', this.scene).setEnabled(false)
+                this.stopTutorial()
             }
         }
         //handle Pointer Lock
-        this.canvas.addEventListener(
-            'click',
-            (e) => {
-                this.canvas.requestPointerLock =
-                    this.canvas.requestPointerLock ||
-                    this.canvas.mozRequestPointerLock
-                if (this.canvas.requestPointerLock) {
-                    this.canvas.requestPointerLock()
-                    document
-                        .querySelector('.backtomenu')
-                        .classList.remove('show')
-                }
-            },
-            false
-        )
+        if (!this.isMobile) {
+            this.canvas.addEventListener(
+                'click',
+                (e) => {
+                    this.canvas.requestPointerLock =
+                        this.canvas.requestPointerLock ||
+                        this.canvas.mozRequestPointerLock
+                    if (this.canvas.requestPointerLock) {
+                        this.canvas.requestPointerLock()
+                        findMesh('blackTutorialFilter', this.scene).setEnabled(
+                            false
+                        )
+                        document
+                            .querySelector('.backtomenu')
+                            .classList.remove('show')
+                        document
+                            .querySelector('#canvas-container .logo-container')
+                            .classList.remove('show')
+                        document.querySelector('.discover img:not(.hide)') &&
+                            document
+                                .querySelector('.discover img:not(.hide)')
+                                .classList.add('fadeout')
+                        this.stopTutorial()
+                    }
+                },
+                false
+            )
+        }
+
         //handle clicks
         document.addEventListener('click', onClick)
         //handle resize
@@ -298,32 +301,80 @@ class EventsController {
         })
         this.AudioController.shutUp()
         this.tutorialMode = true
+        document.querySelector('.discover img:not(.hide)') &&
+            document
+                .querySelector('.discover img:not(.hide)')
+                .classList.add('fadeout')
         document.querySelector('.backtomenu').classList.add('show')
+        document
+            .querySelector('#canvas-container .logo-container')
+            .classList.add('show')
         findMesh('hand.postit.menu', this.scene).setEnabled(true)
+        findMesh('blackTutorialFilter', this.scene).setEnabled(true)
         this.PhysicsController.touch(
             findMesh('tuto.stack top', this.scene),
             new Vector3(3.5, 3, -0.8)
         )
         if (mode === 'facingScreen') {
-            gsap.to(arm.position, {
-                x: config.arm.tutorial.facingScreen.position.x,
-                y: config.arm.tutorial.facingScreen.position.y,
-                z: config.arm.tutorial.facingScreen.position.z,
-                duration: 0.5,
-            })
+            if (!this.isMobile) {
+                gsap.to(arm.position, {
+                    x: config.arm.tutorial.facingScreen.desktop.position.x,
+                    y: config.arm.tutorial.facingScreen.desktop.position.y,
+                    z: config.arm.tutorial.facingScreen.desktop.position.z,
+                    duration: 0.5,
+                })
+            } else {
+                gsap.to(arm.position, {
+                    x: config.arm.tutorial.facingScreen.mobile.position.x,
+                    y: config.arm.tutorial.facingScreen.mobile.position.y,
+                    z: config.arm.tutorial.facingScreen.mobile.position.z,
+                    duration: 0.5,
+                })
+            }
         } else {
-            gsap.to(arm.position, {
-                x: config.arm.tutorial.position.x,
-                y: config.arm.tutorial.position.y,
-                z: config.arm.tutorial.position.z,
-                duration: 0.5,
-            })
+            if (!this.isMobile) {
+                gsap.to(arm.position, {
+                    x: config.arm.tutorial.facingPostitStack.desktop.position.x,
+                    y: config.arm.tutorial.facingPostitStack.desktop.position.y,
+                    z: config.arm.tutorial.facingPostitStack.desktop.position.z,
+                    duration: 0.5,
+                })
+            } else {
+                gsap.to(arm.position, {
+                    x: config.arm.tutorial.facingPostitStack.mobile.position.x,
+                    y: config.arm.tutorial.facingPostitStack.mobile.position.y,
+                    z: config.arm.tutorial.facingPostitStack.mobile.position.z,
+                    duration: 0.5,
+                })
+            }
         }
         document.exitPointerLock =
             document.exitPointerLock || document.mozExitPointerLock
 
         // Attempt to unlock
         document.exitPointerLock()
+    }
+    stopTutorial() {
+        const arm = this.scene.rootNodes[0]._children.find((child) => {
+            if (child.name === 'main_enfant.004') return child
+        })
+        this.tutorialMode = false
+        document.querySelector('.backtomenu').classList.remove('show')
+        document
+            .querySelector('#canvas-container .logo-container')
+            .classList.remove('show')
+        document.querySelector('.discover img:not(.hide)') &&
+            document
+                .querySelector('.discover img:not(.hide)')
+                .classList.remove('fadeout')
+        gsap.to(arm.position, {
+            x: config.arm.initial.position.x,
+            y: config.arm.initial.position.y,
+            z: config.arm.initial.position.z,
+            duration: 0.25,
+        })
+        findMesh('hand.postit.menu', this.scene).setEnabled(false)
+        findMesh('blackTutorialFilter', this.scene).setEnabled(false)
     }
     onCameraRotation() {
         const pickedMesh = this.scene.pick(

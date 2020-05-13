@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { Logo } from '../Logo/index'
 import Subtitle from './Subtitle/index'
 import BabylonScene from './classes/BabylonScene'
 import layout from '../../assets/img/overlay.png'
@@ -51,6 +52,16 @@ const Folio = () => {
     ]
 
     const isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
+    const randomNumber = Math.floor(Math.random() * 100)
+    let randomIndex = 0
+
+    if (randomNumber >= 25 && randomNumber < 50) {
+        randomIndex = 1
+    } else if (randomNumber >= 50 && randomNumber < 75) {
+        randomIndex = 2
+    } else if (randomNumber >= 75 && randomNumber <= 100) {
+        randomIndex = 3
+    }
 
     useEffect(() => {
         new BabylonScene().init()
@@ -109,6 +120,12 @@ const Folio = () => {
                     ''
                 )}
             </div>
+
+            <Logo
+                entered={true}
+                isMobile={isMobile}
+                logoVideoIndex={randomIndex}
+            />
 
             <div className="backtomenu">
                 <img src={backToMenu} alt="backtomenu" />

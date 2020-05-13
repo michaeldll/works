@@ -57,16 +57,36 @@ export default {
             },
         },
         tutorial: {
-            position: {
-                x: 0.486,
-                y: 0.35,
-                z: -1.346,
+            facingPostitStack: {
+                desktop: {
+                    position: {
+                        x: 0.486,
+                        y: 0.35,
+                        z: -1.346,
+                    },
+                },
+                mobile: {
+                    position: {
+                        x: 0.482,
+                        y: 0.35,
+                        z: -1.346,
+                    },
+                },
             },
             facingScreen: {
-                position: {
-                    x: 0.458,
-                    y: 0.336,
-                    z: -1.312,
+                desktop: {
+                    position: {
+                        x: 0.458,
+                        y: 0.336,
+                        z: -1.312,
+                    },
+                },
+                mobile: {
+                    position: {
+                        x: 0.457,
+                        y: 0.336,
+                        z: -1.312,
+                    },
                 },
             },
         },

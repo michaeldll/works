@@ -12,6 +12,8 @@ import { Vector3, Color4, Color3 } from '@babylonjs/core/Maths/math'
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
 import { DeviceOrientationCamera } from '@babylonjs/core/Cameras/deviceOrientationCamera'
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
+import { Mesh } from '@babylonjs/core/Meshes'
+import { StandardMaterial } from '@babylonjs/core/Materials'
 
 // Required side effects to populate the SceneLoader class
 import '@babylonjs/loaders/glTF'
@@ -168,7 +170,7 @@ class BabylonScene {
         this.engine = new Engine(this.canvas, false, null, true)
         window.innerWidth > 450
             ? this.engine.setHardwareScalingLevel(window.innerWidth / 480)
-            : this.engine.setHardwareScalingLevel(2.5)
+            : this.engine.setHardwareScalingLevel(2)
         this.engine.displayLoadingUI()
 
         // Create a scene.
@@ -184,6 +186,7 @@ class BabylonScene {
                 new Skybox(this.scene, 3).init()
 
                 if (this.isMobile) {
+                    console.log('issa mobile')
                     new Screen(
                         this.scene,
                         document.getElementById('horslesmurs'),
@@ -195,6 +198,7 @@ class BabylonScene {
                         'pensaScreen'
                     ).init()
                 } else {
+                    console.log('issa desktop')
                     new Screen(
                         this.scene,
                         document.getElementById('life-river'),
@@ -219,6 +223,7 @@ class BabylonScene {
 
                 this.setPhone()
                 this.setCamera()
+                this.setTutorialFilterMesh()
                 this.setArm()
                 this.setHoverHighlights()
                 this.hidePostits()
@@ -278,6 +283,10 @@ class BabylonScene {
                     document.getElementById('canvas-container').style.width =
                         '100%'
                     document.querySelector('.discover').classList.add('hide')
+                    document.querySelector('.backtomenu').classList.add('hide')
+                    document
+                        .querySelector('.logo-container')
+                        .classList.add('hide')
                     this.scene.debugLayer.show()
                     // new GizmoController(
                     //     this.scene,
@@ -314,6 +323,20 @@ class BabylonScene {
                     loadedPercent * 38.9105058366 + '%'
             }
         )
+    }
+
+    setTutorialFilterMesh() {
+        const filter = Mesh.CreateBox('blackTutorialFilter', 1.5, this.scene)
+        filter.isPickable = false
+        const transMat = new StandardMaterial('transparent', this.scene)
+        transMat.alpha = 0.5
+        filter.material = transMat
+        filter.position = new Vector3(
+            this.camera.position.x,
+            this.camera.position.y,
+            -0.3
+        )
+        filter.setEnabled(false)
     }
 
     setHoverHighlights() {
@@ -397,7 +420,8 @@ class BabylonScene {
     }
 
     hidePostits() {
-        //TODO: try this more complex tutorial
+        //TODO: try a more complex tutorial
+
         // this.scene.meshes
         //     .filter((mesh) => mesh.name.indexOf('tuto') > -1)
         //     .forEach((tutorialPostit) => {

@@ -6,6 +6,7 @@ const About = (props) => {
     const emailEl = useRef(null)
     const emailBtnEl = useRef(null)
     const [show, setShow] = useState(true)
+
     const onClose = (e) => {
         setShow(false)
     }

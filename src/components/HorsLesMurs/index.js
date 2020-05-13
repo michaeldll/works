@@ -14,12 +14,12 @@ const HorsLesMurs = () => {
                     {'<'} HOME
                 </Link>
             ) : (
-                <a className="back window" href="https://michaels.works">
+                <a className="back window" href={window.location.origin}>
                     {'<'} HOME
                 </a>
             )}
-            <div className="container nopadtop">
-                <img className="small" src={pic} alt="pic" />
+            <div className="container">
+                <img src={pic} alt="bg" />
             </div>
             <div className="container">
                 <video loop muted controls src={horslesmurs} type="video/mp4" />

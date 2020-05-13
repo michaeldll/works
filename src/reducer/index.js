@@ -11,6 +11,7 @@ const initialState = {
         setTimeout(cb, 100)
     },
     redirectOnRefresh: false,
+    hasSeenAbout: false,
 }
 
 const reducer = (state, action) => {
@@ -19,6 +20,8 @@ const reducer = (state, action) => {
             return { ...initialState }
         case 'set-logged-in':
             return { ...state, isLoggedIn: action.value }
+        case 'setHasSeenAbout':
+            return { ...state, hasSeenAbout: action.value }
         default:
             return { ...initialState }
     }

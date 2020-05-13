@@ -1,5 +1,5 @@
 //React
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 //Components
 import About from '../About'
@@ -17,18 +17,16 @@ import video_lvdf from '../../assets/video/logo/logo_lvdf.mp4'
 import video_pensa from '../../assets/video/logo/logo_pensa.mp4'
 import logo from '../../assets/text/logo.png'
 import placeholder from '../../assets/img/cover_seo.jpg'
-//CSS
 import './Home.scss'
 
 const Home = () => {
+    const [hasSeenAbout, setHasSeenAbout] = useState(false)
     const [entered, setEntered] = useState(false)
     const [presses, setPresses] = useState(0)
     const [optionNumber, setOptionNumber] = useState(0)
     const [optionSelected, setOptionSelected] = useState(false)
     const [aboutSelected, setAboutSelected] = useState(false)
     const [logoVideoIndex, setLogoVideoIndex] = useState(0)
-    const [isIntervalCleared, setIsIntervalCleared] = useState(false)
-    const about = useRef(null)
     const videos = [video_toca, video_pensa, video_hlm, video_lvdf]
     const isMobile =
         window.innerWidth <= 1024 || sessionStorage.getItem('USER_HAS_TOUCHED')
@@ -56,6 +54,7 @@ const Home = () => {
         }
         if (
             !localStorage.getItem('hasAskedGyro') &&
+            getiOSVersion() &&
             getiOSVersion()[0] === 12 &&
             getiOSVersion()[1] >= 2
         ) {
@@ -98,33 +97,30 @@ const Home = () => {
                 optionNumber === 1
             ) {
                 setAboutSelected(!aboutSelected)
+                setHasSeenAbout(true)
             }
         }
         const onTouchEnd = (e) => {
             if (presses === 0 && !entered) setEntered(true)
-
-            if (e.target.classList.contains('about')) {
-                setPresses(presses + 1)
-                setAboutSelected(!aboutSelected)
-                setOptionNumber(1)
-            } else if (e.target.classList.contains('start')) {
-                setOptionNumber(0)
-                setOptionSelected(true)
-                setTimeout(() => {
-                    setOptionSelected(false)
-                }, 10)
+            else if (entered) {
+                if (e.target.classList.contains('about')) {
+                    setPresses(presses + 1)
+                    setAboutSelected(!aboutSelected)
+                    setOptionNumber(1)
+                    setHasSeenAbout(true)
+                } else if (e.target.classList.contains('start')) {
+                    setOptionNumber(0)
+                    setOptionSelected(true)
+                    setTimeout(() => {
+                        setOptionSelected(false)
+                    }, 10)
+                }
             }
         }
 
         window.onkeydown = onKeyDown
         window.ontouchend = onTouchEnd
     }, [entered, presses, optionNumber, optionSelected, aboutSelected])
-
-    useEffect(() => {
-        if (!isIntervalCleared) {
-            setIsIntervalCleared(true)
-        }
-    }, [isIntervalCleared])
 
     useEffect(() => {
         setInterval(() => {
@@ -226,9 +222,10 @@ const Home = () => {
                             className={
                                 optionNumber === 1
                                     ? 'menu-item d-flex justify-content-center align-items-center active'
-                                    : 'menu-item d-flex justify-content-center align-items-center '
+                                    : `menu-item d-flex justify-content-center align-items-center ${
+                                          !hasSeenAbout ? 'blink' : ''
+                                      }`
                             }
-                            ref={about}
                         >
                             <img
                                 className="about"
