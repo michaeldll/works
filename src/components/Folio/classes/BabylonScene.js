@@ -186,7 +186,6 @@ class BabylonScene {
                 new Skybox(this.scene, 3).init()
 
                 if (this.isMobile) {
-                    console.log('issa mobile')
                     new Screen(
                         this.scene,
                         document.getElementById('horslesmurs'),
@@ -198,7 +197,6 @@ class BabylonScene {
                         'pensaScreen'
                     ).init()
                 } else {
-                    console.log('issa desktop')
                     new Screen(
                         this.scene,
                         document.getElementById('life-river'),
@@ -234,26 +232,21 @@ class BabylonScene {
                 } else {
                     sessionStorage.setItem('volume', '1')
                 }
-                console.log('issa volume')
 
                 //ambient sound
                 this.audio.ambient.birds.play()
-
-                console.log('issa play')
 
                 this.PhysicsController = new PhysicsController(
                     this.scene,
                     this.audio
                 )
 
-                console.log('issa physics')
-
                 this.PhysicsController.init()
-                console.log('issa physics')
+
                 this.ProgressionController = new ProgressionController(
                     this.scene
                 )
-                console.log('issa progressio')
+
                 this.EventsController = new EventsController(
                     this.canvas,
                     this.scene,
@@ -264,12 +257,12 @@ class BabylonScene {
                     this.PhysicsController,
                     this.overlayTimeline
                 )
-                console.log('issa events')
+
                 if (!localStorage.getItem('hasSeenBeginningPostit')) {
                     localStorage.setItem('hasSeenBeginningPostit', '1')
                     this.EventsController.startTutorial('facingScreen')
                 }
-                console.log('issa tutorial')
+
                 if (!sessionStorage.getItem('hasGrabbedPostitStack')) {
                     this.scene.meshes
                         .filter((mesh) => mesh.name.indexOf('tuto') > -1)
@@ -283,7 +276,7 @@ class BabylonScene {
                             )
                         })
                 }
-                console.log('issa outline')
+
                 if (config.debug) {
                     document.getElementById('canvas-container').style.width =
                         '100%'
@@ -299,12 +292,6 @@ class BabylonScene {
                     // ).init()
                     // this.scene.forceShowBoundingBoxes = true
                 }
-
-                console.log('issa debug')
-
-                setInterval(() => {
-                    console.log(this.camera.rotation)
-                }, 1000)
 
                 this.scene.beforeRender = () => {
                     if (this.camera) this.rotateArm()

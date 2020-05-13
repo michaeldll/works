@@ -12,7 +12,6 @@ const showScreen = (scene, mode) => {
 
     if (mode === 'random') {
         const randScreen = screens[Math.floor(Math.random() * screens.length)]
-        console.log(randScreen.name)
         randScreen.setEnabled(true)
     }
 
