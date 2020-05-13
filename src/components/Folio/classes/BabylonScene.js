@@ -68,17 +68,17 @@ class BabylonScene {
                 phoneCollision1: new Howl({
                     src: sfx_phone_1,
                     loop: false,
-                    volume: 0.1,
+                    volume: 0.15,
                 }),
                 phoneCollision2: new Howl({
                     src: sfx_phone_2,
                     loop: false,
-                    volume: 0.1,
+                    volume: 0.15,
                 }),
                 phoneCollision3: new Howl({
                     src: sfx_phone_3,
                     loop: false,
-                    volume: 0.1,
+                    volume: 0.15,
                 }),
                 click_in: new Howl({
                     src: sfx_click_in,
@@ -108,12 +108,12 @@ class BabylonScene {
                 pensa: new Howl({
                     src: pensa,
                     loop: false,
-                    volume: 2.2,
+                    volume: 2.0,
                 }),
                 portfolio: new Howl({
                     src: portfolio,
                     loop: false,
-                    volume: 3.0,
+                    volume: 3.1,
                 }),
                 toca: new Howl({
                     src: toca,
@@ -128,7 +128,7 @@ class BabylonScene {
                 river: new Howl({
                     src: fleuve,
                     loop: false,
-                    volume: 2.8,
+                    volume: 2.9,
                 }),
             },
         }
