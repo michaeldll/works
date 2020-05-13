@@ -265,7 +265,7 @@ class BabylonScene {
                     this.EventsController.startTutorial('facingScreen')
                 }
 
-                if (!localStorage.getItem('hasGrabbedPostitStack')) {
+                if (!sessionStorage.getItem('hasGrabbedPostitStack')) {
                     this.scene.meshes
                         .filter((mesh) => mesh.name.indexOf('tuto') > -1)
                         .forEach((postit) => {

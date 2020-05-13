@@ -20,7 +20,6 @@ import placeholder from '../../assets/img/cover_seo.jpg'
 import './Home.scss'
 
 const Home = () => {
-    const [hasSeenAbout, setHasSeenAbout] = useState(false)
     const [entered, setEntered] = useState(false)
     const [presses, setPresses] = useState(0)
     const [optionNumber, setOptionNumber] = useState(0)
@@ -97,7 +96,7 @@ const Home = () => {
                 optionNumber === 1
             ) {
                 setAboutSelected(!aboutSelected)
-                setHasSeenAbout(true)
+                localStorage.setItem('hasSeenAbout', '1')
             }
         }
         const onTouchEnd = (e) => {
@@ -107,7 +106,7 @@ const Home = () => {
                     setPresses(presses + 1)
                     setAboutSelected(!aboutSelected)
                     setOptionNumber(1)
-                    setHasSeenAbout(true)
+                    localStorage.setItem('hasSeenAbout', '1')
                 } else if (e.target.classList.contains('start')) {
                     setOptionNumber(0)
                     setOptionSelected(true)
@@ -223,7 +222,9 @@ const Home = () => {
                                 optionNumber === 1
                                     ? 'menu-item d-flex justify-content-center align-items-center active'
                                     : `menu-item d-flex justify-content-center align-items-center ${
-                                          !hasSeenAbout ? 'blink' : ''
+                                          !localStorage.getItem('hasSeenAbout')
+                                              ? 'blink'
+                                              : ''
                                       }`
                             }
                         >
