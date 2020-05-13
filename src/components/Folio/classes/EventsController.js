@@ -300,21 +300,29 @@ class EventsController {
             if (child.name === 'main_enfant.004') return child
         })
         this.AudioController.shutUp()
+        console.log('issa shutup')
         this.tutorialMode = true
+        console.log('issa tutorial')
         document.querySelector('.discover img:not(.hide)') &&
             document
                 .querySelector('.discover img:not(.hide)')
                 .classList.add('fadeout')
+        console.log('issa fadeout')
         document.querySelector('.backtomenu').classList.add('show')
+        console.log('issa backtomenu')
         document
             .querySelector('#canvas-container .logo-container')
             .classList.add('show')
+        console.log('issa logo')
         findMesh('hand.postit.menu', this.scene).setEnabled(true)
+        console.log('issa postit')
         findMesh('blackTutorialFilter', this.scene).setEnabled(true)
+        console.log('issa filter')
         this.PhysicsController.touch(
             findMesh('tuto.stack top', this.scene),
             new Vector3(3.5, 3, -0.8)
         )
+        console.log('issa touch')
         if (mode === 'facingScreen') {
             if (!this.isMobile) {
                 gsap.to(arm.position, {
@@ -348,11 +356,12 @@ class EventsController {
                 })
             }
         }
+
         document.exitPointerLock =
             document.exitPointerLock || document.mozExitPointerLock
 
         // Attempt to unlock
-        document.exitPointerLock()
+        if (document.exitPointerLock) document.exitPointerLock()
     }
     stopTutorial() {
         const arm = this.scene.rootNodes[0]._children.find((child) => {
