@@ -91,15 +91,6 @@ const About = (props) => {
                                             Github
                                         </a>
                                     </li>
-                                    <li>
-                                        <a
-                                            rel="noopener noreferrer"
-                                            target="_blank"
-                                            href="https://twitter.com/michael_dlb"
-                                        >
-                                            Twitter
-                                        </a>
-                                    </li>
                                 </ul>
                             </li>
                         </ul>
