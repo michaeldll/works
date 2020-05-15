@@ -6,20 +6,20 @@ class AudioController {
     /**
      * @param {string} name
      */
-    findAudio(name) {
+    getAudio(name) {
         return Object.values(this.audio).find((audio) => audio[name])[name]
     }
     /**
      * @param {string} name
      */
     play(name) {
-        this.findAudio(name).play()
+        this.getAudio(name).play()
     }
     /**
      * @param {string} name
      */
     stop(name) {
-        this.findAudio(name).stop()
+        this.getAudio(name).stop()
     }
     /**
      * @param {string} voice
@@ -35,10 +35,10 @@ class AudioController {
             }
         })
 
-        if (!this.findAudio(voice).playing()) {
+        if (!this.getAudio(voice).playing()) {
             this.play(voice)
             this.subtitles[voice].show()
-        } else if (this.findAudio(voice).playing()) {
+        } else if (this.getAudio(voice).playing()) {
             this.stop(voice)
             this.subtitles[voice].hide()
         }
