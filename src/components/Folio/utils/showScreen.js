@@ -24,6 +24,16 @@ const showScreen = (scene, mode) => {
             ? nextScreen.setEnabled(true)
             : screens[0].setEnabled(true)
     }
+
+    if (mode === 'previous') {
+        const activeScreen = getActiveScreen(scene) //[bool, int, Mesh{}]
+        const activeIndex = activeScreen[1]
+        activeScreen[2].setEnabled(false)
+        const previousScreen = screens[activeIndex - 1]
+        activeIndex - 1 < 0
+            ? screens[screens.length-1].setEnabled(true)
+            : previousScreen.setEnabled(true)
+    }
 }
 
 export default showScreen

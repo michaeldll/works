@@ -14,6 +14,7 @@ import { DeviceOrientationCamera } from '@babylonjs/core/Cameras/deviceOrientati
 import { SceneLoader } from '@babylonjs/core/Loading/sceneLoader'
 import { Mesh } from '@babylonjs/core/Meshes'
 import { StandardMaterial } from '@babylonjs/core/Materials'
+import { Texture } from '@babylonjs/core'
 
 // Required side effects to populate the SceneLoader class
 import '@babylonjs/loaders/glTF'
@@ -29,7 +30,7 @@ import PhysicsController from './PhysicsController'
 import EventsController from './EventsController'
 import SubtitleController from './SubtitleController'
 import ProgressionController from './ProgressionController'
-// import GizmoController from './GizmoController'
+import GizmoController from './GizmoController'
 
 // Utilities
 import d2r from '../utils/d2r.js'
@@ -170,7 +171,7 @@ class BabylonScene {
         this.engine = new Engine(this.canvas, false, null, true)
         window.innerWidth > 450
             ? this.engine.setHardwareScalingLevel(window.innerWidth / 480)
-            : this.engine.setHardwareScalingLevel(2)
+            : this.engine.setHardwareScalingLevel(2.1)
         this.engine.displayLoadingUI()
 
         // Create a scene.
@@ -178,7 +179,7 @@ class BabylonScene {
 
         SceneLoader.Load(
             'models/',
-            'scene_final.glb',
+            'scene_final_old.glb',
             this.engine,
             (gltf) => {
                 this.scene = gltf
@@ -224,7 +225,7 @@ class BabylonScene {
                 this.setTutorialFilterMesh()
                 this.setArm()
                 this.setHoverHighlights()
-                this.hidePostits()
+                this.setPostits()
                 showScreen(this.scene, 'random')
 
                 if (sessionStorage.getItem('volume')) {
@@ -286,11 +287,11 @@ class BabylonScene {
                         .querySelector('.logo-container')
                         .classList.add('hide')
                     this.scene.debugLayer.show()
-                    // new GizmoController(
-                    //     this.scene,
-                    //     findMesh('phone', this.scene)
-                    // ).init()
-                    // this.scene.forceShowBoundingBoxes = true
+                    new GizmoController(
+                        this.scene,
+                        findMesh('phone', this.scene)
+                    ).init()
+                    this.scene.forceShowBoundingBoxes = true
                 }
 
                 this.scene.beforeRender = () => {
@@ -427,19 +428,17 @@ class BabylonScene {
         arm.scaling = new Vector3(0.5, 0.5, 0.5)
     }
 
-    hidePostits() {
-        //TODO: try a more complex tutorial
-
-        // this.scene.meshes
-        //     .filter((mesh) => mesh.name.indexOf('tuto') > -1)
-        //     .forEach((tutorialPostit) => {
-        //         if (tutorialPostit.name !== 'tuto.stack top')
-        //             tutorialPostit.setEnabled(false)
-        //     })
-
+    setPostits() {
         this.scene.meshes
             .filter((mesh) => mesh.name.indexOf('hand.postit') > -1)
             .forEach((handPostit) => {
+                handPostit.material.albedoTexture = new Texture(
+                    'textures/post-it-tutorial.png',
+                    this.scene
+                )
+                handPostit.material.albedoTexture.vAng = d2r(180)
+                handPostit.material.albedoTexture.wAng = d2r(180)
+                handPostit.material._unlit = true
                 handPostit.setEnabled(false)
             })
     }

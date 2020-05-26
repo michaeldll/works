@@ -3,8 +3,10 @@ import { Logo } from '../Logo/index'
 import Subtitle from './Subtitle/index'
 import BabylonScene from './classes/BabylonScene'
 import layout from '../../assets/img/overlay.png'
-import crosshair from '../../assets/img/crosshair.png'
-import crosshairThrow from '../../assets/img/crosshair-throw.png'
+import crosshair_tr from '../../assets/img/crosshair/top_right.png'
+import crosshair_br from '../../assets/img/crosshair/bot_right.png'
+import crosshair_bl from '../../assets/img/crosshair/bot_left.png'
+import crosshair_tl from '../../assets/img/crosshair/top_left.png'
 import discover0 from '../../assets/img/discover/0.png'
 import discover1 from '../../assets/img/discover/1.png'
 import discover2 from '../../assets/img/discover/2.png'
@@ -49,6 +51,12 @@ const Folio = () => {
         {
             postit: '<p>I really should finish my portfolio.</p>',
         },
+        {
+            keepforgetting: '<p>I keep forgetting this!</p>',
+        },
+        {
+            howdoesmouse: '<p>How does a mouse work again?</p>',
+        },
     ]
 
     const isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
@@ -72,12 +80,12 @@ const Folio = () => {
             id="canvas-container"
             className="h-100 d-flex justify-content-center align-items-center"
         >
-            <img className="crosshair" src={crosshair} alt="crosshair" />
-            <img
-                className="crosshair crosshair-throw hide"
-                src={crosshairThrow}
-                alt="crosshair"
-            />
+            <div className="crosshair">
+                <img className="tl" src={crosshair_tl} alt="top left" />
+                <img className="tr" src={crosshair_tr} alt="top right" />
+                <img className="bl" src={crosshair_bl} alt="bot left" />
+                <img className="br" src={crosshair_br} alt="bot right" />
+            </div>
 
             <img className="overlay" src={layout} alt="layout" />
 

@@ -51,6 +51,41 @@ class EventsController {
                 return false
             }
         }
+        //handle keydown
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowRight') showScreen(this.scene, 'next')
+            if (e.code === 'ArrowLeft') showScreen(this.scene, 'previous')
+        })
+        //handle Pointer Lock
+        if (!this.isMobile) {
+            this.canvas.addEventListener(
+                'click',
+                (e) => {
+                    this.canvas.requestPointerLock =
+                        this.canvas.requestPointerLock ||
+                        this.canvas.mozRequestPointerLock
+                    if (this.canvas.requestPointerLock) {
+                        this.canvas.requestPointerLock()
+                        findMesh('blackTutorialFilter', this.scene).setEnabled(
+                            false
+                        )
+                        document
+                            .querySelector('.backtomenu')
+                            .classList.remove('show')
+                        document
+                            .querySelector('#canvas-container .logo-container')
+                            .classList.remove('show')
+                        document.querySelector('.discover img:not(.hide)') &&
+                            document
+                                .querySelector('.discover img:not(.hide)')
+                                .classList.add('fadeout')
+                        this.stopTutorial()
+                    }
+                },
+                false
+            )
+        }
+        //handle clicks
         const onClick = (e) => {
             const pickedMesh = this.scene.pick(
                 this.canvas.clientWidth / 2,
@@ -86,12 +121,6 @@ class EventsController {
                             phoneInHand.setEnabled(true)
                             phone.setEnabled(false)
                             this.throwingMode = true
-                            document
-                                .querySelector('.crosshair')
-                                .classList.add('hide')
-                            document
-                                .querySelector('.crosshair-throw')
-                                .classList.remove('hide')
                         }
                         break
                     case 'speaker left':
@@ -236,43 +265,10 @@ class EventsController {
                 }, 2800)
                 this.manageResetPhone()
                 this.throwingMode = false
-                document.querySelector('.crosshair').classList.remove('hide')
-                document.querySelector('.crosshair-throw').classList.add('hide')
             } else if (tutorialCondition) {
                 this.stopTutorial()
             }
         }
-        //handle Pointer Lock
-        if (!this.isMobile) {
-            this.canvas.addEventListener(
-                'click',
-                (e) => {
-                    this.canvas.requestPointerLock =
-                        this.canvas.requestPointerLock ||
-                        this.canvas.mozRequestPointerLock
-                    if (this.canvas.requestPointerLock) {
-                        this.canvas.requestPointerLock()
-                        findMesh('blackTutorialFilter', this.scene).setEnabled(
-                            false
-                        )
-                        document
-                            .querySelector('.backtomenu')
-                            .classList.remove('show')
-                        document
-                            .querySelector('#canvas-container .logo-container')
-                            .classList.remove('show')
-                        document.querySelector('.discover img:not(.hide)') &&
-                            document
-                                .querySelector('.discover img:not(.hide)')
-                                .classList.add('fadeout')
-                        this.stopTutorial()
-                    }
-                },
-                false
-            )
-        }
-
-        //handle clicks
         document.addEventListener('click', onClick)
         //handle resize
         window.addEventListener('resize', (e) => {
@@ -409,6 +405,10 @@ class EventsController {
                 pickedMesh.renderOutline = true
             }
 
+            if (this.throwingMode) {
+                arm.position.y = config.arm.raised.position.y
+            }
+
             //raise arm on hover
             if (
                 (arm.position.y === config.arm.lowered.position.y &&
@@ -420,10 +420,12 @@ class EventsController {
                     y: config.arm.raised.position.y,
                     duration: 0.5,
                 })
+                this.toggleExpandCrosshair(true)
             } else if (
                 !config.activeGrabMeshes.includes(pickedMesh.name) &&
                 !config.activeTutorialMeshes.includes(pickedMesh.name)
             ) {
+                // console.log(this.throwingMode)
                 if (!this.throwingMode && !this.tutorialMode)
                     gsap.to(arm.position, {
                         x: config.arm.initial.position.x,
@@ -431,9 +433,10 @@ class EventsController {
                         z: config.arm.initial.position.z,
                         duration: 0.25,
                     })
+                this.toggleExpandCrosshair(false)
             }
 
-            //prevents bug when clicking mouse
+            //prevents infinite redirects when clicking mouse
             if (pickedMesh.name !== 'MOUSE' && this.hasClickedMouse) {
                 this.hasClickedMouse = false
             }
@@ -453,6 +456,45 @@ class EventsController {
             clearInterval(this.manageResetPhoneInterval)
             this.PhysicsController.resetPhone()
         }
+    }
+    toggleExpandCrosshair(mode) {
+        let x
+        // let y;
+
+        const setPos = (img) => {
+            gsap.to(img, { x: x, duration: 0.1 })
+        }
+
+        const resetPos = (img) => {
+            gsap.to(img, { x: 0, duration: 0.1 })
+        }
+
+        document.querySelectorAll('.crosshair img').forEach((img, i) => {
+            switch (i) {
+                case 0:
+                    x = '10px'
+                    // y = '10px'
+                    break
+
+                case 1:
+                    x = '-10px'
+                    // y = '10px'
+                    break
+
+                case 2:
+                    x = '10px'
+                    // y = '-10px'
+                    break
+
+                case 3:
+                    x = '-10px'
+                    // y = '-10px'
+                    break
+                default:
+                    break
+            }
+            mode ? setPos(img) : resetPos(img)
+        })
     }
 }
 export default EventsController

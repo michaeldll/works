@@ -61,7 +61,7 @@ export default {
                 desktop: {
                     position: {
                         x: 0.486,
-                        y: 0.35,
+                        y: 0.3505,
                         z: -1.346,
                     },
                 },
