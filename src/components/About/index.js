@@ -86,6 +86,15 @@ const About = (props) => {
                                         <a
                                             rel="noopener noreferrer"
                                             target="_blank"
+                                            href="https://twitter.com/michael_dlb/"
+                                        >
+                                            Twitter
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a
+                                            rel="noopener noreferrer"
+                                            target="_blank"
                                             href="https://github.com/michaeldll/"
                                         >
                                             Github

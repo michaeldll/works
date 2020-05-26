@@ -8,7 +8,7 @@
         width: 33vw;
         height: 15vh;
         left: 3vw;
-        transition: opacity 0.1s ease-in-out;
+        transition: opacity 0.5s ease-in-out;
     }
 
     .logo-container.show {
@@ -60,7 +60,7 @@
 
     @media screen and (min-width: 1025px) {
         .logo-container {
-            top: 10px !important;
+            top: 15px !important;
             width: 200px !important;
         }
     }

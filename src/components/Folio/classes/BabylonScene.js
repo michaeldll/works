@@ -53,6 +53,8 @@ import sfx_phone_2 from '../../../assets/audio/sfx_phone_2.mp3'
 import sfx_phone_3 from '../../../assets/audio/sfx_phone_3.mp3'
 import sfx_keyboard from '../../../assets/audio/kbclick.mp3'
 import sfx_mouse from '../../../assets/audio/mouseclick.mp3'
+import forgetting_this from '../../../assets/audio/voices/forgetting_this.mp3'
+import how_does_mouse from '../../../assets/audio/voices/how_does_mouse.mp3'
 
 class BabylonScene {
     constructor() {
@@ -109,7 +111,7 @@ class BabylonScene {
                 pensa: new Howl({
                     src: pensa,
                     loop: false,
-                    volume: 2.0,
+                    volume: 1.9,
                 }),
                 portfolio: new Howl({
                     src: portfolio,
@@ -129,11 +131,21 @@ class BabylonScene {
                 river: new Howl({
                     src: fleuve,
                     loop: false,
-                    volume: 2.9,
+                    volume: 3.1,
+                }),
+                keepforgetting: new Howl({
+                    src: forgetting_this,
+                    loop: false,
+                    volume: 0.3,
+                }),
+                howdoesmouse: new Howl({
+                    src: how_does_mouse,
+                    loop: false,
+                    volume: 0.4,
                 }),
             },
         }
-        this.subtitles = {
+        this.subtitleControllers = {
             pensa: new SubtitleController('pensa-sub', 10500, [0, 3800]),
             toca: new SubtitleController('toca-sub', 13300, [0]),
             horslesmurs: new SubtitleController('horslesmurs-sub', 39000, [
@@ -144,6 +156,10 @@ class BabylonScene {
             ]),
             river: new SubtitleController('river-sub', 19000, [0, 11500]),
             portfolio: new SubtitleController('postit-sub', 3500, [0]),
+            keepforgetting: new SubtitleController('keepforgetting-sub', 2200, [
+                0,
+            ]),
+            howdoesmouse: new SubtitleController('howdoesmouse-sub', 2500, [0]),
         }
         this.hasClickedMouse = false
         this.overlayTimeline = gsap.timeline({ repeat: -1, yoyo: true })
@@ -253,30 +269,38 @@ class BabylonScene {
                     this.scene,
                     this.engine,
                     this.audio,
-                    this.subtitles,
+                    this.subtitleControllers,
                     this.ProgressionController,
                     this.PhysicsController,
                     this.overlayTimeline
                 )
 
-                if (!localStorage.getItem('hasSeenBeginningPostit')) {
-                    localStorage.setItem('hasSeenBeginningPostit', '1')
-                    this.EventsController.startTutorial('facingScreen')
-                }
+                setTimeout(() => {
+                    this.engine.hideLoadingUI()
 
-                if (!sessionStorage.getItem('hasGrabbedPostitStack')) {
-                    this.scene.meshes
-                        .filter((mesh) => mesh.name.indexOf('tuto') > -1)
-                        .forEach((postit) => {
-                            postit.renderOverlay = true
-                            postit.outlineWidth = 0.002
-                            this.overlayTimeline.fromTo(
-                                postit,
-                                { overlayAlpha: 0 },
-                                { overlayAlpha: 1, duration: 1 }
-                            )
-                        })
-                }
+                    setTimeout(() => {
+                        if (!localStorage.getItem('hasSeenBeginningPostit')) {
+                            localStorage.setItem('hasSeenBeginningPostit', '1')
+                            this.EventsController.startTutorial('facingScreen')
+                        }
+
+                        if (!sessionStorage.getItem('hasGrabbedPostitStack')) {
+                            this.scene.meshes
+                                .filter(
+                                    (mesh) => mesh.name.indexOf('tuto') > -1
+                                )
+                                .forEach((postit) => {
+                                    postit.renderOverlay = true
+                                    postit.outlineWidth = 0.002
+                                    this.overlayTimeline.fromTo(
+                                        postit,
+                                        { overlayAlpha: 0 },
+                                        { overlayAlpha: 1, duration: 1 }
+                                    )
+                                })
+                        }
+                    }, 150)
+                }, 1000)
 
                 if (config.debug) {
                     document.getElementById('canvas-container').style.width =

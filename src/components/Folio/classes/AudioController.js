@@ -1,7 +1,7 @@
 class AudioController {
-    constructor(audio, subtitles) {
+    constructor(audio, subtitleControllers) {
         this.audio = audio
-        this.subtitles = subtitles
+        this.subtitleControllers = subtitleControllers
     }
     /**
      * @param {string} name
@@ -24,30 +24,31 @@ class AudioController {
     /**
      * @param {string} voice
      */
-    speak(voice) {
-        const otherVoices = Object.keys(this.audio.voices).filter(
-            (voiceName) => voiceName.indexOf(voice) === -1
-        )
+    speak(voice, delay = 0) {
+        setTimeout(() => {
+            const otherVoices = Object.keys(this.audio.voices).filter(
+                (voiceName) => voiceName.indexOf(voice) === -1
+            )
 
-        otherVoices.forEach((voice) => {
-            if (this.audio.voices[voice].playing()) {
-                this.shutUp()
+            otherVoices.forEach((voice) => {
+                if (this.audio.voices[voice].playing()) {
+                    this.shutUp()
+                }
+            })
+            if (!this.getAudio(voice).playing()) {
+                this.play(voice)
+                this.subtitleControllers[voice].show()
+            } else if (this.getAudio(voice).playing()) {
+                this.stop(voice)
+                this.subtitleControllers[voice].hide()
             }
-        })
-
-        if (!this.getAudio(voice).playing()) {
-            this.play(voice)
-            this.subtitles[voice].show()
-        } else if (this.getAudio(voice).playing()) {
-            this.stop(voice)
-            this.subtitles[voice].hide()
-        }
+        }, delay)
     }
     shutUp() {
         Object.values(this.audio.voices).forEach((voice) => {
             voice.stop()
         })
-        Object.values(this.subtitles).forEach((subtitle) => {
+        Object.values(this.subtitleControllers).forEach((subtitle) => {
             subtitle.hide()
         })
     }

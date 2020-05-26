@@ -19,7 +19,7 @@ class EventsController {
         scene,
         engine,
         audio,
-        subtitles,
+        subtitleControllers,
         ProgressionController,
         PhysicsController,
         overlayTimeline
@@ -35,7 +35,7 @@ class EventsController {
         this.ProgressionController = ProgressionController
         this.PhysicsController = PhysicsController
         this.OrientationController = new OrientationController()
-        this.AudioController = new AudioController(audio, subtitles)
+        this.AudioController = new AudioController(audio, subtitleControllers)
         this.overlayTimeline = overlayTimeline
         this.isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
         this.init()
@@ -55,6 +55,12 @@ class EventsController {
         document.addEventListener('keydown', (e) => {
             if (e.code === 'ArrowRight') showScreen(this.scene, 'next')
             if (e.code === 'ArrowLeft') showScreen(this.scene, 'previous')
+            this.audio.sfx.kb.play()
+            this.PhysicsController.touch(
+                findMesh('Keyboard.001', this.scene),
+                new Vector3(3.5, 2, -1)
+            )
+            this.popCrosshair()
         })
         //handle Pointer Lock
         if (!this.isMobile) {
@@ -122,6 +128,7 @@ class EventsController {
                             phone.setEnabled(false)
                             this.throwingMode = true
                         }
+
                         break
                     case 'speaker left':
                         Math.floor(Math.random() * 10) * 0.1 > 0.5
@@ -139,6 +146,7 @@ class EventsController {
                         this.PhysicsController.touch(
                             findMesh('speaker left', this.scene)
                         )
+                        this.popCrosshair()
                         break
 
                     case 'Keyboard.001':
@@ -148,6 +156,7 @@ class EventsController {
                             new Vector3(3.5, 2, -1)
                         )
                         showScreen(this.scene, 'next')
+                        this.popCrosshair()
                         break
                     case 'MOUSE':
                         if (!this.hasClickedMouse) {
@@ -213,6 +222,7 @@ class EventsController {
                                         break
                                 }
                             }, 200)
+                            this.popCrosshair()
                         }
                         break
                     case 'horsLesMursScreen':
@@ -233,6 +243,11 @@ class EventsController {
                     case 'tuto.stack top':
                         this.overlayTimeline.seek(0)
                         this.overlayTimeline.kill()
+                        const randomInt = Math.floor(Math.random() * 10)
+                        if (randomInt > 1 && randomInt <= 6)
+                            this.AudioController.speak('keepforgetting', 250)
+                        else if (randomInt <= 1)
+                            this.AudioController.speak('howdoesmouse', 50)
                         break
                     default:
                         break
@@ -252,6 +267,7 @@ class EventsController {
                                 delay: 0.1,
                             })
                         })
+                    this.popCrosshair()
                 }
                 //init tutorial
                 if (pickedMesh.name.indexOf('tuto') > -1 && config.tutorial) {
@@ -265,6 +281,7 @@ class EventsController {
                 }, 2800)
                 this.manageResetPhone()
                 this.throwingMode = false
+                this.popCrosshair()
             } else if (tutorialCondition) {
                 this.stopTutorial()
             }
@@ -285,17 +302,42 @@ class EventsController {
                 this.AudioController.shutUp()
             })
         })
+        //back to menu
         document
             .querySelector('.backtomenu img')
             .addEventListener('click', (e) => {
                 document.location.href = document.location.origin
             })
+        //pointer lock change
+        const lockChangeAlert = (e) => {
+            if (
+                document.pointerLockElement === this.canvas ||
+                document.mozPointerLockElement === this.canvas
+            ) {
+                // console.log('The pointer lock status is now locked')
+            } else {
+                this.startTutorial('', false)
+            }
+        }
+
+        if ('onpointerlockchange' in document) {
+            document.addEventListener(
+                'pointerlockchange',
+                lockChangeAlert,
+                false
+            )
+        } else if ('onmozpointerlockchange' in document) {
+            document.addEventListener(
+                'mozpointerlockchange',
+                lockChangeAlert,
+                false
+            )
+        }
     }
-    startTutorial(mode) {
+    startTutorial(mode, raisePostIt = true) {
         const arm = this.scene.rootNodes[0]._children.find((child) => {
             if (child.name === 'main_enfant.004') return child
         })
-        this.AudioController.shutUp()
         this.tutorialMode = true
         document.querySelector('.discover img:not(.hide)') &&
             document
@@ -305,43 +347,59 @@ class EventsController {
         document
             .querySelector('#canvas-container .logo-container')
             .classList.add('show')
-        findMesh('hand.postit.menu', this.scene).setEnabled(true)
         findMesh('blackTutorialFilter', this.scene).setEnabled(true)
-        this.PhysicsController.touch(
-            findMesh('tuto.stack top', this.scene),
-            new Vector3(3.5, 3, -0.8)
-        )
-        if (mode === 'facingScreen') {
-            if (!this.isMobile) {
-                gsap.to(arm.position, {
-                    x: config.arm.tutorial.facingScreen.desktop.position.x,
-                    y: config.arm.tutorial.facingScreen.desktop.position.y,
-                    z: config.arm.tutorial.facingScreen.desktop.position.z,
-                    duration: 0.5,
-                })
+        document.querySelector('.crosshair').classList.add('hide')
+
+        if (raisePostIt) {
+            findMesh('hand.postit.menu', this.scene).setEnabled(true)
+            this.PhysicsController.touch(
+                findMesh('tuto.stack top', this.scene),
+                new Vector3(3.5, 3, -0.8)
+            )
+            if (mode === 'facingScreen') {
+                if (!this.isMobile) {
+                    gsap.to(arm.position, {
+                        x: config.arm.tutorial.facingScreen.desktop.position.x,
+                        y: config.arm.tutorial.facingScreen.desktop.position.y,
+                        z: config.arm.tutorial.facingScreen.desktop.position.z,
+                        duration: 0.5,
+                    })
+                } else {
+                    gsap.to(arm.position, {
+                        x: config.arm.tutorial.facingScreen.mobile.position.x,
+                        y: config.arm.tutorial.facingScreen.mobile.position.y,
+                        z: config.arm.tutorial.facingScreen.mobile.position.z,
+                        duration: 0.5,
+                    })
+                }
             } else {
-                gsap.to(arm.position, {
-                    x: config.arm.tutorial.facingScreen.mobile.position.x,
-                    y: config.arm.tutorial.facingScreen.mobile.position.y,
-                    z: config.arm.tutorial.facingScreen.mobile.position.z,
-                    duration: 0.5,
-                })
-            }
-        } else {
-            if (!this.isMobile) {
-                gsap.to(arm.position, {
-                    x: config.arm.tutorial.facingPostitStack.desktop.position.x,
-                    y: config.arm.tutorial.facingPostitStack.desktop.position.y,
-                    z: config.arm.tutorial.facingPostitStack.desktop.position.z,
-                    duration: 0.5,
-                })
-            } else {
-                gsap.to(arm.position, {
-                    x: config.arm.tutorial.facingPostitStack.mobile.position.x,
-                    y: config.arm.tutorial.facingPostitStack.mobile.position.y,
-                    z: config.arm.tutorial.facingPostitStack.mobile.position.z,
-                    duration: 0.5,
-                })
+                if (!this.isMobile) {
+                    gsap.to(arm.position, {
+                        x:
+                            config.arm.tutorial.facingPostitStack.desktop
+                                .position.x,
+                        y:
+                            config.arm.tutorial.facingPostitStack.desktop
+                                .position.y,
+                        z:
+                            config.arm.tutorial.facingPostitStack.desktop
+                                .position.z,
+                        duration: 0.5,
+                    })
+                } else {
+                    gsap.to(arm.position, {
+                        x:
+                            config.arm.tutorial.facingPostitStack.mobile
+                                .position.x,
+                        y:
+                            config.arm.tutorial.facingPostitStack.mobile
+                                .position.y,
+                        z:
+                            config.arm.tutorial.facingPostitStack.mobile
+                                .position.z,
+                        duration: 0.5,
+                    })
+                }
             }
         }
 
@@ -356,6 +414,7 @@ class EventsController {
             if (child.name === 'main_enfant.004') return child
         })
         this.tutorialMode = false
+        document.querySelector('.crosshair').classList.remove('hide')
         document.querySelector('.backtomenu').classList.remove('show')
         document
             .querySelector('#canvas-container .logo-container')
@@ -495,6 +554,12 @@ class EventsController {
             }
             mode ? setPos(img) : resetPos(img)
         })
+    }
+    popCrosshair(duration = 900) {
+        this.toggleExpandCrosshair(true)
+        setTimeout(() => {
+            this.toggleExpandCrosshair(false)
+        }, duration)
     }
 }
 export default EventsController

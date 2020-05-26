@@ -3,10 +3,10 @@ import { Logo } from '../Logo/index'
 import Subtitle from './Subtitle/index'
 import BabylonScene from './classes/BabylonScene'
 import layout from '../../assets/img/overlay.png'
-import crosshair_tr from '../../assets/img/crosshair/top_right.png'
-import crosshair_br from '../../assets/img/crosshair/bot_right.png'
-import crosshair_bl from '../../assets/img/crosshair/bot_left.png'
-import crosshair_tl from '../../assets/img/crosshair/top_left.png'
+import crosshair_tr from '../../assets/img/crosshair/top_right_white.png'
+import crosshair_br from '../../assets/img/crosshair/bot_right_white.png'
+import crosshair_bl from '../../assets/img/crosshair/bot_left_white.png'
+import crosshair_tl from '../../assets/img/crosshair/top_left_white.png'
 import discover0 from '../../assets/img/discover/0.png'
 import discover1 from '../../assets/img/discover/1.png'
 import discover2 from '../../assets/img/discover/2.png'
@@ -70,7 +70,6 @@ const Folio = () => {
     } else if (randomNumber >= 75 && randomNumber <= 100) {
         randomIndex = 3
     }
-
     useEffect(() => {
         new BabylonScene().init()
     }, [])
