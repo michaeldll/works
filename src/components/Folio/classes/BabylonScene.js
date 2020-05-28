@@ -116,7 +116,7 @@ class BabylonScene {
                 portfolio: new Howl({
                     src: portfolio,
                     loop: false,
-                    volume: 3.1,
+                    volume: 2.8,
                 }),
                 toca: new Howl({
                     src: toca,
@@ -136,12 +136,12 @@ class BabylonScene {
                 keepforgetting: new Howl({
                     src: forgetting_this,
                     loop: false,
-                    volume: 0.3,
+                    volume: 0.5,
                 }),
                 howdoesmouse: new Howl({
                     src: how_does_mouse,
                     loop: false,
-                    volume: 0.4,
+                    volume: 0.5,
                 }),
             },
         }
@@ -187,7 +187,7 @@ class BabylonScene {
         this.engine = new Engine(this.canvas, false, null, true)
         window.innerWidth > 450
             ? this.engine.setHardwareScalingLevel(window.innerWidth / 480)
-            : this.engine.setHardwareScalingLevel(2.1)
+            : this.engine.setHardwareScalingLevel(2.2)
         this.engine.displayLoadingUI()
 
         // Create a scene.

@@ -14,21 +14,19 @@ class LoadingScreen {
             this._loadingDiv.id = 'customLoadingScreenDiv'
             if (sessionStorage.getItem('USER_HAS_TOUCHED')) {
                 this._loadingDiv.innerHTML = `
-                    <div class="window loading-text">LOADING</div>
+                    <div class="window loading-text aim">Aim with your phone to explore!</div>
+                    <br>
+                    <div class="window loading-text aim">Tap your screen to interact!</div>
                     <br>
                     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                     <div id="loading-bar"></div>
-                    <br>
-                    <div class="window loading-text aim">Aim with your phone to explore !</div>
                 `
             } else {
                 this._loadingDiv.innerHTML = `
-                    <div class="window loading-text">LOADING</div>
+                    <div class="window loading-text aim">Aim with your mouse to explore!</div>
                     <br>
                     <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                     <div class="loading-bar-container"><div id="loading-bar"></div></div>
-                    <br>
-                    <div class="window loading-text aim">Aim with your mouse to explore !</div>
                 `
             }
             this._resizeLoadingUI()

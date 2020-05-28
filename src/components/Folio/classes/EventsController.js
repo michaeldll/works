@@ -37,6 +37,7 @@ class EventsController {
         this.OrientationController = new OrientationController()
         this.AudioController = new AudioController(audio, subtitleControllers)
         this.overlayTimeline = overlayTimeline
+        this.isExpanding = false
         this.isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
         this.init()
     }
@@ -244,7 +245,7 @@ class EventsController {
                         this.overlayTimeline.seek(0)
                         this.overlayTimeline.kill()
                         const randomInt = Math.floor(Math.random() * 10)
-                        if (randomInt > 1 && randomInt <= 6)
+                        if (randomInt > 1 && randomInt <= 3)
                             this.AudioController.speak('keepforgetting', 250)
                         else if (randomInt <= 1)
                             this.AudioController.speak('howdoesmouse', 50)
@@ -492,7 +493,7 @@ class EventsController {
                         z: config.arm.initial.position.z,
                         duration: 0.25,
                     })
-                this.toggleExpandCrosshair(false)
+                if (!this.isExpanding) this.toggleExpandCrosshair(false)
             }
 
             //prevents infinite redirects when clicking mouse
@@ -555,10 +556,12 @@ class EventsController {
             mode ? setPos(img) : resetPos(img)
         })
     }
-    popCrosshair(duration = 900) {
+    popCrosshair(duration = 30) {
         this.toggleExpandCrosshair(true)
+        this.isExpanding = true
         setTimeout(() => {
             this.toggleExpandCrosshair(false)
+            this.isExpanding = false
         }, duration)
     }
 }
