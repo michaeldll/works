@@ -54,14 +54,21 @@ class EventsController {
         }
         //handle keydown
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'ArrowRight') showScreen(this.scene, 'next')
-            if (e.code === 'ArrowLeft') showScreen(this.scene, 'previous')
+            if (e.code === 'ArrowRight' || e.code === 'KeyD') {
+                this.popCrosshair()
+                showScreen(this.scene, 'next')
+            }
+
+            if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
+                this.popCrosshair()
+                showScreen(this.scene, 'previous')
+            }
+
             this.audio.sfx.kb.play()
             this.PhysicsController.touch(
                 findMesh('Keyboard.001', this.scene),
                 new Vector3(3.5, 2, -1)
             )
-            this.popCrosshair()
         })
         //handle Pointer Lock
         if (!this.isMobile) {
@@ -245,9 +252,9 @@ class EventsController {
                         this.overlayTimeline.seek(0)
                         this.overlayTimeline.kill()
                         const randomInt = Math.floor(Math.random() * 10)
-                        if (randomInt > 1 && randomInt <= 3)
+                        if (randomInt > 5 && randomInt <= 8)
                             this.AudioController.speak('keepforgetting', 250)
-                        else if (randomInt <= 1)
+                        else if (randomInt <= 4)
                             this.AudioController.speak('howdoesmouse', 50)
                         break
                     default:

@@ -276,8 +276,6 @@ class BabylonScene {
                 )
 
                 setTimeout(() => {
-                    this.engine.hideLoadingUI()
-
                     setTimeout(() => {
                         if (!localStorage.getItem('hasSeenBeginningPostit')) {
                             localStorage.setItem('hasSeenBeginningPostit', '1')
