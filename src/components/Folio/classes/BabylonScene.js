@@ -277,10 +277,10 @@ class BabylonScene {
 
                 setTimeout(() => {
                     setTimeout(() => {
-                        if (!localStorage.getItem('hasSeenBeginningPostit')) {
-                            localStorage.setItem('hasSeenBeginningPostit', '1')
-                            this.EventsController.startTutorial('facingScreen')
-                        }
+                        // if (!localStorage.getItem('hasSeenBeginningPostit')) {
+                        //     localStorage.setItem('hasSeenBeginningPostit', '1')
+                        //     this.EventsController.startTutorial('facingScreen')
+                        // }
 
                         if (!sessionStorage.getItem('hasGrabbedPostitStack')) {
                             this.scene.meshes
