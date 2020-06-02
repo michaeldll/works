@@ -49,12 +49,12 @@
         width: 100%;
         height: 25px;
         margin: 15px 0;
-    }
-
-    .menu-item .start,
-    .menu-item .about {
-        z-index: 1;
-        height: 20px;
+        .start,
+        .about {
+            z-index: 1;
+            height: 20px;
+            cursor: pointer;
+        }
     }
 
     .menu-item:not(.active) {

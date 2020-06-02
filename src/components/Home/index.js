@@ -149,6 +149,21 @@ const Home = () => {
         )
     }, [])
 
+    const onAboutClick = (e) => {
+        setPresses(presses + 1)
+        setAboutSelected(!aboutSelected)
+        setOptionNumber(1)
+        localStorage.setItem('hasSeenAbout', '1')
+    }
+
+    const onStartClick = (e) => {
+        setOptionNumber(0)
+        setOptionSelected(true)
+        setTimeout(() => {
+            setOptionSelected(false)
+        }, 10)
+    }
+
     if (aboutSelected)
         document
             .querySelectorAll('#root, .home-container')
@@ -215,6 +230,7 @@ const Home = () => {
                                 src={optionNumber === 0 ? start2 : start1}
                                 alt="start"
                                 onTouchEnd={onStartTouch}
+                                onClick={onStartClick}
                             />
                         </div>
                         <div
@@ -232,6 +248,7 @@ const Home = () => {
                                 className="about"
                                 src={optionNumber === 1 ? about2 : about1}
                                 alt="about"
+                                onClick={onAboutClick}
                             />
                         </div>
                     </>

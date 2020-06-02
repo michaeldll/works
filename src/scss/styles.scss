@@ -28,6 +28,12 @@ html {
     display: none !important;
 }
 
+button {
+    &:disabled {
+        cursor: not-allowed;
+    }
+}
+
 @media screen and (max-width: 450px) {
     #root {
         height: 100vh;
