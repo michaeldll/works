@@ -365,7 +365,7 @@ class BabylonScene {
         filter.position = new Vector3(
             this.camera.position.x,
             this.camera.position.y,
-            -0.28
+            -0.267
         )
         filter.setEnabled(false)
     }
