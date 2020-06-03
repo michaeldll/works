@@ -12,6 +12,15 @@
     strong {
         color: purple !important;
     }
+    button {
+        cursor: pointer !important;
+        &:disabled {
+            cursor: not-allowed !important;
+        }
+    }
+    select {
+        cursor: pointer !important;
+    }
     .contact {
         display: flex;
         justify-content: space-between;
