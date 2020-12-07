@@ -1,16 +1,25 @@
 @import 'utilities';
 
-//variables not used, just here as reference
 $mainColor: #f9d586;
 $secondaryColor: #f9e9c5;
+$orange: #322b1b;
+$speed: 1000ms;
 
 html,
 body {
     width: 100%;
     padding: 0;
     margin: 0;
-    background: #000;
     overflow-x: hidden;
+}
+
+body {
+    background: #000;
+
+    &.orange {
+        background: $orange;
+        transition: all $speed ease-in-out;
+    }
 }
 
 html {

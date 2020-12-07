@@ -1,0 +1,16 @@
+.projects {
+    width: 80%;
+    height: 80%;
+
+    & > div {
+        width: 100%;
+        height: 100%;
+    }
+
+    canvas {
+        font-size: 0;
+        outline: none;
+        width: 100%;
+        height: 100%;
+    }
+}

@@ -254,8 +254,8 @@ class EventsController {
                         const randomInt = Math.floor(Math.random() * 10)
                         if (randomInt > 5 && randomInt <= 8)
                             this.AudioController.speak('keepforgetting', 250)
-                        else if (randomInt <= 4)
-                            this.AudioController.speak('howdoesmouse', 50)
+                        // else if (randomInt <= 4)
+                        // this.AudioController.speak('howdoesmouse', 50)
                         break
                     default:
                         break

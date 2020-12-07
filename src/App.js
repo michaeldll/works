@@ -11,6 +11,7 @@ import { AppProvider } from './reducer'
 import Home from './components/Home'
 import Folio from './components/Folio'
 import HorsLesMurs from './components/HorsLesMurs'
+import Classic from './components/Classic'
 
 import config from './components/Folio/utils/config'
 import '98.css'
@@ -54,6 +55,9 @@ export default function App() {
                     <RefreshRoute component={Folio} path="/folio" />
                     <Route path="/horslesmurs">
                         <HorsLesMurs />
+                    </Route>
+                    <Route path="/classic">
+                        <Classic />
                     </Route>
                 </Switch>
             </Router>
