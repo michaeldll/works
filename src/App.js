@@ -59,9 +59,9 @@ export default function App() {
                     <Route path="/horslesmurs">
                         <HorsLesMurs />
                     </Route>
-                    <Route path="/classic">
+                    {/* <Route path="/classic">
                         <Classic />
-                    </Route>
+                    </Route> */}
                 </Switch>
             </Router>
         </AppProvider>
