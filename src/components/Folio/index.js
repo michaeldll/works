@@ -20,7 +20,7 @@ import life from '../../assets/video/life.mp4'
 import horslesmurs from '../../assets/video/horslesmurs.mp4'
 import pensa from '../../assets/video/pensa.mp4'
 import toca from '../../assets/video/toca.mp4'
-import './scss/Folio.scss'
+import './Folio.scss'
 
 const Folio = () => {
     const subtitles = [

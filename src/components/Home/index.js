@@ -237,11 +237,10 @@ const Home = () => {
                             className={
                                 optionNumber === 1
                                     ? 'menu-item d-flex justify-content-center align-items-center active'
-                                    : `menu-item d-flex justify-content-center align-items-center ${
-                                          !localStorage.getItem('hasSeenAbout')
-                                              ? 'blink'
-                                              : ''
-                                      }`
+                                    : `menu-item d-flex justify-content-center align-items-center ${!localStorage.getItem('hasSeenAbout')
+                                        ? 'blink'
+                                        : ''
+                                    }`
                             }
                         >
                             <img

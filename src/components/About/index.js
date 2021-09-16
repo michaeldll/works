@@ -21,9 +21,8 @@ const About = (props) => {
         containerEl.current.classList.remove('minimized')
     }
     const onEmail = (e) => {
-        emailEl.current.innerHTML = `<a href="mailto:delabordemichael@gmail.com">delabordemichael${
-            sessionStorage.getItem('USER_HAS_TOUCHED') ? '<br />' : ''
-        }@gmail.com</a>`
+        emailEl.current.innerHTML = `<a href="mailto:delabordemichael@gmail.com">delabordemichael${sessionStorage.getItem('USER_HAS_TOUCHED') ? '<br />' : ''
+            }@gmail.com</a>`
         emailBtnEl.current.disabled = true
     }
 
@@ -47,22 +46,20 @@ const About = (props) => {
 
             <div className="window-body">
                 <p>
-                    Hi. My name's Michael and I'm a{' '}
+                    Hi. My name's Michael and I'm{' '}
                     <span>
                         <select>
-                            <option>creative developer.</option>
-                            <option>terrible musician.</option>
+                            <option>an interactive developer.</option>
+                            <option>a terrible musician.</option>
                         </select>
                     </span>
                 </p>
-                <p>This is a showcase of my work over the last 6 months.</p>
+                <p>This is a showcase of my recent work.</p>
                 <p>
-                    I'm studying at Gobelins Paris and{' '}
-                    <strong>looking for my next job !</strong>
+                    Currently <strong>available for freelance</strong>.
                 </p>
                 <div className="contact">
                     <div className="d-flex flex-column justify-content-center align-items-center">
-                        <div>Email:</div>
                         <div ref={emailEl} className="email"></div>
                         <button ref={emailBtnEl} onClick={onEmail}>
                             Show Email

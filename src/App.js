@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, lazy, Suspense } from 'react'
 import {
     BrowserRouter as Router,
     Switch,
@@ -9,7 +9,6 @@ import {
 import { AppProvider } from './reducer'
 
 import Home from './components/Home'
-import Folio from './components/Folio'
 import HorsLesMurs from './components/HorsLesMurs'
 import Classic from './components/Classic'
 
@@ -28,7 +27,7 @@ const RefreshRoute = ({ component: Component, ...rest }) => {
             {...rest}
             render={(props) =>
                 localStorage.getItem('shouldRefresh') === null ||
-                localStorage.getItem('shouldRefresh') === '0' ? (
+                    localStorage.getItem('shouldRefresh') === '0' ? (
                     <Component {...props} />
                 ) : (
                     <Redirect
@@ -42,6 +41,8 @@ const RefreshRoute = ({ component: Component, ...rest }) => {
     )
 }
 
+const FolioComponent = lazy(() => import('./components/Folio/index'))
+
 export default function App() {
     // get state and dispatch logic from reducer
 
@@ -52,7 +53,9 @@ export default function App() {
                     <Route exact path="/">
                         <Home />
                     </Route>
-                    <RefreshRoute component={Folio} path="/folio" />
+                    <Suspense fallback="loading">
+                        <RefreshRoute component={FolioComponent} path="/folio" />
+                    </Suspense>
                     <Route path="/horslesmurs">
                         <HorsLesMurs />
                     </Route>

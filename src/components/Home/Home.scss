@@ -128,8 +128,7 @@
         .press {
             height: 30px;
             & > img {
-                height: 90%;
-                width: 60%;
+                height: 25px;
             }
         }
         .text-logo {
@@ -183,6 +182,10 @@
         }
         .menu:first-of-type {
             margin-bottom: 0px;
+            height: 34vh;
+        }
+        .menu {
+            margin-bottom: 5vh;
         }
     }
 }
