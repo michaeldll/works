@@ -1,16 +1,14 @@
 import {
   Intersection,
-  Mesh,
   Object3D,
   OrthographicCamera,
   PerspectiveCamera,
-  PlaneBufferGeometry,
-  ShaderMaterial,
   Vector2,
   Vector3,
   Texture
 } from "three";
 import { loadTexture } from "../../utils";
+import Mouse from "../components/Mouse";
 import { MainSceneContext } from "../scenes/MainScene";
 import { Viewport } from "../types";
 
@@ -24,7 +22,7 @@ const temporaryVectors = {
 }
 
 export class MouseController {
-  public object: Mesh;
+  public mouse: Mouse;
   public intersects: Intersection[];
   public raw = new Vector2();
   public event: MouseEvent
@@ -41,41 +39,14 @@ export class MouseController {
   private initObject = () => {
     loadTexture(this.context.textureLoader, '/textures/98crosshair.png').then((texture) => {
       this.texture = texture
-
-      const geometry = new PlaneBufferGeometry();
-      const material = new ShaderMaterial({
-        vertexShader: /*glsl*/ `
-          varying vec2 vUv;
-  
-          void main(void) {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }
-        `,
-        fragmentShader: /*glsl*/ `
-          varying vec2 vUv;
-  
-          uniform sampler2D uTexture;
-  
-          void main(void) {
-            vec4 texel = texture2D(uTexture, vUv);
-            gl_FragColor = texel;
-          }
-        `,
-        uniforms: {
-          uWave: { value: false },
-          uTexture: { value: texture }
-        },
-        transparent: true,
-      });
-      this.object = new Mesh(geometry, material);
+      this.mouse = new Mouse(this.context, texture)
       this.updateScale()
-      this.context.scene.add(this.object)
+      this.context.scene.add(this.mouse.object)
     })
   };
 
   private updateScale = () => {
-    this.object.scale.set(this.texture.image.width * parameters.size, this.texture.image.height * parameters.size, 0);
+    this.mouse.object.scale.set(this.texture.image.width * parameters.size, this.texture.image.height * parameters.size, 0);
   }
 
   private onMouseMove = (e: MouseEvent) => {
@@ -105,17 +76,19 @@ export class MouseController {
       this.intersects = this.context.raycaster.intersectObjects(raycastedObjects, true);
     }
 
-    if (!this.object) return
+    if (!this.mouse) return
+
+    this.mouse.update(this.context.clock.getElapsedTime())
 
     this.target.set(
       (this.raw.x * viewport.width) / 2,
       (this.raw.y * viewport.height) / 2,
       0
     );
-    this.object.position.lerp(this.target, 0.9);
+    this.mouse.object.position.lerp(this.target, 0.9);
 
     // Because WebGL has centered axii, we have to add an offset to mimick the native cursor using the Windows 98 texture
-    temporaryVectors.positionOffset.set(this.object.scale.x / 4, -this.object.scale.y / 4, 0)
-    this.object.position.add(temporaryVectors.positionOffset)
+    temporaryVectors.positionOffset.set(this.mouse.object.scale.x / 4, -this.mouse.object.scale.y / 4, 0)
+    this.mouse.object.position.add(temporaryVectors.positionOffset)
   }
 }
