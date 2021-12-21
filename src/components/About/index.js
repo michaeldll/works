@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import '98.css'
 import './About.scss'
 
 const About = (props) => {
@@ -54,7 +55,7 @@ const About = (props) => {
                         </select>
                     </span>
                 </p>
-                <p>This is a showcase of my recent work.</p>
+                <p>This is a showcase of my experiments.</p>
                 <p>
                     Currently <strong>available for freelance</strong>.
                 </p>

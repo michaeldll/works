@@ -11,9 +11,10 @@ import { AppProvider } from './reducer'
 import Home from './components/Home'
 import HorsLesMurs from './components/HorsLesMurs'
 import Classic from './components/Classic'
+import IG from './components/IG'
 
 import config from './components/Folio/utils/config'
-import '98.css'
+
 
 // Redirects when refreshed
 // https://stackoverflow.com/questions/51054653/react-router-v4-redirect-to-home-on-page-reload-inside-application
@@ -53,12 +54,15 @@ export default function App() {
                     <Route exact path="/">
                         <Home />
                     </Route>
-                    <Suspense fallback="loading">
-                        <RefreshRoute component={FolioComponent} path="/folio" />
-                    </Suspense>
                     <Route path="/horslesmurs">
                         <HorsLesMurs />
                     </Route>
+                    <Route path="/mathijs">
+                        <IG />
+                    </Route>
+                    <Suspense fallback="loading">
+                        <RefreshRoute component={FolioComponent} path="/folio" />
+                    </Suspense>
                     {/* <Route path="/classic">
                         <Classic />
                     </Route> */}

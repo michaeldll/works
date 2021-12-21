@@ -20,6 +20,7 @@ import life from '../../assets/video/life.mp4'
 import horslesmurs from '../../assets/video/horslesmurs.mp4'
 import pensa from '../../assets/video/pensa.mp4'
 import toca from '../../assets/video/toca.mp4'
+import '98.css'
 import './Folio.scss'
 
 const Folio = () => {

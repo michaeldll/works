@@ -1,0 +1,40 @@
+.ig{
+    padding: 5vw;
+    cursor: none;
+
+    .window{
+        h2, p, a{
+            -webkit-font-smoothing: auto;
+        }
+        strong{
+            color: purple;   
+        }
+        .ig__window{
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        iframe{
+            width: 500px;
+            height: 300px;
+            opacity: 0.95;
+            cursor: pointer;
+        }
+    }
+}
+
+.ig__canvas {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.tp-dfwv {
+    z-index: 10;
+}

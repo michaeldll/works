@@ -2,9 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import horslesmurs from '../../assets/video/horslesmursfolio.mp4'
 import pic from '../../assets/img/pic.png'
+import '98.css'
 import './HorsLesMurs.scss'
 
 const HorsLesMurs = () => {
+    console.error(1);
     const isMobile = sessionStorage.getItem('USER_HAS_TOUCHED')
     return (
         <div className="horslesmurs">
