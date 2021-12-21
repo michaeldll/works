@@ -10,7 +10,7 @@ import { AppProvider } from './reducer'
 
 import Home from './components/Home'
 import HorsLesMurs from './components/HorsLesMurs'
-import Classic from './components/Classic'
+// import Classic from './components/Classic'
 
 import config from './components/Folio/utils/config'
 import '98.css'

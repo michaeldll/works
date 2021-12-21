@@ -17,6 +17,7 @@ import video_lvdf from '../../assets/video/logo/logo_lvdf.mp4'
 import video_pensa from '../../assets/video/logo/logo_pensa.mp4'
 import logo from '../../assets/text/logo.png'
 import placeholder from '../../assets/img/cover_seo.jpg'
+import init from './initDesenha'
 import './Home.scss'
 
 const Home = () => {
@@ -25,8 +26,8 @@ const Home = () => {
     const [optionNumber, setOptionNumber] = useState(0)
     const [optionSelected, setOptionSelected] = useState(false)
     const [aboutSelected, setAboutSelected] = useState(false)
-    const [logoVideoIndex, setLogoVideoIndex] = useState(0)
-    const videos = [video_toca, video_pensa, video_hlm, video_lvdf]
+    const [currentProjectIndex, setCurrentProjectIndex] = useState(0)
+    // const videos = [video_toca, video_pensa, video_hlm, video_lvdf]
     const isMobile =
         window.innerWidth <= 1024 || sessionStorage.getItem('USER_HAS_TOUCHED')
 
@@ -132,21 +133,29 @@ const Home = () => {
         const randomNumber = Math.floor(Math.random() * 100)
 
         if (randomNumber >= 25 && randomNumber < 50) {
-            setLogoVideoIndex(1)
+            setCurrentProjectIndex(1)
         } else if (randomNumber >= 50 && randomNumber < 75) {
-            setLogoVideoIndex(2)
+            setCurrentProjectIndex(2)
         } else if (randomNumber >= 75 && randomNumber <= 100) {
-            setLogoVideoIndex(3)
+            setCurrentProjectIndex(3)
+        }
+
+        function onFirstTouch(e) {
+            sessionStorage.setItem('USER_HAS_TOUCHED', '1')
+            window.removeEventListener('touchend', onFirstTouch, false)
         }
 
         window.addEventListener(
             'touchend',
-            function onFirstTouch(e) {
-                sessionStorage.setItem('USER_HAS_TOUCHED', '1')
-                window.removeEventListener('touchend', onFirstTouch, false)
-            },
+            onFirstTouch,
             false
         )
+
+        init()
+
+        return () => {
+            window.removeEventListener('touchend', onFirstTouch)
+        }
     }, [])
 
     const onAboutClick = (e) => {
@@ -190,18 +199,20 @@ const Home = () => {
                         ''
                     )}
 
-                    <video
+                    {/* <video
                         autoPlay
                         poster={isMobile ? placeholder : null}
                         playsInline
                         loop
                         muted
                         className={
-                            !entered ? 'logo-video' : 'logo-video entered'
+                            !entered ? 'logo-canvas' : 'logo-canvas entered'
                         }
                         src={videos[logoVideoIndex]}
                         type="video/mp4"
-                    />
+                    /> */}
+
+                    <canvas className="logo-canvas" />
                 </div>
             </div>
             <div className="menu w-100">

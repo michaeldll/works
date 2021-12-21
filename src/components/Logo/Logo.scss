@@ -33,16 +33,16 @@
         transform: translate(0, -50%);
     }
 
-    .logo-video,
+    .logo-canvas,
     .text-logo {
         transition: all 0.5s ease-in-out;
     }
 
-    .logo-container:hover .logo-video.entered {
+    .logo-container:hover .logo-canvas.entered {
         opacity: 1;
     }
 
-    .logo-video.entered:hover {
+    .logo-canvas.entered:hover {
         opacity: 1;
     }
 
@@ -50,11 +50,11 @@
         opacity: 0;
     }
 
-    .menu .logo-video.entered {
+    .menu .logo-canvas.entered {
         opacity: 0.5;
     }
 
-    .logo-container:hover .logo-video.entered {
+    .logo-container:hover .logo-canvas.entered {
         opacity: 1;
     }
 

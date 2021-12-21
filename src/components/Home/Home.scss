@@ -20,7 +20,7 @@
         height: 100%;
     }
 
-    .logo-video {
+    .logo-canvas {
         height: 300px;
         z-index: 1;
     }
@@ -98,7 +98,7 @@
         height: 110px;
     }
 
-    .menu .logo-video,
+    .menu .logo-canvas,
     .menu .text-logo {
         transition: all 0.5s ease-in-out;
     }
@@ -107,15 +107,15 @@
         opacity: 0;
     }
 
-    .menu .logo-video.entered {
+    .menu .logo-canvas.entered {
         opacity: 0.5;
     }
 
-    .logo-container:hover .logo-video.entered {
+    .logo-container:hover .logo-canvas.entered {
         opacity: 1;
     }
 
-    .logo-video.entered:hover {
+    .logo-canvas.entered:hover {
         opacity: 1;
     }
 
@@ -148,7 +148,7 @@
         .menu:nth-of-type(2) {
             height: initial;
         }
-        .logo-video {
+        .logo-canvas {
             height: 500px;
         }
     }

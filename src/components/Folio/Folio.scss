@@ -22,7 +22,7 @@ div#inspector-host {
 #canvas-container {
     height: 100vh;
     overflow: hidden;
-    video:not(.logo-video) {
+    video:not(.logo-canvas) {
         display: none;
     }
     .crosshair {

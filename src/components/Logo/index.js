@@ -25,7 +25,7 @@ export const Logo = (props) => {
                 playsInline
                 loop
                 muted
-                className={!props.entered ? 'logo-video' : 'logo-video entered'}
+                className={!props.entered ? 'logo-canvas' : 'logo-canvas entered'}
                 src={videos[props.logoVideoIndex]}
                 type="video/mp4"
             /> */}
