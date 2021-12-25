@@ -18,7 +18,7 @@ export default class MainScene extends BaseScene {
     this.setControllers()
     this.setCamera()
     this.setEvents()
-    this.tweaks()
+    // this.tweaks()
     this.context = this.generateContext()
   }
 

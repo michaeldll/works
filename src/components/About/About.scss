@@ -76,17 +76,18 @@
             & > div {
                 font-size: 2rem;
             }
-        }
-        .title-bar-controls button {
-            min-width: 18px;
-            min-height: 16px;
-            margin: 0 2px;
-        }
-        .title-bar-text {
-            font-size: 1.8rem;
-        }
-        .email {
-            text-align: center;
+
+            .title-bar-controls button {
+                min-width: 18px;
+                min-height: 16px;
+                margin: 0 2px;
+            }
+            .title-bar-text {
+                font-size: 1.8rem;
+            }
+            .email {
+                text-align: center;
+            }
         }
     }
 }

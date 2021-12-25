@@ -7,26 +7,45 @@
             -webkit-font-smoothing: auto;
             cursor: none;
         }
+        p,a{
+            font-size: 12px;
+        }
         strong{
             color: purple;   
         }
+    }
+
+    .ig__window{
+        position: absolute;
+        z-index: 1;
+        pointer-events: none;
+
+        iframe{
+            opacity: 0.95;
+        }
+    }
+
+    @media screen and (min-width: 451px) {
         .ig__window{
-            position: absolute;
-            z-index: 1;
             top: 0;
             left: 0;
-            pointer-events: none;
 
             iframe{
                 width: 500px;
                 height: 400px;
-                opacity: 0.95;
             }
+        }
+    }
 
-            &--smoll{
-                iframe{
-                    height: 180px;
-                }
+    @media screen and (max-width: 450px) {
+        .ig__window{
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            iframe{
+                width: 80vw;
+                height: 40vh;
             }
         }
     }

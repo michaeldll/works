@@ -45,7 +45,7 @@ export default class Mouse extends BaseObject {
           float impulse = cubicPulse(prog, impulseWidth, ramp);
           
           vec3 offset = vec3(0.);
-          // offset.y += impulse;
+          // offset.x = impulse;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position + offset, 1.0);
           vImpulse = impulse;
         }

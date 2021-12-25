@@ -44,7 +44,6 @@ html {
 @media screen and (max-width: 450px) {
     #root {
         height: 100vh;
-        overflow: hidden;
     }
     #root.about-open {
         height: 100%;

@@ -12,11 +12,11 @@ const IG = () => {
           <div className="window-body">
             <h2>Who am I ?</h2>
             <p>I'm 26 years young and I come from <strong data-window-id='casa'>São Miguel, Açores</strong> (it's a fairly remote place).</p>
-            <p>I came here about 10 years ago and somehow ended up at Gobelins doing front end / creative development - same class as Léo.</p>
-            <p>Personally, I'd describe myself as both a bit of a workaholic and a head-in-the-clouds kind of guy.</p>
+            <p>I came to France about 10 years ago and somehow ended up at Gobelins doing front end / creative development - same class as Léo.</p>
+            <p>I'd describe myself as: curious, naive, workaholic.</p>
 
             <h2>What are my interests ?</h2>
-            <p>When I'm not obsessing over some project, I enjoy <strong data-window-id='musica'>making crappy songs</strong>, shooting film [avec l'appareil photo] and screwing around with my bike[video] - which are just side projects of their own, in a way.</p>
+            <p>When I'm not obsessing over some project, I enjoy <strong data-window-id='musica'>making crappy songs</strong>, shooting film and screwing around with my bike[video] - which are just side projects of their own, in a way.</p>
             <p>I'm passionate about making stuff from unique and stimulating ideas and therefore enjoy contributing to the vision of a project if needed.</p>
 
             <h2>What are my skills ?</h2>

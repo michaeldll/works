@@ -7,7 +7,7 @@ import {
   Vector3,
   Texture
 } from "three";
-import { loadTexture } from "../../utils";
+import { isMobile, loadTexture } from "../../utils";
 import Mouse from "../components/Mouse";
 import { MainSceneContext } from "../scenes/MainScene";
 import { Viewport } from "../types";
@@ -29,6 +29,7 @@ export class MouseController {
   private context: MainSceneContext;
   private target = new Vector3();
   private texture: Texture
+  private alpha = 0.95
 
   constructor(context: MainSceneContext) {
     this.context = context;
@@ -49,14 +50,21 @@ export class MouseController {
     this.mouse.object.scale.set(this.texture.image.width * parameters.size, this.texture.image.height * parameters.size, 0);
   }
 
-  private onMouseMove = (e: MouseEvent) => {
+  private onPointerMove = (e) => {
     this.event = e
-    this.raw.x = (e.clientX / window.innerWidth) * 2 - 1;
-    this.raw.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    const { clientX, clientY } = e.touches && e.touches.length ? e.touches[0] : e
+    this.raw.x = (clientX / window.innerWidth) * 2 - 1;
+    this.raw.y = -(clientY / window.innerHeight) * 2 + 1;
   };
 
+  private onTouchStart = (e) => {
+    if (this.alpha === 0.9) this.alpha = 0.3
+  }
+
   public setEvents = () => {
-    window.addEventListener("mousemove", this.onMouseMove);
+    window.addEventListener("mousemove", this.onPointerMove);
+    window.addEventListener("touchstart", this.onTouchStart)
+    window.addEventListener("touchmove", this.onPointerMove);
   };
 
   public tweaks = () => {
@@ -85,7 +93,7 @@ export class MouseController {
       (this.raw.y * viewport.height) / 2,
       0
     );
-    this.mouse.object.position.lerp(this.target, 0.9);
+    this.mouse.object.position.lerp(this.target, this.alpha);
 
     // Because WebGL has centered axii, we have to add an offset to mimick the native cursor using the Windows 98 texture
     temporaryVectors.positionOffset.set(this.mouse.object.scale.x / 4, -this.mouse.object.scale.y / 4, 0)
