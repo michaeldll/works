@@ -103,16 +103,6 @@ Deep Learning Is for Everyone
 
 A lot of people assume that you need all kinds of hard-to-find stuff to get great results with deep learning, but as you'll see in this book, those people are wrong. <> is a list of a few thing you absolutely don't need to do world-class deep learning.
 
-
-
-#hide
-!pip install -Uqq fastbook
-import fastbook
-fastbook.setup_book()
-
-#hide
-from fastbook import *
-
 Your Deep Learning Journey
 
 Hello, and thank you for letting us join you on your deep learning journey, however far along that you may be! In this chapter, we will tell you a little bit more about what to expect in this book, introduce the key concepts behind deep learning, and train our first models on different tasks. It doesn't matter if you don't come from a technical or a mathematical background (though it's okay if you do too!); we wrote this book to make deep learning accessible to as many people as possible.
@@ -120,16 +110,8 @@ Deep Learning Is for Everyone
 
 A lot of people assume that you need all kinds of hard-to-find stuff to get great results with deep learning, but as you'll see in this book, those people are wrong. <> is a list of a few thing you absolutely don't need to do world-class deep learning.
 
-asciidoc
-[[myths]]
-.What you don't need to do deep learning
-[options="header"]
-|======
-| Myth (don't need) | Truth
-| Lots of math | Just high school math is sufficient
-| Lots of data | We've seen record-breaking results with <50 items of data
-| Lots of expensive computers | You can get what you need for state of the art work for free
-|======
+
+What you don't need to do deep learning
 
 Deep learning is a computer technique to extract and transform data–-with use cases ranging from human speech recognition to animal imagery classification–-by using multiple layers of neural networks. Each of these layers takes its inputs from previous layers and progressively refines them. The layers are trained by algorithms that minimize their errors and improve their accuracy. In this way, the network learns to perform a specified task. We will discuss training algorithms in detail in the next section.
 
@@ -317,25 +299,6 @@ Click on the cell that begins with the line "# CLICK ME" to select it. The first
 
 The first two steps only need to be run once on your GPU server. If you run the cell again, it will use the dataset and model that have already been downloaded, rather than downloading them again. Let's take a look at the contents of the cell, and the results (<>):
 
-#id first_training
-#caption Results from the first training
-# CLICK ME
-from fastai.vision.all import *
-path = untar_data(URLs.PETS)/'images'
-
-def is_cat(x): return x[0].isupper()
-dls = ImageDataLoaders.from_name_func(
-    path, get_image_files(path), valid_pct=0.2, seed=42,
-    label_func=is_cat, item_tfms=Resize(224))
-
-learn = cnn_learner(dls, resnet34, metrics=error_rate)
-learn.fine_tune(1)
-
-epoch 	train_loss 	valid_loss 	error_rate 	time
-0 	0.180385 	0.023942 	0.006766 	00:16
-epoch 	train_loss 	valid_loss 	error_rate 	time
-0 	0.056023 	0.007580 	0.004060 	00:20
-
 You will probably not see exactly the same results that are in the book. There are a lot of sources of small random variation involved in training models. We generally see an error rate of well less than 0.02 in this example, however.
 
     important: Training Time: Depending on your network speed, it might take a few minutes to download the pretrained model and dataset. Running fine_tune might take a minute or so. Often models in this book take a few minutes to train, as will your own models, so it's a good idea to come up with good techniques to make the most of this time. For instance, keep reading the next section while your model trains, or open up another notebook and use it for some coding experiments.
@@ -346,14 +309,7 @@ We wrote this book using Jupyter notebooks, so for nearly every chart, table, an
 
 You just saw how a cell that outputs a table looks inside the book. Here is an example of a cell that outputs text:
 
-1+1
-
-2
-
 Jupyter will always print or show the result of the last line (if there is one). For instance, here is an example of a cell that outputs an image:
-
-img = PILImage.create(image_cat())
-img.to_thumb(192)
 
 End sidebar
 
@@ -361,24 +317,9 @@ So, how do we know if this model is any good? In the last column of the table yo
 
 Finally, let's check that this model actually works. Go and get a photo of a dog, or a cat; if you don't have one handy, just search Google Images and download an image that you find there. Now execute the cell with uploader defined. It will output a button you can click, so you can select the image you want to classify:
 
-#hide_output
-uploader = widgets.FileUpload()
-uploader
-
-FileUpload(value={}, description='Upload')
-
 An upload button
 
 Now you can pass the uploaded file to the model. Make sure that it is a clear photo of a single dog or a cat, and not a line drawing, cartoon, or similar. The notebook will tell you whether it thinks it is a dog or a cat, and how confident it is. Hopefully, you'll find that your model did a great job:
-
-#hide
-# For the book, we can't actually click an upload button, so we fake it
-uploader = SimpleNamespace(data = ['images/chapter1_cat_example.jpg'])
-
-img = PILImage.create(uploader.data[0])
-is_cat,_,probs = learn.predict(img)
-print(f"Is this a cat?: {is_cat}.")
-print(f"Probability it's a cat: {probs[1].item():.6f}")
 
 Is this a cat?: True.
 Probability it's a cat: 1.000000
@@ -397,13 +338,6 @@ So in this section, we will describe what machine learning is. We will look at t
 Machine learning is, like regular programming, a way to get computers to complete a specific task. But how would we use regular programming to do what we just did in the last section: recognize dogs versus cats in photos? We would have to write down for the computer the exact steps necessary to complete the task.
 
 Normally, it's easy enough for us to write down the steps to complete a task when we're writing a program. We just think about the steps we'd take if we had to do the task by hand, and then we translate them into code. For instance, we can write a function that sorts a list. In general, we'd write a function that looks something like <> (where inputs might be an unsorted list, and results a sorted list).
-
-#hide_input
-#caption A traditional program
-#id basic_program
-#alt Pipeline inputs, program, results
-gv('''program[shape=box3d width=1 height=0.7]
-inputs->program->results''')
 
 But for recognizing objects in a photo that's a bit tricky; what are the steps we take when we recognize an object in a picture? We really don't know, since it all happens in our brain without us being consciously aware of it!
 
@@ -428,12 +362,6 @@ Weights are just variables, and a weight assignment is a particular choice of va
 
 Since they will affect the program they are in a sense another kind of input, so we will update our basic picture in <> and replace it with <> in order to take this into account.
 
-#hide_input
-#caption A program using weight assignment
-#id weight_assignment
-gv('''model[shape=box3d width=1 height=0.7]
-inputs->model->results; weights->model''')
-
 We've changed the name of our box from program to model. This is to follow modern terminology and to reflect that the model is a special kind of program: it's one that can do many different things, depending on the weights. It can be implemented in many different ways. For instance, in Samuel's checkers program, different values of the weights would result in different checkers-playing strategies.
 
 (By the way, what Samuel called "weights" are most generally referred to as model parameters these days, in case you have encountered that term. The term weights is reserved for a particular type of model parameter.)
@@ -446,26 +374,11 @@ We can now see why he said that such a procedure could be made entirely automati
 
 <> shows the full picture of Samuel's idea of training a machine learning model.
 
-#hide_input
-#caption Training a machine learning model
-#id training_loop
-#alt The basic training loop
-gv('''ordering=in
-model[shape=box3d width=1 height=0.7]
-inputs->model->results; weights->model; results->performance
-performance->weights[constraint=false label=update]''')
-
 Notice the distinction between the model's results (e.g., the moves in a checkers game) and its performance (e.g., whether it wins the game, or how quickly it wins).
 
 Also note that once the model is trained—that is, once we've chosen our final, best, favorite weight assignment—then we can think of the weights as being part of the model, since we're not varying them any more.
 
 Therefore, actually using a model after it's trained looks like <>.
-
-#hide_input
-#caption Using a trained model as a program
-#id using_model
-gv('''model[shape=box3d width=1 height=0.7]
-inputs->model->results''')
 
 This looks identical to our original diagram in <>, just with the word program replaced with model. This is an important insight: a trained model can be treated just like a regular computer program.
 
@@ -503,16 +416,6 @@ Samuel was working in the 1960s, and since then terminology has changed. Here is
     The measure of performance is called the loss.
     The loss depends not only on the predictions, but also the correct labels (also known as targets or the dependent variable); e.g., "dog" or "cat."
 
-After making these changes, our diagram in <> looks like <>.
-
-#hide_input
-#caption Detailed training loop
-#id detailed_loop
-gv('''ordering=in
-model[shape=box3d width=1 height=0.7 label=architecture]
-inputs->model->predictions; parameters->model; labels->loss; predictions->loss
-loss->parameters[constraint=false label=update]''')
-
 Limitations Inherent To Machine Learning
 
 From this picture we can now see some fundamental things about training a deep learning model:
@@ -543,27 +446,17 @@ Let's see just how our image recognizer code maps to these ideas. We'll put each
 
 The first line imports all of the fastai.vision library.
 
-from fastai.vision.all import *
-
 This gives us all of the functions and classes we will need to create a wide variety of computer vision models.
 
     J: A lot of Python coders recommend avoiding importing a whole library like this (using the import * syntax), because in large software projects it can cause problems. However, for interactive work such as in a Jupyter notebook, it works great. The fastai library is specially designed to support this kind of interactive use, and it will only import the necessary pieces into your environment.
 
 The second line downloads a standard dataset from the fast.ai datasets collection (if not previously downloaded) to your server, extracts it (if not previously extracted), and returns a Path object with the extracted location:
 
-path = untar_data(URLs.PETS)/'images'
-
     S: Throughout my time studying at fast.ai, and even still today, I've learned a lot about productive coding practices. The fastai library and fast.ai notebooks are full of great little tips that have helped make me a better programmer. For instance, notice that the fastai library doesn't just return a string containing the path to the dataset, but a Path object. This is a really useful class from the Python 3 standard library that makes accessing files and directories much easier. If you haven't come across it before, be sure to check out its documentation or a tutorial and try it out. Note that the https://book.fast.ai[website] contains links to recommended tutorials for each chapter. I'll keep letting you know about little coding tips I've found useful as we come across them.
 
 In the third line we define a function, is_cat, labels cats based on a filename rule provided by the dataset creators:
 
-def is_cat(x): return x[0].isupper()
-
 We use that function in the fourth line, which tells fastai what kind of dataset we have, and how it is structured:
-
-dls = ImageDataLoaders.from_name_func(
-    path, get_image_files(path), valid_pct=0.2, seed=42,
-    label_func=is_cat, item_tfms=Resize(224))
 
 There are various different classes for different kinds of deep learning datasets and problems—here we're using ImageDataLoaders. The first part of the class name will generally be the type of data you have, such as image, or text.
 
@@ -593,8 +486,6 @@ Overfitting is the single most important and challenging issue when training for
 
 The fifth line of the code training our image recognizer tells fastai to create a convolutional neural network (CNN) and specifies what architecture to use (i.e. what kind of model to create), what data we want to train it on, and what metric to use:
 
-learn = cnn_learner(dls, resnet34, metrics=error_rate)
-
 Why a CNN? It's the current state-of-the-art approach to creating computer vision models. We'll be learning all about how CNNs work in this book. Their structure is inspired by how the human vision system works.
 
 There are many different architectures in fastai, which we will introduce in this book (as well as discussing how to create your own). Most of the time, however, picking an architecture isn't a very important part of the deep learning process. It's something that academics love to talk about, but in practice it is unlikely to be something you need to spend much time on. There are some standard architectures that work most of the time, and in this case we're using one called ResNet that we'll be talking a lot about during the book; it is both fast and accurate for many datasets and problems. The 34 in resnet34 refers to the number of layers in this variant of the architecture (other options are 18, 50, 101, and 152). Models using architectures with more layers take longer to train, and are more prone to overfitting (i.e. you can't train them for as many epochs before the accuracy on the validation set starts getting worse). On the other hand, when using more data, they can be quite a bit more accurate.
@@ -614,8 +505,6 @@ Using a pretrained model for a task different to what it was originally trained 
     jargon: Transfer learning: Using a pretrained model for a task different to what it was originally trained for.
 
 The sixth line of our code tells fastai how to fit the model:
-
-learn.fine_tune(1)
 
 As we've discussed, the architecture only describes a template for a mathematical function; it doesn't actually do anything until we provide values for the millions of parameters it contains.
 
@@ -689,29 +578,6 @@ Jargon Recap
 
 We just covered a lot of information so let's recap briefly, <> provides a handy vocabulary.
 
-asciidoc
-[[dljargon]]
-.Deep learning vocabulary
-[options="header"]
-|=====
-| Term | Meaning
-|Label | The data that we're trying to predict, such as "dog" or "cat"
-|Architecture | The _template_ of the model that we're trying to fit; the actual mathematical function that we're passing the input data and parameters to
-|Model | The combination of the architecture with a particular set of parameters
-|Parameters | The values in the model that change what task it can do, and are updated through model training
-|Fit | Update the parameters of the model such that the predictions of the model using the input data match the target labels
-|Train | A synonym for _fit_
-|Pretrained model | A model that has already been trained, generally using a large dataset, and will be fine-tuned
-|Fine-tune | Update a pretrained model for a different task
-|Epoch | One complete pass through the input data
-|Loss | A measure of how good the model is, chosen to drive training via SGD
-|Metric | A measurement of how good the model is, using the validation set, chosen for human consumption
-|Validation set | A set of data held out from training, used only for measuring how good the model is
-|Training set | The data used for fitting the model; does not include any data from the validation set
-|Overfitting | Training a model in such a way that it _remembers_ specific features of the input data, rather than generalizing well to data not seen during training
-|CNN | Convolutional neural network; a type of neural network that works particularly well for computer vision tasks
-|=====
-
 With this vocabulary in hand, we are now in a position to bring together all the key concepts introduced so far. Take a moment to review those definitions and read the following summary. If you can follow the explanation, then you're well equipped to understand the discussions to come.
 
 Machine learning is a discipline where we define a program not by writing it entirely ourselves, but by learning from data. Deep learning is a specialty within machine learning that uses neural networks with multiple layers. Image classification is a representative example (also known as image recognition). We start with labeled data; that is, a set of images where we have assigned a label to each image indicating what it represents. Our goal is to produce a program, called a model, which, given a new image, will make an accurate prediction regarding what that new image represents.
@@ -729,28 +595,6 @@ Deep learning's effectiveness for classifying images has been widely discussed i
 
 For instance, let's talk about something that is critically important for autonomous vehicles: localizing objects in a picture. If a self-driving car doesn't know where a pedestrian is, then it doesn't know how to avoid one! Creating a model that can recognize the content of every individual pixel in an image is called segmentation. Here is how we can train a segmentation model with fastai, using a subset of the Camvid dataset from the paper "Semantic Object Classes in Video: A High-Definition Ground Truth Database" by Gabruel J. Brostow, Julien Fauqueur, and Roberto Cipolla:
 
-path = untar_data(URLs.CAMVID_TINY)
-dls = SegmentationDataLoaders.from_label_func(
-    path, bs=8, fnames = get_image_files(path/"images"),
-    label_func = lambda o: path/'labels'/f'{o.stem}_P{o.suffix}',
-    codes = np.loadtxt(path/'codes.txt', dtype=str)
-)
-
-learn = unet_learner(dls, resnet34)
-learn.fine_tune(8)
-
-epoch 	train_loss 	valid_loss 	time
-0 	2.641862 	2.140568 	00:02
-epoch 	train_loss 	valid_loss 	time
-0 	1.624964 	1.464210 	00:02
-1 	1.454148 	1.284032 	00:02
-2 	1.342955 	1.048562 	00:02
-3 	1.199765 	0.852787 	00:02
-4 	1.078090 	0.838206 	00:02
-5 	0.975496 	0.746806 	00:02
-6 	0.892793 	0.725384 	00:02
-7 	0.827645 	0.726778 	00:02
-
 We are not even going to walk through this code line by line, because it is nearly identical to our previous example! (Although we will be doing a deep dive into segmentation models in <>, along with all of the other models that we are briefly introducing in this chapter, and many, many more.)
 
 We can visualize how well it achieved its task, by asking the model to color-code each pixel of an image. As you can see, it nearly perfectly classifies every pixel in every object. For instance, notice that all of the cars are overlaid with the same color and all of the trees are overlaid with the same color (in each pair of images, the lefthand image is the ground truth label and the right is the prediction from the model):
@@ -759,36 +603,11 @@ learn.show_results(max_n=6, figsize=(7,8))
 
 One other area where deep learning has dramatically improved in the last couple of years is natural language processing (NLP). Computers can now generate text, translate automatically from one language to another, analyze comments, label words in sentences, and much more. Here is all of the code necessary to train a model that can classify the sentiment of a movie review better than anything that existed in the world just five years ago:
 
-from fastai.text.all import *
-
-dls = TextDataLoaders.from_folder(untar_data(URLs.IMDB), valid='test')
-learn = text_classifier_learner(dls, AWD_LSTM, drop_mult=0.5, metrics=accuracy)
-learn.fine_tune(4, 1e-2)
-
-epoch 	train_loss 	valid_loss 	accuracy 	time
-0 	0.878776 	0.748753 	0.500400 	01:27
-epoch 	train_loss 	valid_loss 	accuracy 	time
-0 	0.679118 	0.674778 	0.584040 	02:45
-1 	0.653671 	0.670396 	0.618040 	02:55
-2 	0.598665 	0.551815 	0.718920 	05:28
-3 	0.556812 	0.507450 	0.752480 	03:11
-clean
-
 If you hit a "CUDA out of memory error" after running this cell, click on the menu Kernel, then restart. Instead of executing the cell above, copy and paste the following code in it:
-
-from fastai.text.all import *
-
-dls = TextDataLoaders.from_folder(untar_data(URLs.IMDB), valid='test', bs=32)
-learn = text_classifier_learner(dls, AWD_LSTM, drop_mult=0.5, metrics=accuracy)
-learn.fine_tune(4, 1e-2)
 
 This reduces the batch size to 32 (we will explain this later). If you keep hitting the same error, change 32 to 16.
 
 This model is using the "IMDb Large Movie Review dataset" from the paper "Learning Word Vectors for Sentiment Analysis" by Andrew Maas et al. It works well with movie reviews of many thousands of words, but let's test it out on a very short one to see how it does its thing:
-
-learn.predict("I really liked that movie!")
-
-('neg', tensor(0), tensor([0.8786, 0.1214]))
 
 Here we can see the model has considered the review to be positive. The second part of the result is the index of "pos" in our data vocabulary and the last part is the probabilities attributed to each class (99.6% for "pos" and 0.4% for "neg").
 
@@ -796,13 +615,6 @@ Now it's your turn! Write your own mini movie review, or copy one from the inter
 Sidebar: The Order Matters
 
 In a Jupyter notebook, the order in which you execute each cell is very important. It's not like Excel, where everything gets updated as soon as you type something anywhere—it has an inner state that gets updated each time you execute a cell. For instance, when you run the first cell of the notebook (with the "CLICK ME" comment), you create an object called learn that contains a model and data for an image classification problem. If we were to run the cell just shown in the text (the one that predicts if a review is good or not) straight after, we would get an error as this learn object does not contain a text classification model. This cell needs to be run after the one containing:
-
-from fastai.text.all import *
-
-dls = TextDataLoaders.from_folder(untar_data(URLs.IMDB), valid='test')
-learn = text_classifier_learner(dls, AWD_LSTM, drop_mult=0.5, 
-                                metrics=accuracy)
-learn.fine_tune(4, 1e-2)
 
 The outputs themselves can be deceiving, because they include the results of the last time the cell was executed; if you change the code inside a cell without executing it, the old (misleading) results will remain.
 
@@ -812,8 +624,6 @@ In command mode, pressing 0 twice will restart the kernel (which is the engine p
 End sidebar
 
 If you ever have any questions about a fastai method, you should use the function doc, passing it the method name:
-
-doc(learn.predict)
 
 This will make a small window pop up with content like this:
 
@@ -825,71 +635,19 @@ Let's move on to something much less sexy, but perhaps significantly more widely
 
 It turns out that looks very similar too. Here is the code necessary to train a model that will predict whether a person is a high-income earner, based on their socioeconomic background:
 
-from fastai.tabular.all import *
-path = untar_data(URLs.ADULT_SAMPLE)
-
-dls = TabularDataLoaders.from_csv(path/'adult.csv', path=path, y_names="salary",
-    cat_names = ['workclass', 'education', 'marital-status', 'occupation',
-                 'relationship', 'race'],
-    cont_names = ['age', 'fnlwgt', 'education-num'],
-    procs = [Categorify, FillMissing, Normalize])
-
-learn = tabular_learner(dls, metrics=accuracy)
-
 As you see, we had to tell fastai which columns are categorical (that is, contain values that are one of a discrete set of choices, such as occupation) and which are continuous (that is, contain a number that represents a quantity, such as age).
 
 There is no pretrained model available for this task (in general, pretrained models are not widely available for any tabular modeling tasks, although some organizations have created them for internal use), so we don't use fine_tune in this case. Instead we use fit_one_cycle, the most commonly used method for training fastai models from scratch (i.e. without transfer learning):
 
-learn.fit_one_cycle(3)
-
-epoch 	train_loss 	valid_loss 	accuracy 	time
-0 	0.372397 	0.357177 	0.832463 	00:08
-1 	0.351544 	0.341505 	0.841523 	00:08
-2 	0.338763 	0.339184 	0.845670 	00:08
-
 This model is using the Adult dataset, from the paper "Scaling Up the Accuracy of Naive-Bayes Classifiers: a Decision-Tree Hybrid" by Rob Kohavi, which contains some demographic data about individuals (like their education, marital status, race, sex, and whether or not they have an annual income greater than $50k). The model is over 80\% accurate, and took around 30 seconds to train.
 
 Let's look at one more. Recommendation systems are very important, particularly in e-commerce. Companies like Amazon and Netflix try hard to recommend products or movies that users might like. Here's how to train a model that will predict movies people might like, based on their previous viewing habits, using the MovieLens dataset:
-
-from fastai.collab import *
-path = untar_data(URLs.ML_SAMPLE)
-dls = CollabDataLoaders.from_csv(path/'ratings.csv')
-learn = collab_learner(dls, y_range=(0.5,5.5))
-learn.fine_tune(10)
-
-epoch 	train_loss 	valid_loss 	time
-0 	1.510897 	1.410028 	00:00
-epoch 	train_loss 	valid_loss 	time
-0 	1.375435 	1.350930 	00:00
-1 	1.270062 	1.173962 	00:00
-2 	1.023159 	0.879298 	00:00
-3 	0.797398 	0.739787 	00:00
-4 	0.685500 	0.700903 	00:00
-5 	0.646508 	0.686387 	00:00
-6 	0.623985 	0.681087 	00:00
-7 	0.606319 	0.676885 	00:00
-8 	0.606975 	0.675833 	00:00
-9 	0.602670 	0.675682 	00:00
 
 This model is predicting movie ratings on a scale of 0.5 to 5.0 to within around 0.6 average error. Since we're predicting a continuous number, rather than a category, we have to tell fastai what range our target has, using the y_range parameter.
 
 Although we're not actually using a pretrained model (for the same reason that we didn't for the tabular model), this example shows that fastai lets us use fine_tune anyway in this case (you'll learn how and why this works in <>). Sometimes it's best to experiment with fine_tune versus fit_one_cycle to see which works best for your dataset.
 
 We can use the same show_results call we saw earlier to view a few examples of user and movie IDs, actual ratings, and predictions:
-
-learn.show_results()
-
-	userId 	movieId 	rating 	rating_pred
-0 	66.0 	79.0 	4.0 	3.978900
-1 	97.0 	15.0 	4.0 	3.851795
-2 	55.0 	79.0 	3.5 	3.945623
-3 	98.0 	91.0 	4.0 	4.458704
-4 	53.0 	7.0 	5.0 	4.670005
-5 	26.0 	69.0 	5.0 	4.319870
-6 	81.0 	16.0 	4.5 	4.426761
-7 	80.0 	7.0 	4.0 	4.046183
-8 	51.0 	94.0 	5.0 	3.499996
-Sidebar: Datasets: Food for Models
 
 You’ve already seen quite a few models in this section, each one trained using a different dataset to do a different task. In machine learning and deep learning, we can’t do anything without data. So, the people that create datasets for us to train our models on are the (often underappreciated) heroes. Some of the most useful and important datasets are those that become important academic baselines; that is, datasets that are widely studied by researchers and used to compare algorithmic changes. Some of these become household names (at least, among households that train models!), such as MNIST, CIFAR-10, and ImageNet.
 
